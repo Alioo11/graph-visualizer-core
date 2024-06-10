@@ -1,4 +1,5 @@
 import type { Nullable , NoneToVoidFunction} from "ts-wiz";
+import View from "../models/View";
 type StageLayout = "layout-1" | "layout-2";
 
 /**
@@ -12,22 +13,27 @@ interface IStage {
   start: () => Promise<void>;
 }
 
+interface IStageLayoutStrategy {
+  initLayout: (documentRef:HTMLDivElement , count:number) => Array<HTMLDivElement>;
+}
+
 interface IAlgorithm {
   iter: () => Promise<void>;
   performFastForward: Nullable<NoneToVoidFunction>;
 }
 
 interface IView<T> {
-  documentRef: HTMLDivElement;
+  documentRef: Nullable<HTMLDivElement>;
   visible: boolean;
   dataStructure: IDataStructure<T>;
   toggleVisible: NoneToVoidFunction;
+  init: (documentRef:HTMLDivElement)=> void
 }
 
 interface IVisualization {
   algorithm: IAlgorithm;
-  // a list of data-structures
-  // a list of views
+  start: NoneToVoidFunction;
+  views: Array<View<unknown>>;
 }
 
 /**
