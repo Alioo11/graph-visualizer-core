@@ -4,28 +4,28 @@ type StageLayout = "layout-1" | "layout-2";
 /**
  * @description a singleton object that gives DOM access to views
  */
-interface Stage {
+interface IStage {
   documentRoot: HTMLDivElement;
   layout: StageLayout;
-  fullScreenViewRef: Nullable<View>;
-  visualization: Nullable<Visualization>;
+  fullScreenViewRef: Nullable<IView>;
+  visualization: Nullable<IVisualization>;
   start: () => Promise<void>;
 }
 
-interface Algorithm {
+interface IAlgorithm {
   iter: () => Promise<void>;
   performFastForward: Nullable<NoneToVoidFunction>;
 }
 
-interface View {
+interface IView<T> {
   documentRef: HTMLDivElement;
   visible: boolean;
-  dataStructure: DataStructure;
+  dataStructure: IDataStructure<T>;
   toggleVisible: NoneToVoidFunction;
 }
 
-interface Visualization {
-  algorithm: Algorithm;
+interface IVisualization {
+  algorithm: IAlgorithm;
   // a list of data-structures
   // a list of views
 }
@@ -34,7 +34,7 @@ interface Visualization {
  * @description the common interface between all data structures
  * the iter should return a iterator object " [Symbol.iter] "
  */
-interface DataStructure<T> {
+interface IDataStructure<T> {
   size: number;
   iter: () => IterableIterator<T>;
 }
@@ -43,29 +43,28 @@ interface DataStructure<T> {
 type GraphIteratorTraverseStrategy = "DFS" | "BFS";
 type GraphType = "directed" | "undirected"
 
-interface GraphVertex<VERTEX, EDGE> {
+interface IGraphVertex<VERTEX, EDGE> {
   label: string;
   data: VERTEX;
-  neighbors: Array<GraphEdge<VERTEX, EDGE>>;
+  neighbors: Array<IGraphEdge<VERTEX, EDGE>>;
 }
 
-interface GraphEdge<VERTEX, EDGE> {
+interface IGraphEdge<VERTEX, EDGE> {
   data: EDGE;
-  from: GraphVertex<VERTEX, EDGE>;
-  to: GraphVertex<VERTEX, EDGE>;
+  from: IGraphVertex<VERTEX, EDGE>;
+  to: IGraphVertex<VERTEX, EDGE>;
 }
 
-interface GraphEventsMap<VERTEX,EDGE>  {
-    "add-vertex": GraphVertex<VERTEX, EDGE>;
-    "connect": GraphEdge<VERTEX, EDGE>;
+interface IAlgorithmGraphEventsMap<VERTEX,EDGE>  {
+    "add-vertex": IGraphVertex<VERTEX, EDGE>;
+    "connect": IGraphEdge<VERTEX, EDGE>;
 }
 
-interface Graph<VERTEX, EDGE> extends DataStructure<GraphVertex<VERTEX, EDGE>> {
+interface IGraph<VERTEX, EDGE> extends IDataStructure<IGraphVertex<VERTEX, EDGE>> {
   traverseStrategy: GraphIteratorTraverseStrategy;
   type : GraphType
-  addVertex : (data:VERTEX) => GraphVertex<VERTEX , EDGE>
-  connect : (from: GraphVertex<VERTEX,EDGE> , to:GraphVertex<VERTEX,EDGE>) => void;
-  on:<T extends keyof GraphEventsMap<VERTEX,EDGE>>(eventType:T,callback: (data:GraphEventsMap<VERTEX,EDGE>[T]) => void)=> {}
+  addVertex : (label:string,data:VERTEX) => IGraphVertex<VERTEX , EDGE>
+  connect : (from: IGraphVertex<VERTEX,EDGE> , to:IGraphVertex<VERTEX,EDGE>,data:EDGE) => IGraphEdge<VERTEX, EDGE>;
 }
 //SECTION - Graph interface
 
