@@ -1,0 +1,28 @@
+interface IPriorityQueue<T> extends IDataStructure<T> {
+  /**
+   * Inserts the specified element into this priority queue.
+   */
+  push: (value: T) => void;
+  /**
+   * Returns true if this queue contains the specified element.
+   */
+  contains: (value: T, comparator?: (item: T) => boolean) => boolean;
+  /**
+   * Retrieves, but does not remove, the head of this queue, or returns null if this queue is empty.
+   */
+  top: () => T | null;
+  /**
+   * Retrieves and removes the head of this queue, or returns null if this queue is empty.
+   * Everytime pop element from queue, the queue is started "sift down" to rebuild the heap
+   */
+  pop: () => T | null;
+  /**
+   * Returns the number of elements in this collection.
+   */
+  size: () => number;
+  /**
+   * Checks whether the queue is empty.
+   */
+  empty: () => boolean;
+  clear: () => void;
+}
