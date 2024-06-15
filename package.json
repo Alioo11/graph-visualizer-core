@@ -1,5 +1,5 @@
 {
-  "name": "Graph-Visualizer",
+  "name": "graph-visualizer-core",
   "version": "0.0.0",
   "description": "a Visualizer platform specialized for graphs",
   "main": "index.js",
