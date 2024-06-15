@@ -1,5 +1,4 @@
 import { Nullable } from "ts-wiz";
-import { IStage, IView, IVisualization, StageLayout } from "../../types";
 import stageLayoutMap from "./LayoutStrategy";
 
 class Stage implements IStage {

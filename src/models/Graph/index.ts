@@ -4,13 +4,20 @@ import TextUtil from "../../utils/Text";
 class GraphVertex<VERTEX, EDGE> implements IGraphVertex<VERTEX, EDGE> {
   label: string;
   data: VERTEX;
-  neighbors: IGraphEdge<VERTEX, EDGE>[] = [];
+  neighborsEdges: IGraphEdge<VERTEX, EDGE>[] = [];
   id: string;
 
   constructor(label: string, data: VERTEX) {
     this.label = label;
     this.data = data;
     this.id = uuidv4();
+  }
+  get neighborsVertexes() {
+    const neighborVertexes: Array<IGraphVertex<VERTEX, EDGE>> =
+      this.neighborsEdges.map((edge) => {
+        return edge.from.id === this.id ? edge.to : edge.from;
+      });
+    return neighborVertexes;
   }
 }
 
@@ -36,7 +43,7 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
   traverseStrategy: GraphIteratorTraverseStrategy = "DFS";
   private _type: GraphType;
 
-  private _vertexes: Array<GraphVertex<VERTEX, EDGE>> = [];
+  private _vertexes = new Map<string, GraphVertex<VERTEX, EDGE>>();
   private _edges = new Map<string, IGraphEdge<VERTEX, EDGE>>();
 
   private _events = new Map<
@@ -54,7 +61,7 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
 
   addVertex = (label: string, data: VERTEX) => {
     const vertexInstance = new GraphVertex<VERTEX, EDGE>(label, data);
-    this._vertexes.push(vertexInstance);
+    this._vertexes.set(vertexInstance.id, vertexInstance);
     this._events.get("add-vertex")?.forEach((cb) => cb(vertexInstance));
     return vertexInstance;
   };
@@ -75,8 +82,8 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
 
     const edgeInstance = new GraphEdge<VERTEX, EDGE>(from, to, data);
 
-    from.neighbors.push(edgeInstance);
-    if (this.type === "undirected") to.neighbors.push(edgeInstance);
+    from.neighborsEdges.push(edgeInstance);
+    if (this.type === "undirected") to.neighborsEdges.push(edgeInstance);
 
     this._edges.set(connectionHash, edgeInstance);
 
@@ -84,8 +91,21 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
     return edgeInstance;
   };
 
+  getEdgeBetween = (
+    from: IGraphVertex<VERTEX, EDGE>,
+    to: IGraphVertex<VERTEX, EDGE>
+  ) => {
+    const connectionHash = TextUtil.verticalAdd(from.id, to.id);
+    const connection = this._edges.get(connectionHash);
+    return connection || null
+  };
+
+  getVertexById(id:string){
+    return this._vertexes.get(id) || null;
+  }
+
   get size() {
-    return this._vertexes.length;
+    return this._vertexes.size;
   }
 
   on = <T extends keyof IAlgorithmGraphEventsMap<VERTEX, EDGE>>(
@@ -97,7 +117,7 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
   };
 
   *iter() {
-    for (const item of this._vertexes) {
+    for (const item of this._vertexes.values()) {
       yield item;
     }
   }

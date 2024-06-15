@@ -1,8 +1,57 @@
+import * as D3 from "d3";
 import { NoneToVoidFunction, Nullable } from "ts-wiz";
 import CoordinatedGraph from "../../Graph/Coordinated";
 import View from "../../View";
 
+function sigmoid(x: number): number {
+  return 1 / (1 + Math.exp(-x));
+}
+
+function generateHexColor(inputNumber: number): string {
+  // Step 1: Normalize the input to fall within the range [0, 1]
+  const normalizedInput = Math.min(Math.max(0, inputNumber), 1);
+
+  // Step 2: Map the normalized input to an RGB value
+  // We start with blue at 0 and end with red at 255
+  const rValue = Math.round(normalizedInput * 255);
+  const gValue =  Math.round(normalizedInput * 255);
+  const bValue = Math.round((1 - normalizedInput) * 255); // Inverse of rValue for blue
+
+  // Step 3: Convert RGB to HEX
+  const rHex = rValue.toString(16).padStart(2, '0');
+  const gHex = gValue.toString(16).padStart(2, '0');
+  const bHex = bValue.toString(16).padStart(2, '0');
+
+  return `#${rHex}${gHex}${bHex}`;
+}
+
+function floatToHexColor(value: number): string {
+  // Normalize the input if necessary
+  const normalizedValue = Math.min(Math.max(0, value), 1);
+
+  // Calculate RGB values based on the normalized float
+  const red = Math.round(normalizedValue * 255);
+  const green = Math.round((normalizedValue - 0.5) * 510); // Subtracting 0.5 shifts the range to [0, 510]
+  const blue = 255 - green; // Ensuring the sum of R, G, B remains at 255
+
+  // Convert RGB to hexadecimal
+  const redHex = red.toString(16).padStart(2, '0');
+  const greenHex = green.toString(16).padStart(2, '0');
+  const blueHex = blue.toString(16).padStart(2, '0');
+
+  return `#${redHex}${greenHex}${blueHex}`;
+}
+
+
 class DijkstraMainView extends View<unknown> {
+  private idToVertexMap = new Map<
+    string,
+    D3.Selection<SVGRectElement, unknown, null, undefined>
+  >();
+  private idToEdgeMap = new Map<
+    string,
+    D3.Selection<SVGRectElement, unknown, null, undefined>
+  >();
   dataStructure: CoordinatedGraph;
   documentRef: Nullable<HTMLDivElement> = null;
   constructor(dataStructure: CoordinatedGraph) {
@@ -12,19 +61,66 @@ class DijkstraMainView extends View<unknown> {
   }
 
   onReady: Nullable<NoneToVoidFunction> = () => {
-    const div = document.createElement("div");
-    div.style.border = "solid 1px red";
-    div.style.width = "200px";
-    div.style.height = "200px";
-    this.documentRef?.appendChild(div);
+    this.draw();
   };
 
-  setEvents = () => {
-    this.dataStructure.on("add-vertex", (e) => {
-      console.log("a new vertex with added", e.label);
-      // if(this.documentRef) this.documentRef.style.background = "red";
+  draw() {
+    const VERTEX_WIDTH = 7;
+    const VERTEX_HEIGHT = 7 ;
+
+    var svg = D3.select(this.documentRef)
+      .append("svg")
+      .attr("width", "100%")
+      .attr("height", "100%")
+      .append("g");
+
+    // for (const edge of this.dataStructure.EdgesIter()) {
+    //   let f = svg
+    //     .append("line")
+    //     .attr("x1", edge.from.data.x + VERTEX_WIDTH / 2)
+    //     .attr("y1", edge.from.data.y + VERTEX_HEIGHT / 2)
+    //     .attr("x2", edge.to.data.x + VERTEX_WIDTH / 2)
+    //     .attr("y2", edge.to.data.y + VERTEX_HEIGHT / 2)
+    //     .attr("stroke", "black");
+    // }
+
+    for (const vertex of this.dataStructure.iter()) {
+      const isTarget = vertex === this.dataStructure.targetVertex[0];
+      const isEntry = vertex === this.dataStructure.entryVertex;
+      const color = isTarget ? "red" : isEntry ? "blue" : "white";
+      let f = svg
+        .append("rect")
+        .attr("x", vertex.data.x)
+        .attr("y", vertex.data.y)
+        // .attr("stroke", "gray")
+        .attr("width", VERTEX_WIDTH)
+        .attr("height", VERTEX_HEIGHT)
+        .attr("fill", color)
+
+      
+    //   const text = svg.append("text")
+    //     .attr("class", "text")
+    //     .attr("x", vertex.data.x + 10)
+    //     .attr("y", vertex.data.y + 13).attr("font-size" , 7)
+    //     .text(vertex.label);
+     
+    //  // Optionally, adjust the text alignment if needed
+    //  text.attr("text-anchor", "middle");
+
+      f.append("text").text("H").attr("x",0).attr("y",0).attr("fill","black")
+
+      this.idToVertexMap.set(vertex.id, f);
+    }
+  }
+
+
+
+  setEvents() {
+    this.dataStructure.onVertex("state-change", (v) => {
+      const documentRef = this.idToVertexMap.get(v.id);
+      documentRef?.transition().duration(1000).attr("fill", floatToHexColor(sigmoid(v.data.cost/40)));
     });
-  };
+  }
 }
 
 export default DijkstraMainView;

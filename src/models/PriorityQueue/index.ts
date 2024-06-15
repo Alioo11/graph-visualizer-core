@@ -39,6 +39,7 @@ export class PriorityQueue<T> implements IPriorityQueue<T> {
    * @param value
    */
   public push(value: T) {
+    console.log(value)
     this._queue.push(value);
     let pos = this._queue.length - 1;
 
@@ -70,6 +71,7 @@ export class PriorityQueue<T> implements IPriorityQueue<T> {
    * Everytime pop element from queue, the queue is started "sift down" to rebuild the heap
    */
   public pop() {
+    console.log('pop')
     if (this._queue.length === 0) {
       return null;
     }

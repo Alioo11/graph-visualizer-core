@@ -1,5 +1,7 @@
 import { NoneToVoidFunction, Nullable } from "ts-wiz";
-import { IDataStructure, IView } from "../../types";
+import $ from 'jquery';
+
+
 
 abstract class View<T> implements IView<T> {
   private documentRootRef: Nullable<HTMLDivElement> = null;
@@ -22,9 +24,19 @@ abstract class View<T> implements IView<T> {
   };
 
   private initializeWrapperElements = () => {
+    if(!this.documentRootRef) throw new Error("something wrong while initializing wrapper element view document ref is not valid")
+
+    const myButton = $("<button>helo</button>").addClass("btn btn-sm btn-primary");
+    $(this.documentRootRef).append(myButton)
+
+
     const visibilityToggleButton = document.createElement("button");
     visibilityToggleButton.textContent = "toggle";
     this.documentRootRef?.appendChild(visibilityToggleButton);
+    visibilityToggleButton.addEventListener("click" , (e)=>{
+      this.visible = !this.visible;
+      if(this.documentRootRef) this.documentRootRef.style.width = this.visible ? "100%": "10px"
+    })
   };
 
   init = (rootHTMLElement: HTMLDivElement) => {
