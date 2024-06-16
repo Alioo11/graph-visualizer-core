@@ -1,3 +1,4 @@
 import Stage from "@models/Stage";
+import DijkstraVisualization from "@models/Visualization/Dijkstra";
 
-export { Stage };
+export default { Stage, DijkstraVisualization };
