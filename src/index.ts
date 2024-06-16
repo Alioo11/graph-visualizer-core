@@ -1,3 +1,1 @@
-import Stage from "@models/Stage";
-
-export default { Stage };
+export * from "./models/Stage";
