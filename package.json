@@ -1,6 +1,6 @@
 {
   "name": "graph-visualizer-core",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "a Visualizer platform specialized for graphs",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,9 @@
     "build": "webpack --config webpack.prod.js"
   },
   "author": "Ali Salehi",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "license": "ISC",
   "devDependencies": {
     "@types/bootstrap": "^5.2.10",
