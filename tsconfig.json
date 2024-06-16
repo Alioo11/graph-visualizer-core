@@ -21,7 +21,7 @@
       "@utils/*": ["./src/utils/*"]
     }
   },
-  "files": ["src/index.ts"],
+  "files": ["src/index.js"],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts", "dist", "build"]
 }

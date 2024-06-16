@@ -1,13 +1,11 @@
 const path = require("path");
 const merge = require("webpack-merge");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const common = require("./webpack.config");
 
 /** @type {import("webpack".Configuration)} */
 const prodConfig = {
   entry: {
-    main: "./src/index.ts",
+    main: "./src/index.js",
   },
   mode: "production",
   output: {

@@ -2,7 +2,10 @@
   "name": "graph-visualizer-core",
   "version": "0.0.1",
   "description": "a Visualizer platform specialized for graphs",
-  "main": "index.js",
+  "module": "src/index.js",
+  "main": "src/index.js",
+  "jsdelivr": "dist/main.js",
+  "unpkg": "dist/d3.min.js",
   "scripts": {
     "dev": "webpack-dev-server --config webpack.dev.js --open",
     "build": "webpack --config webpack.prod.js"
