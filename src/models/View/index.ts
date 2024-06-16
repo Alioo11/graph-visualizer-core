@@ -1,6 +1,5 @@
-import { NoneToVoidFunction, Nullable } from "ts-wiz";
 import $ from 'jquery';
-
+import type { NoneToVoidFunction, Nullable } from "ts-wiz";
 
 
 abstract class View<T> implements IView<T> {

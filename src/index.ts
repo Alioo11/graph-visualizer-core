@@ -1,6 +1,5 @@
-import { PriorityQueue } from "./models/PriorityQueue";
-import Stage from "./models/Stage";
-import DijkstraVisualization from "./models/Visualization/Dijkstra";
+import Stage from "@models/Stage";
+import DijkstraVisualization from "@models/Visualization/Dijkstra";
 
 import "./scss/main.scss";
 import * as bootstrap from "bootstrap";

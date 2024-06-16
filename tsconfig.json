@@ -13,6 +13,12 @@
     "noImplicitAny": true,
     "alwaysStrict": true,
     "skipLibCheck": true,
+    "paths": {
+      "@models/*": ["./src/models/*"],
+      "@scss/*": ["./src/scss/*"],
+      "@types/*": ["./src/types/*"],
+      "@utils/*": ["./src/utils/*"]
+    }
   },
   "files": ["src/index.ts"],
   "include": ["src/**/*", "./node_modules/@types/**/*"],
