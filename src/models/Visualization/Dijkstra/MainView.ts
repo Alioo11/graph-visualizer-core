@@ -118,7 +118,7 @@ class DijkstraMainView extends View<unknown> {
   setEvents() {
     this.dataStructure.onVertex("state-change", (v) => {
       const documentRef = this.idToVertexMap.get(v.id);
-      documentRef?.transition().duration(1000).attr("fill", floatToHexColor(sigmoid(v.data.cost/10)));
+      documentRef?.transition().duration(1000).attr("fill", floatToHexColor(sigmoid(v.data.cost!/10)));
     });
   }
 }

@@ -2,7 +2,8 @@ import CoordinatedGraph from "../../Graph/Coordinated";
 import Dijkstra from "./Algorithm";
 import View from "../../View";
 import DijkstraMainView from "./MainView";
-import { PriorityQueue } from "../../PriorityQueue";
+import { IVisualization } from "../../../types/visualization";
+
 
 class DijkstraVisualization implements IVisualization {
   private _coordinatedGraph = new CoordinatedGraph("undirected");

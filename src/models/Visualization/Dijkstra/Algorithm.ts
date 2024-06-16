@@ -1,6 +1,7 @@
 import wait from "@utils/wait";
 import CoordinatedGraph from "@models/Graph/Coordinated";
-import { PriorityQueue } from "@models/PriorityQueue";
+import { IAlgorithm } from "../../../types/algorithm";
+import { CoordinatedGraphVertex } from "../../../types/graph";
 
 interface IDijkstraCandidateVertexesPQ {
   cost: number;
@@ -10,9 +11,6 @@ interface IDijkstraCandidateVertexesPQ {
 class Dijkstra implements IAlgorithm {
   private graph: CoordinatedGraph;
   private vertexSourceMap = new Map<string, string>();
-  private PQueue = new PriorityQueue<IDijkstraCandidateVertexesPQ>(
-    (a, b) => a.cost > b.cost
-  );
 
   private sortedList: Array<IDijkstraCandidateVertexesPQ> = [];
 
@@ -39,10 +37,6 @@ class Dijkstra implements IAlgorithm {
 
     undiscoveredVertexes.forEach((vtx) => {
       this.scannedNodes.add(vtx.id);
-      this.PQueue.push({
-        vertex: vtx,
-        cost: vertex.data.cost + edgeFromSource.data.wight,
-      });
     });
     this.graph.updateVertex(vertex, (vtx) => ({ ...vtx, state: "visited" }));
   }
@@ -100,7 +94,7 @@ class Dijkstra implements IAlgorithm {
           selectedVertex.vertex
         );
         if (!edgeBetween) throw new Error("err3");
-        const cost = edgeBetween.data.wight + selectedVertexSource.data.cost;
+        const cost = edgeBetween.data.wight + selectedVertexSource.data.cost!;
         vertex.data.cost = cost;
         this.sortedList.push({ vertex, cost });
       });

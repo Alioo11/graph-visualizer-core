@@ -1,3 +1,5 @@
+import { IDataStructure } from '../../types/dataStructure';
+import { IView } from '../../types/view';
 import $ from 'jquery';
 import type { NoneToVoidFunction, Nullable } from "ts-wiz";
 

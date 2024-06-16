@@ -5,7 +5,7 @@ const common = require("./webpack.config");
 /** @type {import("webpack".Configuration)} */
 const prodConfig = {
   entry: {
-    main: "./src/index.js",
+    main: "./src/index.ts",
   },
   mode: "production",
   output: {

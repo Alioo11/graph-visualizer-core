@@ -9,7 +9,7 @@ const devConfig = {
     main: "./src/main.ts",
   },
   output: {
-    filename: "js/[name]-[contenthash].js",
+    filename: "js/[name]-[contenthash].ts",
     path: path.resolve(__dirname, "dist"),
     clean: true,
   },

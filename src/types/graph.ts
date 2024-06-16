@@ -1,8 +1,10 @@
+import { Nullable } from "ts-wiz";
+import { IDataStructure } from "./dataStructure";
 
-type GraphIteratorTraverseStrategy = "DFS" | "BFS";
-type GraphType = "directed" | "undirected"
+export type GraphIteratorTraverseStrategy = "DFS" | "BFS";
+export type GraphType = "directed" | "undirected"
 
-interface IGraphVertex<VERTEX, EDGE> {
+export interface IGraphVertex<VERTEX, EDGE> {
   id:string;
   label: string;
   data: VERTEX;
@@ -10,45 +12,45 @@ interface IGraphVertex<VERTEX, EDGE> {
   neighborsVertexes: Array<IGraphVertex<VERTEX, EDGE>>;
 }
 
-interface IGraphEdge<VERTEX, EDGE> {
+export interface IGraphEdge<VERTEX, EDGE> {
   id:string;
   data: EDGE;
   from: IGraphVertex<VERTEX, EDGE>;
   to: IGraphVertex<VERTEX, EDGE>;
 }
 
-interface IAlgorithmGraphEventsMap<VERTEX,EDGE>  {
+export interface IAlgorithmGraphEventsMap<VERTEX,EDGE>  {
     "add-vertex": IGraphVertex<VERTEX, EDGE>;
     "connect": IGraphEdge<VERTEX, EDGE>;
 }
 
-interface IGraph<VERTEX, EDGE> extends IDataStructure<IGraphVertex<VERTEX, EDGE>> {
+export interface IGraph<VERTEX, EDGE> extends IDataStructure<IGraphVertex<VERTEX, EDGE>> {
   traverseStrategy: GraphIteratorTraverseStrategy;
   type : GraphType
   addVertex : (label:string,data:VERTEX) => IGraphVertex<VERTEX , EDGE>
   connect : (from: IGraphVertex<VERTEX,EDGE> , to:IGraphVertex<VERTEX,EDGE>,data:EDGE) => IGraphEdge<VERTEX, EDGE>;
 }
 
-type CoordinatedGraphVertex = IGraphVertex<ICoordinatedGraphVertex ,ICoordinatedGraphEdge >
-type CoordinatedGraphEdge = IGraphEdge<ICoordinatedGraphVertex ,ICoordinatedGraphEdge >
+export type CoordinatedGraphVertex = IGraphVertex<ICoordinatedGraphVertex ,ICoordinatedGraphEdge >
+export type CoordinatedGraphEdge = IGraphEdge<ICoordinatedGraphVertex ,ICoordinatedGraphEdge >
 
 
 type CoordinatedGraphVertexState = "blank" | "visited";
 
-interface ICoordinatedGraphVertex {
+export interface ICoordinatedGraphVertex {
   state: CoordinatedGraphVertexState;
   from: Nullable<CoordinatedGraphVertex>
-  cost:nullable<number>
+  cost:Nullable<number>
   x: number;
   y: number;
 }
 
-interface ICoordinatedGraphEdge {
+export interface ICoordinatedGraphEdge {
   wight: number;
 }
 
 
-interface CoordinatedVertexEvents {
+export interface CoordinatedVertexEvents {
   "state-change": CoordinatedGraphVertex;
   "position-change": CoordinatedGraphVertex;
 }

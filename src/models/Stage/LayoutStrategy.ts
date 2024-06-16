@@ -1,3 +1,5 @@
+import { IStageLayoutStrategy, StageLayout } from "../../types/stage";
+
 class layout1Strategy implements IStageLayoutStrategy {
   initLayout = (documentRef: HTMLDivElement , count:number) => {
     documentRef.classList.add("stage-layout1-root");

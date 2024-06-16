@@ -1,27 +1,27 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "CommonJS",
-    "rootDir": "./",
     "moduleResolution": "node",
-    "allowJs": true,
-    "sourceMap": true,
-    "outDir": "./dist",
-    "esModuleInterop": true,
+    "module": "CommonJS",
+    "outDir": "./dist/",
+    "target": "ES2017",
+    "rootDir": "./src",
+    "declarationDir": "./dist/types",
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "esModuleInterop": true,
     "noImplicitAny": true,
     "alwaysStrict": true,
     "skipLibCheck": true,
     "declaration": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "types": ["./src/types"],
+    "strict": true,
     "paths": {
       "@models/*": ["./src/models/*"],
       "@scss/*": ["./src/scss/*"],
-      "@types/*": ["./src/types/*"],
       "@utils/*": ["./src/utils/*"]
     }
   },
-  "files": ["src/index.js"],
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts", "dist", "build"]
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

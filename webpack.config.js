@@ -62,10 +62,9 @@ const baseConfig = {
     alias: {
       '@models': path.resolve(__dirname, './src/models'),
       '@scss': path.resolve(__dirname, './src/scss'),
-      '@types': path.resolve(__dirname, './src/types'),
       '@utils': path.resolve(__dirname, './src/utils'),
     },
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: [".ts", ".js"],
   },
 };
 

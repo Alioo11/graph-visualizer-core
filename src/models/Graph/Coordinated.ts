@@ -1,5 +1,6 @@
-import { Nullable } from "ts-wiz";
+import type { Nullable } from "ts-wiz";
 import Graph from ".";
+import { CoordinatedGraphVertex, CoordinatedVertexEvents, ICoordinatedGraphEdge, ICoordinatedGraphVertex } from "../../types/graph";
 
 class CoordinatedGraph extends Graph<
   ICoordinatedGraphVertex,
