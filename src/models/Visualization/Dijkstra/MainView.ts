@@ -74,15 +74,15 @@ class DijkstraMainView extends View<unknown> {
       .attr("height", "100%")
       .append("g");
 
-    // for (const edge of this.dataStructure.EdgesIter()) {
-    //   let f = svg
-    //     .append("line")
-    //     .attr("x1", edge.from.data.x + VERTEX_WIDTH / 2)
-    //     .attr("y1", edge.from.data.y + VERTEX_HEIGHT / 2)
-    //     .attr("x2", edge.to.data.x + VERTEX_WIDTH / 2)
-    //     .attr("y2", edge.to.data.y + VERTEX_HEIGHT / 2)
-    //     .attr("stroke", "black");
-    // }
+    for (const edge of this.dataStructure.EdgesIter()) {
+      let f = svg
+        .append("line")
+        .attr("x1", edge.from.data.x + VERTEX_WIDTH / 2)
+        .attr("y1", edge.from.data.y + VERTEX_HEIGHT / 2)
+        .attr("x2", edge.to.data.x + VERTEX_WIDTH / 2)
+        .attr("y2", edge.to.data.y + VERTEX_HEIGHT / 2)
+        .attr("stroke", "black");
+    }
 
     for (const vertex of this.dataStructure.iter()) {
       const isTarget = vertex === this.dataStructure.targetVertex[0];
@@ -92,7 +92,7 @@ class DijkstraMainView extends View<unknown> {
         .append("rect")
         .attr("x", vertex.data.x)
         .attr("y", vertex.data.y)
-        // .attr("stroke", "gray")
+        .attr("stroke", "gray")
         .attr("width", VERTEX_WIDTH)
         .attr("height", VERTEX_HEIGHT)
         .attr("fill", color)
@@ -118,7 +118,7 @@ class DijkstraMainView extends View<unknown> {
   setEvents() {
     this.dataStructure.onVertex("state-change", (v) => {
       const documentRef = this.idToVertexMap.get(v.id);
-      documentRef?.transition().duration(1000).attr("fill", floatToHexColor(sigmoid(v.data.cost/40)));
+      documentRef?.transition().duration(1000).attr("fill", floatToHexColor(sigmoid(v.data.cost/10)));
     });
   }
 }

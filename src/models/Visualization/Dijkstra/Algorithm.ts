@@ -64,7 +64,7 @@ class Dijkstra implements IAlgorithm {
     })
 
     while(!this.foundTarget){
-      await wait(1);
+      await wait(5);
       this.sortedList.sort((a, b) => b.cost - a.cost);
       console.log(this.sortedList.map(i => i.cost))
       const selectedVertex = this.sortedList.pop();

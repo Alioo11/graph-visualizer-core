@@ -19,10 +19,10 @@ class DijkstraVisualization implements IVisualization {
 
   initProgram = () => {
     const WIDTH = 100;
-    const HEIGHT = 60;
+    const HEIGHT = 50;
     const GAP = 7;
 
-    const entryPoint = [50, 25];
+    const entryPoint = [5, 5];
     const targetPoint = [99, 222  ];
 
     const mat: Array<Array<any>> = Array.from(Array(HEIGHT).keys()).map(
