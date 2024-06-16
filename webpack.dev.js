@@ -5,6 +5,9 @@ const common = require("./webpack.config");
 
 /** @type {import("webpack".Configuration)} */
 const devConfig = {
+  entry: {
+    main: "./src/main.ts",
+  },
   output: {
     filename: "js/[name]-[contenthash].js",
     path: path.resolve(__dirname, "dist"),

@@ -6,24 +6,16 @@ const common = require("./webpack.config");
 
 /** @type {import("webpack".Configuration)} */
 const prodConfig = {
+  entry: {
+    main: "./src/index.ts",
+  },
   mode: "production",
   output: {
-    filename: "js/[name]-[contenthash].js",
-    path: path.resolve(__dirname, "build"),
+    filename: "main.js",
+    path: path.resolve(__dirname, "dist"),
     clean: true,
-  },
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader"],
-      },
-    ],
-  },
-  plugins: [
-    new HtmlWebpackPlugin({ template: "./public/index.html" }),
-    new MiniCssExtractPlugin({ filename: "styles/[name].css" }),
-  ],
+    libraryTarget: 'commonjs2'
+  }
 };
 
 module.exports = merge.merge(common, prodConfig);

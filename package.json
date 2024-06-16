@@ -8,6 +8,7 @@
     "build": "webpack --config webpack.prod.js"
   },
   "author": "Ali Salehi",
+  "files": ["dist"],
   "license": "ISC",
   "devDependencies": {
     "@types/bootstrap": "^5.2.10",

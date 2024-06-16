@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2016",
-    "module": "es6",
+    "module": "CommonJS",
     "rootDir": "./",
     "moduleResolution": "node",
     "allowJs": true,
@@ -13,6 +13,7 @@
     "noImplicitAny": true,
     "alwaysStrict": true,
     "skipLibCheck": true,
+    "declaration": true,
     "paths": {
       "@models/*": ["./src/models/*"],
       "@scss/*": ["./src/scss/*"],
@@ -21,6 +22,6 @@
     }
   },
   "files": ["src/index.ts"],
-  "include": ["src/**/*", "./node_modules/@types/**/*"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts", "dist", "build"]
 }

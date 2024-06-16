@@ -97,10 +97,10 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
   ) => {
     const connectionHash = TextUtil.verticalAdd(from.id, to.id);
     const connection = this._edges.get(connectionHash);
-    return connection || null
+    return connection || null;
   };
 
-  getVertexById(id:string){
+  getVertexById(id: string) {
     return this._vertexes.get(id) || null;
   }
 
