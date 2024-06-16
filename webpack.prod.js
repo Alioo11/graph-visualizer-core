@@ -1,10 +1,11 @@
 const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const merge = require("webpack-merge");
-const common = require("./webpack.config");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const common = require("./webpack.config");
 
-module.exports = merge.merge(common, {
+/** @type {import("webpack".Configuration)} */
+const prodConfig = {
   mode: "production",
   output: {
     filename: "js/[name]-[contenthash].js",
@@ -20,10 +21,9 @@ module.exports = merge.merge(common, {
     ],
   },
   plugins: [
-    new webpack.IgnorePlugin({
-      resourceRegExp: /\.test.ts$/,
-    }),
     new HtmlWebpackPlugin({ template: "./public/index.html" }),
     new MiniCssExtractPlugin({ filename: "styles/[name].css" }),
   ],
-});
+};
+
+module.exports = merge.merge(common, prodConfig);

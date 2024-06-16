@@ -1,8 +1,8 @@
 const path = require("path");
-const autoprefixer = require('autoprefixer')
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const autoprefixer = require("autoprefixer");
 
-module.exports = {
+/** @type {import("webpack".Configuration)} */
+const baseConfig = {
   entry: {
     main: "./src/index.ts",
   },
@@ -16,31 +16,29 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader" ],
+        use: ["style-loader", "css-loader"],
       },
       {
         test: /\.(scss)$/,
         use: [
           {
-            loader: 'style-loader'
+            loader: "style-loader",
           },
           {
-            loader: 'css-loader'
+            loader: "css-loader",
           },
           {
-            loader: 'postcss-loader',
+            loader: "postcss-loader",
             options: {
               postcssOptions: {
-                plugins: [
-                  autoprefixer
-                ]
-              }
-            }
+                plugins: [autoprefixer],
+              },
+            },
           },
           {
-            loader: 'sass-loader'
-          }
-        ]
+            loader: "sass-loader",
+          },
+        ],
       },
       {
         test: /\.ts$/,
@@ -63,9 +61,6 @@ module.exports = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: "./public/index.html",
-    }),
-  ],
 };
+
+module.exports = baseConfig;
