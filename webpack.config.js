@@ -3,10 +3,6 @@ const autoprefixer = require("autoprefixer");
 
 /** @type {import("webpack".Configuration)} */
 const baseConfig = {
-  entry: {
-    main: "./src/index.ts",
-  },
-  mode: "development",
   output: {
     filename: "js/[name]-[contenthash].js",
     path: path.resolve(__dirname, "dist"),
