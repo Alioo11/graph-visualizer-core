@@ -1,6 +1,6 @@
 import type { Nullable } from "ts-wiz";
 import Graph from ".";
-import { CoordinatedGraphVertex, CoordinatedVertexEvents, ICoordinatedGraphEdge, ICoordinatedGraphVertex } from "../../types/graph";
+import { CoordinatedGraphVertex, CoordinatedVertexEvents, GraphType, ICoordinatedGraphEdge, ICoordinatedGraphVertex } from "../../../types/graph";
 
 class CoordinatedGraph extends Graph<
   ICoordinatedGraphVertex,
@@ -13,6 +13,10 @@ class CoordinatedGraph extends Graph<
 
   entryVertex: Nullable<CoordinatedGraphVertex> = null;
   targetVertex: Array<CoordinatedGraphVertex> = [];
+
+  constructor(type:GraphType){
+    super(type);
+  }
 
   updateVertex(
     vertex: CoordinatedGraphVertex,

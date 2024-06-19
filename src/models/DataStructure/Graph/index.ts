@@ -1,6 +1,13 @@
 import { v4 as uuidv4 } from "uuid";
-import TextUtil from "../../utils/Text";
-import { GraphIteratorTraverseStrategy, GraphType, IAlgorithmGraphEventsMap, IGraph, IGraphEdge, IGraphVertex } from "../../types/graph";
+import TextUtil from "../../../utils/Text";
+import {
+  GraphIteratorTraverseStrategy,
+  GraphType,
+  IAlgorithmGraphEventsMap,
+  IGraph,
+  IGraphEdge,
+  IGraphVertex,
+} from "../../../types/graph";
 
 class GraphVertex<VERTEX, EDGE> implements IGraphVertex<VERTEX, EDGE> {
   label: string;
@@ -60,6 +67,12 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
     return this._type;
   }
 
+  private getConnectionHash = (strA: string, strB: string) => {
+    if (this._type === "undirected")
+      return TextUtil.bidirectionalHash(strA, strB);
+    return TextUtil.directionalHash(strA, strB);
+  };
+
   addVertex = (label: string, data: VERTEX) => {
     const vertexInstance = new GraphVertex<VERTEX, EDGE>(label, data);
     this._vertexes.set(vertexInstance.id, vertexInstance);
@@ -72,7 +85,7 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
     to: IGraphVertex<VERTEX, EDGE>,
     data: EDGE
   ) => {
-    const connectionHash = TextUtil.verticalAdd(from.id, to.id);
+    const connectionHash = this.getConnectionHash(from.id, to.id);
     const connection = this._edges.get(connectionHash);
     if (connection) {
       console.warn(
@@ -96,7 +109,7 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
     from: IGraphVertex<VERTEX, EDGE>,
     to: IGraphVertex<VERTEX, EDGE>
   ) => {
-    const connectionHash = TextUtil.verticalAdd(from.id, to.id);
+    const connectionHash = this.getConnectionHash(from.id, to.id);
     const connection = this._edges.get(connectionHash);
     return connection || null;
   };
