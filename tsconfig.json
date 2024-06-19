@@ -3,7 +3,7 @@
     "moduleResolution": "node",
     "module": "CommonJS",
     "outDir": "./dist/",
-    "target": "ES2017",
+    "target": "ES2019",
     "rootDir": "./src",
     "declarationDir": "./dist/types",
     "forceConsistentCasingInFileNames": true,
