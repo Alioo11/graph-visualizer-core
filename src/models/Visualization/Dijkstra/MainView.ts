@@ -1,6 +1,6 @@
 import * as D3 from "d3";
 import { NoneToVoidFunction, Nullable } from "ts-wiz";
-import CoordinatedGraph from "../../Graph/Coordinated";
+import CoordinatedGraph from "../../DataStructure/Graph/Coordinated";
 import View from "../../View";
 
 function sigmoid(x: number): number {
@@ -92,7 +92,7 @@ class DijkstraMainView extends View<unknown> {
         .append("rect")
         .attr("x", vertex.data.x)
         .attr("y", vertex.data.y)
-        .attr("stroke", "gray")
+        // .attr("stroke", "gray")
         .attr("width", VERTEX_WIDTH)
         .attr("height", VERTEX_HEIGHT)
         .attr("fill", color)

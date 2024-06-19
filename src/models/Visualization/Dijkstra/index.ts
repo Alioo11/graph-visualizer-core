@@ -1,4 +1,4 @@
-import CoordinatedGraph from "../../Graph/Coordinated";
+import CoordinatedGraph from "../../DataStructure/Graph/Coordinated";
 import Dijkstra from "./Algorithm";
 import View from "../../View";
 import DijkstraMainView from "./MainView";
@@ -20,7 +20,7 @@ class DijkstraVisualization implements IVisualization {
 
   initProgram = () => {
     const WIDTH = 100;
-    const HEIGHT = 50;
+    const HEIGHT = 30;
     const GAP = 7;
 
     const entryPoint = [5, 5];
@@ -59,10 +59,10 @@ class DijkstraVisualization implements IVisualization {
           this._coordinatedGraph.connect(currentNode, nextNode, { wight: Math.floor(Math.random() * 10) });
         if (bottomNode)
           this._coordinatedGraph.connect(currentNode, bottomNode, { wight: Math.floor(Math.random() * 10) });
-        // if (bottomNextNode)
-        //   this._coordinatedGraph.connect(currentNode, bottomNextNode, { wight: 1 });
-        // if (topNextNode)
-        //   this._coordinatedGraph.connect(currentNode, topNextNode, { wight: 1 });
+        if (bottomNextNode)
+          this._coordinatedGraph.connect(currentNode, bottomNextNode, { wight: Math.floor(Math.random() * 10) });
+        if (topNextNode)
+          this._coordinatedGraph.connect(currentNode, topNextNode, { wight: Math.floor(Math.random() * 10) });
       }
     }
     this._coordinatedGraph.entryVertex = entryPointRef;

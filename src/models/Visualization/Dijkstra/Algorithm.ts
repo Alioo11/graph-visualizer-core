@@ -1,5 +1,5 @@
 import wait from "@utils/wait";
-import CoordinatedGraph from "@models/Graph/Coordinated";
+import CoordinatedGraph from "@models/DataStructure/Graph/Coordinated";
 import { IAlgorithm } from "../../../types/algorithm";
 import { CoordinatedGraphVertex } from "../../../types/graph";
 
@@ -66,7 +66,6 @@ class Dijkstra implements IAlgorithm {
     while (!this.foundTarget) {
       await wait(5);
       this.sortedList.sort((a, b) => b.cost - a.cost);
-      console.log(this.sortedList.map((i) => i.cost));
       const selectedVertex = this.sortedList.pop();
       if (!selectedVertex) break; // the whole graph has been traversed and yet target not found
       if (selectedVertex.vertex === this.graph.targetVertex[0]) {
