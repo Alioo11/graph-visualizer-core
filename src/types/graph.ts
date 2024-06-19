@@ -29,6 +29,7 @@ export interface IGraph<VERTEX, EDGE> extends IDataStructure<IGraphVertex<VERTEX
   type : GraphType
   addVertex : (label:string,data:VERTEX) => IGraphVertex<VERTEX , EDGE>
   connect : (from: IGraphVertex<VERTEX,EDGE> , to:IGraphVertex<VERTEX,EDGE>,data:EDGE) => IGraphEdge<VERTEX, EDGE>;
+  getEdgeBetween: (from: IGraphVertex<VERTEX, EDGE>, to: IGraphVertex<VERTEX, EDGE>)=> Nullable<IGraphEdge<VERTEX,EDGE>>
 }
 
 export type CoordinatedGraphVertex = IGraphVertex<ICoordinatedGraphVertex ,ICoordinatedGraphEdge >
