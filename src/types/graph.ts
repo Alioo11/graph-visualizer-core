@@ -30,28 +30,7 @@ export interface IGraph<VERTEX, EDGE> extends IDataStructure<IGraphVertex<VERTEX
   addVertex : (label:string,data:VERTEX) => IGraphVertex<VERTEX , EDGE>
   connect : (from: IGraphVertex<VERTEX,EDGE> , to:IGraphVertex<VERTEX,EDGE>,data:EDGE) => IGraphEdge<VERTEX, EDGE>;
   getEdgeBetween: (from: IGraphVertex<VERTEX, EDGE>, to: IGraphVertex<VERTEX, EDGE>)=> Nullable<IGraphEdge<VERTEX,EDGE>>
-}
-
-export type CoordinatedGraphVertex = IGraphVertex<ICoordinatedGraphVertex ,ICoordinatedGraphEdge >
-export type CoordinatedGraphEdge = IGraphEdge<ICoordinatedGraphVertex ,ICoordinatedGraphEdge >
-
-
-type CoordinatedGraphVertexState = "blank" | "visited";
-
-export interface ICoordinatedGraphVertex {
-  state: CoordinatedGraphVertexState;
-  from: Nullable<CoordinatedGraphVertex>
-  cost:Nullable<number>
-  x: number;
-  y: number;
-}
-
-export interface ICoordinatedGraphEdge {
-  wight: number;
-}
-
-
-export interface CoordinatedVertexEvents {
-  "state-change": CoordinatedGraphVertex;
-  "position-change": CoordinatedGraphVertex;
+  getVertexById(id: string): IGraphVertex<VERTEX, EDGE> | null;
+  EdgesIter: () => IterableIterator<IGraphEdge<VERTEX,EDGE>>;
+  on: <T extends keyof IAlgorithmGraphEventsMap<VERTEX, EDGE>>(eventType: T, callback: (data: IAlgorithmGraphEventsMap<VERTEX, EDGE>[T]) => void) => void;
 }

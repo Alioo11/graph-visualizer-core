@@ -3,8 +3,6 @@
  * the iter should return a iterator object " [Symbol.iter] "
  */
 export interface IDataStructure<T> {
-    size: number;
-    iter: () => IterableIterator<T>;
-  }
-  
-  
+  size: number;
+  iter: () => IterableIterator<T>;
+}
