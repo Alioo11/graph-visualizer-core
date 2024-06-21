@@ -1,15 +1,15 @@
 import wait from "@utils/wait";
-import CoordinatedGraph from "@models/DataStructure/Graph/Coordinated";
+import DijkstraGraph from "@models/DataStructure/Graph/Dijkstra";
 import { IAlgorithm } from "../../../types/algorithm";
-import { CoordinatedGraphVertex } from "../../../types/graph";
+import { DijkstraGraphVertex } from "../../../types/dijkstra";
 
 interface IDijkstraCandidateVertexesPQ {
   cost: number;
-  vertex: CoordinatedGraphVertex;
+  vertex: DijkstraGraphVertex;
 }
 
-class Dijkstra implements IAlgorithm {
-  private graph: CoordinatedGraph;
+class DijkstraAlgorithm implements IAlgorithm {
+  private graph: DijkstraGraph;
   private vertexSourceMap = new Map<string, string>();
 
   private sortedList: Array<IDijkstraCandidateVertexesPQ> = [];
@@ -22,11 +22,11 @@ class Dijkstra implements IAlgorithm {
   };
   performFastForward = null;
 
-  constructor(graph: CoordinatedGraph) {
+  constructor(graph: DijkstraGraph) {
     this.graph = graph;
   }
 
-  visitVertex(vertex: CoordinatedGraphVertex, source: CoordinatedGraphVertex) {
+  visitVertex(vertex: DijkstraGraphVertex, source: DijkstraGraphVertex) {
     const undiscoveredVertexes = vertex.neighborsVertexes.filter(
       (vtx) => vtx.data.state !== "visited" && !this.scannedNodes.has(vtx.id)
     );
@@ -105,4 +105,4 @@ class Dijkstra implements IAlgorithm {
   }
 }
 
-export default Dijkstra;
+export default DijkstraAlgorithm;

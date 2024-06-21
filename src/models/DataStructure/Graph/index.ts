@@ -136,6 +136,7 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
     }
   }
 
+  
   *EdgesIter() {
     for (const item of this._edges.values()) {
       yield item;

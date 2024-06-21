@@ -1,7 +1,10 @@
 import * as D3 from "d3";
 import { NoneToVoidFunction, Nullable } from "ts-wiz";
-import DijkstraGraph from "../../DataStructure/Graph/Dijkstra";
 import View from "../../View";
+import DhouibGraph from "@models/DataStructure/Graph/Dhouib";
+
+
+const VERTEX_RADIUS = 20;
 
 function sigmoid(x: number): number {
   return 1 / (1 + Math.exp(-x));
@@ -43,7 +46,7 @@ function floatToHexColor(value: number): string {
 }
 
 
-class DijkstraMainView extends View<unknown> {
+class GraphView extends View<unknown> {
   private idToVertexMap = new Map<
     string,
     D3.Selection<SVGRectElement, unknown, null, undefined>
@@ -52,9 +55,9 @@ class DijkstraMainView extends View<unknown> {
     string,
     D3.Selection<SVGRectElement, unknown, null, undefined>
   >();
-  dataStructure: DijkstraGraph;
+  dataStructure: DhouibGraph;
   documentRef: Nullable<HTMLDivElement> = null;
-  constructor(dataStructure: DijkstraGraph) {
+  constructor(dataStructure: DhouibGraph) {
     super();
     this.dataStructure = dataStructure;
     this.setEvents();
@@ -81,39 +84,28 @@ class DijkstraMainView extends View<unknown> {
         .attr("y1", edge.from.data.y + VERTEX_HEIGHT / 2)
         .attr("x2", edge.to.data.x + VERTEX_WIDTH / 2)
         .attr("y2", edge.to.data.y + VERTEX_HEIGHT / 2)
+        .attr("stroke-width", .7)
         .attr("stroke", "grey");
     }
 
     for (const vertex of this.dataStructure.iter()) {
-      const isTarget = vertex === this.dataStructure.targetVertex[0];
-      const isEntry = vertex === this.dataStructure.entryVertex;
-      const color = isTarget ? "red" : isEntry ? "blue" : "white";
       let f = svg
-        .append("rect")
-        .attr("x", vertex.data.x)
-        .attr("y", vertex.data.y)
-        .attr("stroke", "gray")
+        .append("circle")
+        .attr("cx", vertex.data.x + VERTEX_RADIUS/2)
+        .attr("cy", vertex.data.y + VERTEX_RADIUS/2)
+        .attr("r", VERTEX_RADIUS) // Radius of the circle
         .attr("width", VERTEX_WIDTH)
         .attr("height", VERTEX_HEIGHT)
-        .attr("fill", color)
+        .attr("fill", "lightblue")
 
-      
-    //   const text = svg.append("text")
-    //     .attr("class", "text")
-    //     .attr("x", vertex.data.x + 10)
-    //     .attr("y", vertex.data.y + 13).attr("font-size" , 7)
-    //     .text(vertex.label);
-     
-    //  // Optionally, adjust the text alignment if needed
-    //  text.attr("text-anchor", "middle");
+      const text = svg.append("text")
+        .attr("x", vertex.data.x + VERTEX_RADIUS/2 - 6)
+        .attr("y", vertex.data.y + VERTEX_RADIUS/2 + 6).attr("font-size" , 16)
+        .text(vertex.label);
 
       f.append("text").text("H").attr("x",0).attr("y",0).attr("fill","black")
-
-      this.idToVertexMap.set(vertex.id, f);
     }
   }
-
-
 
   setEvents() {
     this.dataStructure.onVertex("state-change", (v) => {
@@ -123,4 +115,4 @@ class DijkstraMainView extends View<unknown> {
   }
 }
 
-export default DijkstraMainView;
+export default GraphView;

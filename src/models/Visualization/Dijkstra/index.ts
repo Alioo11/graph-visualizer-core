@@ -1,14 +1,14 @@
-import CoordinatedGraph from "../../DataStructure/Graph/Coordinated";
-import Dijkstra from "./Algorithm";
+import DijkstraGraph from "../../DataStructure/Graph/Dijkstra";
+import DijkstraAlgorithm from "./Algorithm";
 import View from "../../View";
 import DijkstraMainView from "./MainView";
 import { IVisualization } from "../../../types/visualization";
 
 
 class DijkstraVisualization implements IVisualization {
-  private _coordinatedGraph = new CoordinatedGraph("undirected");
-  algorithm = new Dijkstra(this._coordinatedGraph);
-  views: View<unknown>[] = [new DijkstraMainView(this._coordinatedGraph)];
+  private _dijkstraGraph = new DijkstraGraph("undirected");
+  algorithm = new DijkstraAlgorithm(this._dijkstraGraph);
+  views: View<unknown>[] = [new DijkstraMainView(this._dijkstraGraph)];
   start = async () => {
     await this.algorithm.start();
   };
@@ -35,7 +35,7 @@ class DijkstraVisualization implements IVisualization {
 
     for (let i = 0; i < HEIGHT; i++) {
       for (let j = 0; j < WIDTH; j++) {
-        const f = this._coordinatedGraph.addVertex(`${j}-${i}`, {
+        const f = this._dijkstraGraph.addVertex(`${j}-${i}`, {
           x: GAP * j,
           y: GAP * i,
           state: "blank",
@@ -56,17 +56,17 @@ class DijkstraVisualization implements IVisualization {
         const bottomNextNode = mat?.[row+1]?.[col + 1];
         const topNextNode = mat?.[row-1]?.[col + 1];
         if (nextNode)
-          this._coordinatedGraph.connect(currentNode, nextNode, { wight: Math.floor(Math.random() * 10) });
+          this._dijkstraGraph.connect(currentNode, nextNode, { wight: Math.floor(Math.random() * 10) });
         if (bottomNode)
-          this._coordinatedGraph.connect(currentNode, bottomNode, { wight: Math.floor(Math.random() * 10) });
+          this._dijkstraGraph.connect(currentNode, bottomNode, { wight: Math.floor(Math.random() * 10) });
         if (bottomNextNode)
-          this._coordinatedGraph.connect(currentNode, bottomNextNode, { wight: Math.floor(Math.random() * 10) });
+          this._dijkstraGraph.connect(currentNode, bottomNextNode, { wight: Math.floor(Math.random() * 10) });
         if (topNextNode)
-          this._coordinatedGraph.connect(currentNode, topNextNode, { wight: Math.floor(Math.random() * 10) });
+          this._dijkstraGraph.connect(currentNode, topNextNode, { wight: Math.floor(Math.random() * 10) });
       }
     }
-    this._coordinatedGraph.entryVertex = entryPointRef;
-    this._coordinatedGraph.targetVertex = [targetPointRef];
+    this._dijkstraGraph.entryVertex = entryPointRef;
+    this._dijkstraGraph.targetVertex = [targetPointRef];
   };
 }
 
