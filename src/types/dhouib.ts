@@ -1,4 +1,3 @@
-import { Nullable } from "ts-wiz";
 import { IGraphEdge, IGraphVertex } from "./graph";
 import { IAdjacencyMatrix, IAdjacencyMatrixHeader, IAdjacencyMatrixRelation } from "./adjacencyMatrix";
 
@@ -11,13 +10,14 @@ export interface IDhouibGraphVertex {
 
 export interface IDhouibGraphEdge {
   distance: number;
-  status: "connected" | "blank";
+  status: "connected" | "candidate" | "stale";
 }
 
 export interface IDhouibAdjacencyMatrixHeader {}
 
-export interface IDhouibAdjacencyMatrixRelation {}
-
+export interface IDhouibAdjacencyMatrixRelation {
+  status: "selected" | "blank" | "candidate";
+}
 
 export type DhouibAdjacencyMatrixRelation = IAdjacencyMatrixRelation<
   IDhouibGraphVertex,
@@ -26,14 +26,12 @@ export type DhouibAdjacencyMatrixRelation = IAdjacencyMatrixRelation<
   IDhouibAdjacencyMatrixRelation
 >;
 
-
 export type DhouibAdjacencyMatrixHeader = IAdjacencyMatrixHeader<
   IDhouibGraphVertex,
   IDhouibGraphEdge,
   IDhouibAdjacencyMatrixHeader,
   IDhouibAdjacencyMatrixRelation
 >;
-
 
 export type DhouibAdjacencyMatrix = IAdjacencyMatrix<
   IDhouibGraphVertex,
@@ -45,9 +43,27 @@ export type DhouibAdjacencyMatrix = IAdjacencyMatrix<
 export type DhouibGraphVertex = IGraphVertex<IDhouibGraphVertex, IDhouibGraphEdge>;
 export type DhouibGraphEdge = IGraphEdge<IDhouibGraphVertex, IDhouibGraphEdge>;
 
-
-
 export interface IDhouibAdjacencyMatrixEventMap {
-  "columns-minimum-cell-select": Array<Nullable<DhouibAdjacencyMatrixRelation>>;
-  // "cell-change-status": IAdjacencyMatrixCell<VERTEX, EDGE>;
+  "create-min-columns-list": Array<DhouibAdjacencyMatrixRelation>;
+  "min-columns-list-max-value-select": DhouibAdjacencyMatrixRelation;
+  "relation-change-status": DhouibAdjacencyMatrixRelation;
+  "relation-edge-change": DhouibAdjacencyMatrixRelation;
+
+  "add-to-min-column-list": DhouibAdjacencyMatrixRelation
+  "remove-from-min-column-list": DhouibAdjacencyMatrixRelation
+
+  "add-to-mst-path": DhouibAdjacencyMatrixRelation
+  "add-to-candidate-relations": DhouibAdjacencyMatrixRelation
+
+
+}
+
+
+export interface DhouibVertexEventMap {
+  "state-change": DhouibGraphVertex;
+  "position-change": DhouibGraphVertex;
+}
+
+export interface IDhouibGraphEdgeEventMap {
+  "state-change" : DhouibGraphEdge;
 }

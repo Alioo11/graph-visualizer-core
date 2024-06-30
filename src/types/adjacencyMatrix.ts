@@ -1,23 +1,24 @@
-import { Nullable } from "ts-wiz";
-import { IGraphEdge, IGraphVertex } from "./graph";
-import { IDataStructure } from "./dataStructure";
+import type { IGraphEdge, IGraphVertex } from "./graph";
+import type { IDataStructure } from "./dataStructure";
+import type { Nullable } from "ts-wiz";
 
 export type adjacencyMatrixHeaderCellType = "vertical" | "horizontal"
 
 export interface IAdjacencyMatrixHeader<VERTEX, EDGE, HEADER, RELATION> {
   id: string;
-  vertex: IGraphVertex<VERTEX, EDGE>;
   data: HEADER;
-  cells: Array<IAdjacencyMatrixRelation<VERTEX, EDGE, HEADER, RELATION>>;
+  vertex: IGraphVertex<VERTEX, EDGE>;
   type: adjacencyMatrixHeaderCellType;
+  cells: Array<IAdjacencyMatrixRelation<VERTEX, EDGE, HEADER, RELATION>>;
 }
 
 export interface IAdjacencyMatrixRelation<VERTEX, EDGE, HEADER, RELATION> {
   id: string;
   x: number;
   y: number;
-  edge: Nullable<IGraphEdge<VERTEX, EDGE>>;
   data: RELATION;
+  edge: Nullable<IGraphEdge<VERTEX, EDGE>>;
+  peer: Nullable<IAdjacencyMatrixRelation<VERTEX, EDGE, HEADER, RELATION>>
   verticalVertexRef: IAdjacencyMatrixHeader<VERTEX, EDGE, HEADER, RELATION>;
   horizontalVertexRef: IAdjacencyMatrixHeader<VERTEX, EDGE, HEADER, RELATION>;
 }
