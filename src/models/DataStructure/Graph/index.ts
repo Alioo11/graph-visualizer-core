@@ -38,12 +38,13 @@ class GraphEdge<VERTEX, EDGE> implements IGraphEdge<VERTEX, EDGE> {
   constructor(
     from: IGraphVertex<VERTEX, EDGE>,
     to: IGraphVertex<VERTEX, EDGE>,
-    data: EDGE
+    data: EDGE,
+    id:string
   ) {
     this.from = from;
     this.to = to;
     this.data = data;
-    this.id = uuidv4();
+    this.id = id;
   }
 }
 
@@ -51,8 +52,8 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
   traverseStrategy: GraphIteratorTraverseStrategy = "DFS";
   private _type: GraphType;
 
-  private _vertexes = new Map<string, GraphVertex<VERTEX, EDGE>>();
-  private _edges = new Map<string, IGraphEdge<VERTEX, EDGE>>();
+  protected _vertexes = new Map<string, GraphVertex<VERTEX, EDGE>>();
+  protected _edges = new Map<string, IGraphEdge<VERTEX, EDGE>>();
 
   private _events = new Map<
     keyof IAlgorithmGraphEventsMap<VERTEX, EDGE>,
@@ -94,7 +95,7 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
       return connection;
     }
 
-    const edgeInstance = new GraphEdge<VERTEX, EDGE>(from, to, data);
+    const edgeInstance = new GraphEdge<VERTEX, EDGE>(from, to, data , connectionHash);
 
     from.neighborsEdges.push(edgeInstance);
     if (this.type === "undirected") to.neighborsEdges.push(edgeInstance);

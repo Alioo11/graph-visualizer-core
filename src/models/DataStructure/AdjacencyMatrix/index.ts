@@ -37,8 +37,10 @@ class AdjacencyMatrixHeader<VERTEX, EDGE, HEADER, RELATION>
   }
 }
 
-class AdjacencyMatrixCell<VERTEX, EDGE,HEADER,RELATION> implements IAdjacencyMatrixRelation<VERTEX, EDGE , HEADER , RELATION> {
-  private matrixRef: IAdjacencyMatrix<VERTEX, EDGE , HEADER, RELATION>;
+class AdjacencyMatrixCell<VERTEX, EDGE, HEADER, RELATION>
+  implements IAdjacencyMatrixRelation<VERTEX, EDGE, HEADER, RELATION>
+{
+  private matrixRef: IAdjacencyMatrix<VERTEX, EDGE, HEADER, RELATION>;
 
   x: number;
   y: number;
@@ -46,12 +48,13 @@ class AdjacencyMatrixCell<VERTEX, EDGE,HEADER,RELATION> implements IAdjacencyMat
   id: string;
   status: IAdjacencyMatrixCellStatus = "blank";
   data: RELATION;
+  peer: Nullable<IAdjacencyMatrixRelation<VERTEX, EDGE, HEADER, RELATION>> = null;
 
   constructor(
     x: IAdjacencyMatrixRelation<VERTEX, EDGE, HEADER, RELATION>["x"],
     y: IAdjacencyMatrixRelation<VERTEX, EDGE, HEADER, RELATION>["y"],
     edge: IAdjacencyMatrixRelation<VERTEX, EDGE, HEADER, RELATION>["edge"],
-    matrixRef: IAdjacencyMatrix<VERTEX, EDGE , HEADER, RELATION>,
+    matrixRef: IAdjacencyMatrix<VERTEX, EDGE, HEADER, RELATION>,
     data: RELATION
   ) {
     this.x = x;
@@ -81,33 +84,62 @@ class AdjacencyMatrixCell<VERTEX, EDGE,HEADER,RELATION> implements IAdjacencyMat
   }
 }
 
-
-class AdjacencyMatrix<VERTEX, EDGE , HEADER , RELATION> implements IAdjacencyMatrix<VERTEX, EDGE , HEADER , RELATION> {
-  protected graph: IGraph<VERTEX, EDGE>;
+class AdjacencyMatrix<VERTEX, EDGE, HEADER, RELATION> implements IAdjacencyMatrix<VERTEX, EDGE, HEADER, RELATION> {
+  graph: IGraph<VERTEX, EDGE>;
 
   verticalHeaders: Array<IAdjacencyMatrixHeader<VERTEX, EDGE, HEADER, RELATION>> = [];
   horizontalHeaders: Array<IAdjacencyMatrixHeader<VERTEX, EDGE, HEADER, RELATION>> = [];
   relations: Array<Array<IAdjacencyMatrixRelation<VERTEX, EDGE, HEADER, RELATION>>> = [];
 
+  relationIdMap = new Map<string, IAdjacencyMatrixRelation<VERTEX, EDGE, HEADER, RELATION>>();
+
   protected _edgeValueGetter: (edge: EDGE) => number;
 
-  constructor(graph: IGraph<VERTEX, EDGE>,defaultHeader: HEADER , defaultRelation:RELATION, edgeValueGetter: (edge: EDGE) => number) {
+  constructor(
+    graph: IGraph<VERTEX, EDGE>,
+    defaultHeader: HEADER,
+    defaultRelation: RELATION,
+    edgeValueGetter: (edge: EDGE) => number
+  ) {
     this.graph = graph;
     this._edgeValueGetter = edgeValueGetter;
     this.initHeaderCells(defaultHeader);
     this.initMatrixBody(defaultRelation);
+    this.initPeers();
   }
 
-  private initHeaderCells(defaultHeader:HEADER) {
+  private initHeaderCells(defaultHeader: HEADER) {
     for (const vertex of this.graph.iter()) {
-      const vertexHeaderCellInstance = new AdjacencyMatrixHeader<VERTEX, EDGE, HEADER , RELATION>(vertex, this, "vertical" , defaultHeader);
-      const horizontalHeaderCellInstance = new AdjacencyMatrixHeader<VERTEX, EDGE, HEADER , RELATION>(vertex, this, "horizontal", defaultHeader);
+      const vertexHeaderCellInstance = new AdjacencyMatrixHeader<VERTEX, EDGE, HEADER, RELATION>(
+        vertex,
+        this,
+        "vertical",
+        defaultHeader
+      );
+      const horizontalHeaderCellInstance = new AdjacencyMatrixHeader<VERTEX, EDGE, HEADER, RELATION>(
+        vertex,
+        this,
+        "horizontal",
+        defaultHeader
+      );
       this.verticalHeaders.push(vertexHeaderCellInstance);
       this.horizontalHeaders.push(horizontalHeaderCellInstance);
     }
   }
 
-  private initMatrixBody(defaultRelation:RELATION) {
+
+  private initPeers(){
+    const flatRelations = this.relations.flat();
+    for (let i = 0; i < flatRelations.length; i++) {
+      const currentRelation = flatRelations[i];
+      const peerValue = this.relations[currentRelation.x][currentRelation.y];
+      if(!peerValue) throw new Error(`something wen't wrong while getting peer relation at ${{x:currentRelation.x,y:currentRelation.y}}`);
+      currentRelation.peer = peerValue;
+      peerValue.peer = currentRelation;
+    }
+  }
+
+  private initMatrixBody(defaultRelation: RELATION) {
     this.relations = Array.from(Array(this.size).keys()).map(() => new Array(this.size));
 
     for (let x = 0; x < this.horizontalHeaders.length; x++) {
@@ -115,7 +147,8 @@ class AdjacencyMatrix<VERTEX, EDGE , HEADER , RELATION> implements IAdjacencyMat
         const fromVertex = this.verticalHeaders[y].vertex;
         const toVertex = this.horizontalHeaders[x].vertex;
         const edge = this.graph.getEdgeBetween(fromVertex, toVertex);
-        const connection = new AdjacencyMatrixCell(x, y, edge, this , defaultRelation);
+        const connection = new AdjacencyMatrixCell(x, y, edge, this, defaultRelation);
+        this.relationIdMap.set(connection.id, connection);
         this.relations[y][x] = connection;
       }
     }

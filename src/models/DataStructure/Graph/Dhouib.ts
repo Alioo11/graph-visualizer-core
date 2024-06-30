@@ -1,37 +1,38 @@
 import type { Nullable } from "ts-wiz";
 import Graph from ".";
-import { DijkstraGraphVertex, DijkstraVertexEvents } from "../../../types/dijkstra";
 import { GraphType } from "../../../types/graph";
-import { IDhouibGraphEdge, IDhouibGraphVertex } from "../../../types/dhouib";
+import { DhouibGraphEdge, DhouibGraphVertex, DhouibVertexEventMap, IDhouibGraphEdge, IDhouibGraphEdgeEventMap, IDhouibGraphVertex } from "../../../types/dhouib";
 
 class DhouibGraph extends Graph<IDhouibGraphVertex, IDhouibGraphEdge> {
-  private _dijkstraVertexEventMap = new Map<keyof DijkstraVertexEvents, Array<(data: any) => void>>();
+  private _dhouibVertexEventMap = new Map<keyof DhouibVertexEventMap, Array<(data: any) => void>>();
+  private _dhouibEdgeEventMap = new Map<keyof DhouibVertexEventMap, Array<(data: any) => void>>();
 
-  entryVertex: Nullable<DijkstraGraphVertex> = null;
-  targetVertex: Array<DijkstraGraphVertex> = [];
+  entryVertex: Nullable<DhouibGraphVertex> = null;
+  targetVertex: Array<DhouibGraphVertex> = [];
 
   constructor(type: GraphType) {
     super(type);
   }
 
-  updateVertex(vertex: DijkstraGraphVertex, cb: (data: DijkstraGraphVertex["data"]) => DijkstraGraphVertex["data"]) {
-    const newData = cb(vertex.data);
 
-    const didPositionChange = newData.x !== vertex.data.x || newData.y !== vertex.data.y;
-    const didStateChange = newData.state !== vertex.data.state;
-
-    vertex.data = newData;
-
-    if (didPositionChange) this._dijkstraVertexEventMap.get("position-change")?.forEach((cb) => cb(vertex));
-    if (didStateChange) this._dijkstraVertexEventMap.get("state-change")?.forEach((cb) => cb(vertex));
+  updateEdge(edgeId:DhouibGraphEdge["id"] ,updateCb :(e: DhouibGraphEdge["data"]) => DhouibGraphEdge["data"]){
+    const edge = this._edges.get(edgeId);
+    if(!edge) throw new Error(`could not find graph edge with id ${edgeId}`);
+    const updatedGraphEdgeData = updateCb(edge["data"]);
+    const didStateChange = updatedGraphEdgeData.status !== edge.data.status;
+    edge.data = updatedGraphEdgeData;
+    if(didStateChange) this._dhouibEdgeEventMap.get("state-change")?.forEach((cb) => cb(edge));
   }
 
-  onVertex = <T extends keyof DijkstraVertexEvents>(
-    eventType: T,
-    callback: (data: DijkstraVertexEvents[T]) => void
-  ) => {
-    const events = this._dijkstraVertexEventMap.get(eventType) || [];
-    this._dijkstraVertexEventMap.set(eventType, [...events, callback]);
+
+  onEdge = <T extends keyof IDhouibGraphEdgeEventMap>(eventType: T, callback: (data: IDhouibGraphEdgeEventMap[T]) => void) => {
+    const events = this._dhouibEdgeEventMap.get(eventType) || [];
+    this._dhouibEdgeEventMap.set(eventType, [...events, callback]);
+  };
+
+  onVertex = <T extends keyof DhouibVertexEventMap>(eventType: T, callback: (data: DhouibVertexEventMap[T]) => void) => {
+    const events = this._dhouibVertexEventMap.get(eventType) || [];
+    this._dhouibVertexEventMap.set(eventType, [...events, callback]);
   };
 }
 
