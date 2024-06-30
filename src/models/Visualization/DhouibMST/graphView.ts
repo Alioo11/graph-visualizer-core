@@ -2,50 +2,9 @@ import * as D3 from "d3";
 import { NoneToVoidFunction, Nullable } from "ts-wiz";
 import View from "../../View";
 import DhouibGraph from "@models/DataStructure/Graph/Dhouib";
+import { DhouibGraphEdge } from "../../../types/dhouib";
 
-
-const VERTEX_RADIUS = 20;
-
-function sigmoid(x: number): number {
-  return 1 / (1 + Math.exp(-x));
-}
-
-function generateHexColor(inputNumber: number): string {
-  // Step 1: Normalize the input to fall within the range [0, 1]
-  const normalizedInput = Math.min(Math.max(0, inputNumber), 1);
-
-  // Step 2: Map the normalized input to an RGB value
-  // We start with blue at 0 and end with red at 255
-  const rValue = Math.round(normalizedInput * 255);
-  const gValue =  Math.round(normalizedInput * 255);
-  const bValue = Math.round((1 - normalizedInput) * 255); // Inverse of rValue for blue
-
-  // Step 3: Convert RGB to HEX
-  const rHex = rValue.toString(16).padStart(2, '0');
-  const gHex = gValue.toString(16).padStart(2, '0');
-  const bHex = bValue.toString(16).padStart(2, '0');
-
-  return `#${rHex}${gHex}${bHex}`;
-}
-
-function floatToHexColor(value: number): string {
-  // Normalize the input if necessary
-  const normalizedValue = Math.min(Math.max(0, value), 1);
-
-  // Calculate RGB values based on the normalized float
-  const red = Math.round(normalizedValue * 255);
-  const green = Math.round((normalizedValue - 0.5) * 510); // Subtracting 0.5 shifts the range to [0, 510]
-  const blue = 255 - green; // Ensuring the sum of R, G, B remains at 255
-
-  // Convert RGB to hexadecimal
-  const redHex = red.toString(16).padStart(2, '0');
-  const greenHex = green.toString(16).padStart(2, '0');
-  const blueHex = blue.toString(16).padStart(2, '0');
-
-  return `#${redHex}${greenHex}${blueHex}`;
-}
-
-
+const VERTEX_RADIUS = 9;
 class GraphView extends View<unknown> {
   private idToVertexMap = new Map<
     string,
@@ -53,19 +12,34 @@ class GraphView extends View<unknown> {
   >();
   private idToEdgeMap = new Map<
     string,
-    D3.Selection<SVGRectElement, unknown, null, undefined>
+    D3.Selection<SVGLineElement, unknown, null, undefined>
   >();
   dataStructure: DhouibGraph;
   documentRef: Nullable<HTMLDivElement> = null;
   constructor(dataStructure: DhouibGraph) {
     super();
     this.dataStructure = dataStructure;
-    this.setEvents();
   }
+
+
+  private registerEvents (){
+    this.dataStructure.onEdge("state-change" , (s) => this.updateState(s))
+  }
+
 
   onReady: Nullable<NoneToVoidFunction> = () => {
     this.draw();
+    this.registerEvents();
   };
+
+  private updateState(edge:DhouibGraphEdge){
+    const documentRef = this.idToEdgeMap.get(edge.id);
+    if(!documentRef) throw new Error(`could not find document with id ${edge.id}`);
+
+    if(edge.data.status === "candidate") documentRef.attr("stroke-width", 1).attr("stroke", "yellow");
+    if(edge.data.status === "connected") documentRef.attr("stroke-width", 4).attr("stroke", "red");
+
+  }
 
   draw() {
     const VERTEX_WIDTH = 7;
@@ -84,8 +58,9 @@ class GraphView extends View<unknown> {
         .attr("y1", edge.from.data.y + VERTEX_HEIGHT / 2)
         .attr("x2", edge.to.data.x + VERTEX_WIDTH / 2)
         .attr("y2", edge.to.data.y + VERTEX_HEIGHT / 2)
-        .attr("stroke-width", .7)
+        .attr("stroke-width", .2)
         .attr("stroke", "grey");
+        this.idToEdgeMap.set(edge.id , f);
     }
 
     for (const vertex of this.dataStructure.iter()) {
@@ -96,7 +71,9 @@ class GraphView extends View<unknown> {
         .attr("r", VERTEX_RADIUS) // Radius of the circle
         .attr("width", VERTEX_WIDTH)
         .attr("height", VERTEX_HEIGHT)
+        .attr("stroke", "blue")
         .attr("fill", "lightblue")
+        
 
       const text = svg.append("text")
         .attr("x", vertex.data.x + VERTEX_RADIUS/2 - 6)
@@ -107,12 +84,6 @@ class GraphView extends View<unknown> {
     }
   }
 
-  setEvents() {
-    this.dataStructure.onVertex("state-change", (v) => {
-      const documentRef = this.idToVertexMap.get(v.id);
-      documentRef?.transition().duration(1000).attr("fill", floatToHexColor(sigmoid(v.data.cost!/10)));
-    });
-  }
 }
 
 export default GraphView;
