@@ -40,7 +40,7 @@ body {
 
 .stage-layout1-root {
     width: 100%;
-    height: 100%;
+    height: 600px;
     background-color: gray;
     display: flex;
     justify-content: center;
@@ -67,3 +67,44 @@ body {
     background-color: white;
     border-radius: 4px;
 }
+
+
+// ******************** Dhouib MST ******************** //
+
+
+.dhouib-horizontal-header{
+
+}
+
+.dhouib-header-cell{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: solid .5px blue;
+    border-left: solid .5px blue;
+    font-weight: 800;
+    background-color: lightblue;
+}
+
+.dhouib-table {
+    border: solid 1px grey;
+    table-layout:fixed;
+}
+
+
+.dhouib-table-row {
+
+}
+
+.dhouib-table-cell {
+    // background-color: red;
+    border-top: solid 1px gray;
+    border-left: solid 1px gray;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    border-collapse: collapse;
+    overflow: hidden;
+    table-layout:fixed;
+}
+
