@@ -2,6 +2,7 @@ import * as D3 from "d3";
 import { NoneToVoidFunction, Nullable } from "ts-wiz";
 import DijkstraGraph from "../../DataStructure/Graph/Dijkstra";
 import View from "../../View";
+import InfiniteCanvasView from "@models/View/InfiniteCanvasView";
 
 function sigmoid(x: number): number {
   return 1 / (1 + Math.exp(-x));
@@ -43,15 +44,9 @@ function floatToHexColor(value: number): string {
 }
 
 
-class DijkstraMainView extends View<unknown> {
-  private idToVertexMap = new Map<
-    string,
-    D3.Selection<SVGRectElement, unknown, null, undefined>
-  >();
-  private idToEdgeMap = new Map<
-    string,
-    D3.Selection<SVGRectElement, unknown, null, undefined>
-  >();
+class DijkstraMainView extends InfiniteCanvasView<unknown> {
+  private idToVertexMap = new Map<string, D3.Selection<SVGRectElement, unknown, HTMLElement, any> >();
+  // private idToEdgeMap = new Map<string, D3.Selection<SVGRectElement, unknown, null, undefined>>();
   dataStructure: DijkstraGraph;
   documentRef: Nullable<HTMLDivElement> = null;
   constructor(dataStructure: DijkstraGraph) {
@@ -60,28 +55,26 @@ class DijkstraMainView extends View<unknown> {
     this.setEvents();
   }
 
+
   onReady: Nullable<NoneToVoidFunction> = () => {
     this.draw();
   };
 
   draw() {
-    const VERTEX_WIDTH = 7;
-    const VERTEX_HEIGHT = 7 ;
+    const VERTEX_WIDTH = 5;
+    const VERTEX_HEIGHT = 5;
 
-    var svg = D3.select(this.documentRef)
-      .append("svg")
-      .attr("width", "100%")
-      .attr("height", "100%")
-      .append("g");
+    const svg = D3.select("svg g");
 
     for (const edge of this.dataStructure.EdgesIter()) {
-      let f = svg
+      svg
         .append("line")
         .attr("x1", edge.from.data.x + VERTEX_WIDTH / 2)
         .attr("y1", edge.from.data.y + VERTEX_HEIGHT / 2)
         .attr("x2", edge.to.data.x + VERTEX_WIDTH / 2)
         .attr("y2", edge.to.data.y + VERTEX_HEIGHT / 2)
-        .attr("stroke", "grey");
+        .attr("stroke-width" , .5)
+        .attr("stroke", floatToHexColor(sigmoid(edge.data.wight! / 1)))
     }
 
     for (const vertex of this.dataStructure.iter()) {
@@ -93,32 +86,33 @@ class DijkstraMainView extends View<unknown> {
         .attr("x", vertex.data.x)
         .attr("y", vertex.data.y)
         .attr("stroke", "gray")
+        .attr("stroke-width" , .2)
         .attr("width", VERTEX_WIDTH)
         .attr("height", VERTEX_HEIGHT)
-        .attr("fill", color)
+        .attr("fill", color);
 
-      
-    //   const text = svg.append("text")
-    //     .attr("class", "text")
-    //     .attr("x", vertex.data.x + 10)
-    //     .attr("y", vertex.data.y + 13).attr("font-size" , 7)
-    //     .text(vertex.label);
-     
-    //  // Optionally, adjust the text alignment if needed
-    //  text.attr("text-anchor", "middle");
+      //   const text = svg.append("text")
+      //     .attr("class", "text")
+      //     .attr("x", vertex.data.x + 10)
+      //     .attr("y", vertex.data.y + 13).attr("font-size" , 7)
+      //     .text(vertex.label);
 
-      f.append("text").text("H").attr("x",0).attr("y",0).attr("fill","black")
+      //  // Optionally, adjust the text alignment if needed
+      //  text.attr("text-anchor", "middle");
+
+      f.append("text").text("H").attr("x", 0).attr("y", 0).attr("fill", "black");
 
       this.idToVertexMap.set(vertex.id, f);
     }
   }
 
-
-
   setEvents() {
     this.dataStructure.onVertex("state-change", (v) => {
       const documentRef = this.idToVertexMap.get(v.id);
-      documentRef?.transition().duration(1000).attr("fill", floatToHexColor(sigmoid(v.data.cost!/10)));
+      documentRef
+        ?.transition()
+        .duration(1000)
+        .attr("fill", floatToHexColor(sigmoid(v.data.cost! / 10)));
     });
   }
 }

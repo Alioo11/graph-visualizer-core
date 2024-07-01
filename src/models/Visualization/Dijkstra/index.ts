@@ -8,7 +8,8 @@ import { IVisualization } from "../../../types/visualization";
 class DijkstraVisualization implements IVisualization {
   private _dijkstraGraph = new DijkstraGraph("undirected");
   algorithm = new DijkstraAlgorithm(this._dijkstraGraph);
-  views: View<unknown>[] = [new DijkstraMainView(this._dijkstraGraph)];
+  mainView = new DijkstraMainView(this._dijkstraGraph);
+  views: View<unknown>[] = [this.mainView];
   start = async () => {
     await this.algorithm.start();
   };
@@ -17,13 +18,16 @@ class DijkstraVisualization implements IVisualization {
     this.initProgram();
   }
 
+  ff(){
+    this.mainView.showRuler = true;
+  }
 
   initProgram = () => {
-    const WIDTH = 100;
-    const HEIGHT = 30;
-    const GAP = 7;
+    const WIDTH = 20;
+    const HEIGHT = 20;
+    const GAP = 10;
 
-    const entryPoint = [5, 5];
+    const entryPoint = [10, 0];
     const targetPoint = [99, 222  ];
 
     const mat: Array<Array<any>> = Array.from(Array(HEIGHT).keys()).map(
@@ -36,8 +40,8 @@ class DijkstraVisualization implements IVisualization {
     for (let i = 0; i < HEIGHT; i++) {
       for (let j = 0; j < WIDTH; j++) {
         const f = this._dijkstraGraph.addVertex(`${j}-${i}`, {
-          x: GAP * j,
-          y: GAP * i,
+          x: GAP * j ,
+          y: GAP * i ,
           state: "blank",
           cost: null,
           from: null,
