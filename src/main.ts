@@ -1,8 +1,8 @@
 import "./scss/main.scss";
-import { Stage } from ".";
 import $ from "jquery";
 import DijkstraVisualization from "@models/Visualization/Dijkstra";
 import 'boxicons'
+import Stage from "@models/Stage";
 
 const appElement = document.querySelector("#app")! as HTMLDivElement;
 
@@ -18,7 +18,7 @@ const btn = $("<button></button>")
   .text("click")
   .addClass("btn btn-primary")
   .click(() => {
-    dds.ff();
+    // dds.ff();
     dds.start();
   });
 

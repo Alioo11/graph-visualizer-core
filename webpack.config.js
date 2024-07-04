@@ -1,5 +1,7 @@
 const path = require("path");
 const autoprefixer = require("autoprefixer");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
 
 /** @type {import("webpack".Configuration)} */
 const baseConfig = {
@@ -12,29 +14,11 @@ const baseConfig = {
     rules: [
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       {
-        test: /\.(scss)$/,
-        use: [
-          {
-            loader: "style-loader",
-          },
-          {
-            loader: "css-loader",
-          },
-          {
-            loader: "postcss-loader",
-            options: {
-              postcssOptions: {
-                plugins: [autoprefixer],
-              },
-            },
-          },
-          {
-            loader: "sass-loader",
-          },
-        ],
+        test: /\.scss$/,
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
       },
       {
         test: /\.ts$/,
@@ -54,11 +38,12 @@ const baseConfig = {
       },
     ],
   },
+  plugins: [new MiniCssExtractPlugin()],
   resolve: {
     alias: {
-      '@models': path.resolve(__dirname, './src/models'),
-      '@scss': path.resolve(__dirname, './src/scss'),
-      '@utils': path.resolve(__dirname, './src/utils'),
+      "@models": path.resolve(__dirname, "./src/models"),
+      "@scss": path.resolve(__dirname, "./src/scss"),
+      "@utils": path.resolve(__dirname, "./src/utils"),
     },
     extensions: [".ts", ".js"],
   },

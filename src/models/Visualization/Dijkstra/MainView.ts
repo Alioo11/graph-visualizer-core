@@ -45,7 +45,7 @@ function floatToHexColor(value: number): string {
 
 
 class DijkstraMainView extends InfiniteCanvasView<unknown> {
-  private idToVertexMap = new Map<string, D3.Selection<SVGRectElement, unknown, HTMLElement, any> >();
+  private idToVertexMap = new Map<string, D3.Selection<SVGCircleElement, unknown, HTMLElement, any> >();
   // private idToEdgeMap = new Map<string, D3.Selection<SVGRectElement, unknown, null, undefined>>();
   dataStructure: DijkstraGraph;
   documentRef: Nullable<HTMLDivElement> = null;
@@ -82,9 +82,10 @@ class DijkstraMainView extends InfiniteCanvasView<unknown> {
       const isEntry = vertex === this.dataStructure.entryVertex;
       const color = isTarget ? "red" : isEntry ? "blue" : "white";
       let f = svg
-        .append("rect")
-        .attr("x", vertex.data.x)
-        .attr("y", vertex.data.y)
+        .append("circle")
+        .attr("cx", vertex.data.x + VERTEX_HEIGHT/2)
+        .attr("cy", vertex.data.y+  VERTEX_HEIGHT/2)
+        .attr("r", VERTEX_HEIGHT/2)
         .attr("stroke", "gray")
         .attr("stroke-width" , .2)
         .attr("width", VERTEX_WIDTH)

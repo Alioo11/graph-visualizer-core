@@ -23,8 +23,8 @@ class DijkstraVisualization implements IVisualization {
   }
 
   initProgram = () => {
-    const WIDTH = 20;
-    const HEIGHT = 20;
+    const WIDTH = 150;
+    const HEIGHT = 30;
     const GAP = 10;
 
     const entryPoint = [10, 0];
@@ -60,13 +60,13 @@ class DijkstraVisualization implements IVisualization {
         const bottomNextNode = mat?.[row+1]?.[col + 1];
         const topNextNode = mat?.[row-1]?.[col + 1];
         if (nextNode)
-          this._dijkstraGraph.connect(currentNode, nextNode, { wight: Math.floor(Math.random() * 10) });
+          this._dijkstraGraph.connect(currentNode, nextNode, { wight: Math.floor(Math.random() * 1) });
         if (bottomNode)
-          this._dijkstraGraph.connect(currentNode, bottomNode, { wight: Math.floor(Math.random() * 10) });
+          this._dijkstraGraph.connect(currentNode, bottomNode, { wight: Math.floor(Math.random() * 1) });
         if (bottomNextNode)
-          this._dijkstraGraph.connect(currentNode, bottomNextNode, { wight: Math.floor(Math.random() * 10) });
+          this._dijkstraGraph.connect(currentNode, bottomNextNode, { wight: Math.floor(Math.random() * 100) });
         if (topNextNode)
-          this._dijkstraGraph.connect(currentNode, topNextNode, { wight: Math.floor(Math.random() * 10) });
+          this._dijkstraGraph.connect(currentNode, topNextNode, { wight: Math.floor(Math.random() * 100) });
       }
     }
     this._dijkstraGraph.entryVertex = entryPointRef;

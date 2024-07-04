@@ -14,6 +14,7 @@ import generateSnappedRange from "@utils/snappedValue";
 import { grey } from "@mui/material/colors";
 import shadows from "@mui/material/styles/shadows";
 import type { Nullable } from "ts-wiz";
+import { BorderLeft, BorderRight, BorderTop } from "@mui/icons-material";
 
 type infiniteCanvasZoomType = D3.D3ZoomEvent<SVGElement, unknown>["transform"];
 
@@ -143,7 +144,7 @@ abstract class InfiniteCanvasView<T> extends View<T> {
       height: "100%",
       overflow: "hidden",
       backgroundColor: "white",
-      borderRight: "solid 2px grey",
+      boxShadow: "2px 0px 3px rgba(0,0,0,.1)"
     });
 
     docRef.append(rulerElement);
@@ -158,7 +159,7 @@ abstract class InfiniteCanvasView<T> extends View<T> {
       height: this._rulerWidth,
       overflow: "hidden",
       backgroundColor: "white",
-      borderBottom: "solid 2px grey",
+      boxShadow: "0px 2px 3px rgba(0,0,0,.1)"
     });
 
     docRef.append(rulerElement);
@@ -172,8 +173,11 @@ abstract class InfiniteCanvasView<T> extends View<T> {
       width: this._rulerWidth,
       height: this._rulerWidth,
       overflow: "hidden",
-      backgroundColor: "grey",
-      border: "solid 2px grey",
+      backgroundColor: "white",
+      border: "solid 1px grey",
+      borderLeft:"none",
+      borderTop:"none"
+
     });
 
     docRef.append(element);
