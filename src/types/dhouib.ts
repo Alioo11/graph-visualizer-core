@@ -1,4 +1,4 @@
-import { IGraphEdge, IGraphVertex } from "./graph";
+  import { IGraphEdge, IGraphVertex } from "./graph";
 import { IAdjacencyMatrix, IAdjacencyMatrixHeader, IAdjacencyMatrixRelation } from "./adjacencyMatrix";
 
 export type IAdjacencyMatrixCellStatus = "blank" | "candidate" | "selected";

@@ -3,10 +3,10 @@ import stageLayoutMap from "./LayoutStrategy";
 import { IStage, StageLayout } from "../../types/stage";
 import { IView } from "../../types/view";
 import { IVisualization } from "../../types/visualization";
+import $ from 'jquery'
 
 class Stage implements IStage {
   something = stageLayoutMap;
-  static self: Nullable<Stage> = null;
   documentRoot: HTMLDivElement;
   layout: StageLayout = "layout-1";
   fullScreenViewRef: Nullable<IView<unknown>> = null;
@@ -28,12 +28,13 @@ class Stage implements IStage {
     // await this._visualization.algorithm.iter(); //! TODO implement the thing
   };
 
-  private constructor(documentRoot: IStage["documentRoot"]) {
+  constructor(documentRoot: IStage["documentRoot"]) {
     this.documentRoot = documentRoot;
   }
 
   init() {
     if(!this._visualization) return 
+    $(this.documentRoot).children().remove();
     const views = this.something.get("layout-1")?.initLayout(this.documentRoot , this._visualization.views.length);
     if(!views) throw new Error("Something went wrong while this")
     if(views.length !== this._visualization.views.length) throw new Error("mismatch between length of views and required length");
@@ -49,15 +50,6 @@ class Stage implements IStage {
   set visualization(vis: IStage["visualization"]) {
     this._visualization = vis;
     this.init();
-  }
-
-  static init(documentRoot: IStage["documentRoot"]) {
-    if (this.self === null) {
-      this.self = new Stage(documentRoot);
-      return this.self;
-    } else {
-      return this.self;
-    }
   }
 }
 

@@ -160,9 +160,8 @@ class DhouibMST implements IAlgorithm {
 
   private _step = 0;
 
-  iter = async () => {
-    if(this._step === 0) return this.fn1();
-    return this.fn2();
+  iter = () => {
+    return true;
   };
 
   performFastForward = null;

@@ -17,8 +17,9 @@ class DijkstraAlgorithm implements IAlgorithm {
   private scannedNodes = new Set<string>();
   private foundTarget = false;
 
-  iter = async () => {
+  iter = () => {
     // this.graph.addVertex("A" , {x:0 , y:0 , state:"blank" , isTarget:true});
+    return false;
   };
   performFastForward = null;
 

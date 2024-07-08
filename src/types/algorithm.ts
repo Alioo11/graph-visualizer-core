@@ -1,6 +1,6 @@
 import { NoneToVoidFunction, Nullable } from "ts-wiz";
 
 export interface IAlgorithm {
-  iter: () => Promise<any>;
+  iter: () => boolean;
   performFastForward: Nullable<NoneToVoidFunction>;
 }
