@@ -1,68 +1,78 @@
-import * as D3 from "d3";
-import $ from 'jquery';
+import $ from "jquery";
 import InfiniteCanvasView from "@models/View/InfiniteCanvasView";
 import { Nullable } from "ts-wiz";
-import PathFindingGraph from "@models/DataStructure/Graph/PathFindingGraph";
-import { PathFindingGraphEdge, PathFindingGraphVertex } from "../../../types/pathFindingGraph";
+import PathFindingGraph from "@models/DataStructure/Graph/PathFinding";
 import {
-  DEFAULT_VERTEX_RADIUS,
-  DEFAULT_VERTEX_STROKE_WIDTH,
-  TARGET_COLOR_LIST,
-} from "../../../constants/visualization/pathFinding";
-import { grey } from "@mui/material/colors";
-import shadows from "@mui/material/styles/shadows";
+  IPathFindingGraphViewEventsMap,
+  pathFindingDropdownMenuButtonType,
+  PathFindingGraphVertex,
+  pathFindingGraphVertexNodeType,
+} from "../../../types/pathFindingGraph";
+import PathfindingVisualizerDOMHelper from "../../../helpers/DOM/pathFindingVisualizer";
+import { DOCUMENT_CLASS_CONSTANTS, DOCUMENT_ID_CONSTANTS } from "../../../constants/DOM";
 
 class DijkstraGraphView extends InfiniteCanvasView<unknown> {
   dataStructure: PathFindingGraph;
   documentRef: Nullable<HTMLDivElement> = null;
+  private _pathFindingEvents = new Map<keyof IPathFindingGraphViewEventsMap, Array<(data: any) => void>>();
+  private _focusedVertex: Nullable<PathFindingGraphVertex> = null;
 
-  private _vertexStrokeWidth = DEFAULT_VERTEX_STROKE_WIDTH;
-  private _vertexRadius = DEFAULT_VERTEX_RADIUS;
-  private _vertexDocumentIdMap = new Map<
-    PathFindingGraphVertex["id"],
-    D3.Selection<SVGCircleElement, unknown, HTMLElement, any>
-  >();
-
-  private _hoveredVertex:Nullable<PathFindingGraphVertex> = null
-
-
-  // private _renderTooltip(){
-  //   if(this.hoveredVertex === null) {
-  //     $("#infinite-canvas-tooltip").remove()
-  //     return 
-  //   }
-  //   const infiniteCanvasRoot = $("#element");
-  //   const [x,y] = this.projectCoord(this.hoveredVertex.data.x , this.hoveredVertex.data.y);
-  //   if(!x || !y) return ;
-
-
-  //   const tooltipElement = $("<div></div>").attr("id", "infinite-canvas-tooltip").css({
-  //     position: "absolute",
-  //     top: y - 100,
-  //     left: x + 10,
-  //     width:100,
-  //     height:100,
-  //     backgroundColor:"white",
-  //     borderRadius: 4,
-  //     boxShadow: shadows["15"],
-  //     zIndex:10
-  //   });
-
-  //   tooltipElement.text(`x:${this.hoveredVertex.data.x}, y:${this.hoveredVertex.data.y}`)
-
-  //   infiniteCanvasRoot.append(tooltipElement)
-  // }
-
-  set hoveredVertex(v:Nullable<PathFindingGraphVertex>){
-    this._hoveredVertex = v;
-    // this._renderTooltip();
+  private _setFocusedVertexAsEntryPoint() {
+    if (!this.focusedVertex) throw new Error("");
   }
 
-  get hoveredVertex(){
-    return this._hoveredVertex;
+  private _renderVertexDropdownMenu() {
+    $(`#${DOCUMENT_ID_CONSTANTS.VIEW.PATH_FINDING.TOOLTIP_CONTAINER}`).remove();
+    if (this.focusedVertex === null) return;
+    const infiniteCanvasRoot = $(`#${DOCUMENT_ID_CONSTANTS.VIEW.ROOT}`);
+    const [x, y] = this.projectCoord(this.focusedVertex.data.x, this.focusedVertex.data.y);
+    if (!x || !y) return;
+
+    const focusedBtnIsATargetVertex = this.dataStructure.targets.find(v => v.id === this.focusedVertex!.id);
+    const isEntryPoint = this.dataStructure.entry === this.focusedVertex
+
+    const setAsEntryCB: pathFindingDropdownMenuButtonType = {
+      label: "Set As Starting Point",
+      callback: () => {
+        this.dataStructure.entry = this.focusedVertex!;
+        this.focusedVertex = null;
+      },
+    }; 
+
+    const addToTargetCB: pathFindingDropdownMenuButtonType = {
+      label: "Add As Target",
+      callback: () => {
+        this.dataStructure.addTarget(this.focusedVertex!);
+        this.focusedVertex = null;
+      },
+    }; 
+
+    const removeFromTargetCB: pathFindingDropdownMenuButtonType = {
+      label: "Remove From Target List",
+      callback: () => {
+        this.dataStructure.removeTarget(this.focusedVertex!.id);
+        this.focusedVertex = null;
+      },
+    }; 
+
+
+    const targetBtn = focusedBtnIsATargetVertex ? removeFromTargetCB : addToTargetCB;
+    const entryP = isEntryPoint ? [] : [setAsEntryCB] ;
+
+    const buttons: Array<pathFindingDropdownMenuButtonType> = [...entryP, targetBtn];
+
+    const tooltipElement = PathfindingVisualizerDOMHelper.createDropDownContainer(x, y, buttons);
+    infiniteCanvasRoot.append(tooltipElement);
   }
 
-  private _targetsColor = new Map<PathFindingGraphVertex["id"], string>();
+  set focusedVertex(v: Nullable<PathFindingGraphVertex>) {
+    this._focusedVertex = v;
+    this._renderVertexDropdownMenu();
+  }
+
+  get focusedVertex() {
+    return this._focusedVertex;
+  }
 
   constructor(graph: PathFindingGraph) {
     super();
@@ -72,112 +82,69 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown> {
   onReady = () => {
     if (!this.documentRef) throw new Error("inconsistent state can't call onReady while document reference is invalid");
     this._initialRender();
-    this._registerEvents();
+    this._registerDataStructureEvents();
+    this._registerDocumentEvents();
+    this._registerDropdownMenus();
   };
 
-  private _registerEvents() {
-    this.dataStructure.onPathFinding("visit", (v) => this._renderVisitEvent(v));
-    this.dataStructure.onPathFinding("trace-to-source", (v) => this._renderTraceToSourceEvent(v));
+  private _registerDropdownMenus() {
+    this.onPathFinding("vertex-click", (e) => e.button === 2 && (this.focusedVertex = e.vertex));
+    this.onInfiniteCanvas("zoom", () => this.focusedVertex && (this.focusedVertex = null));
   }
 
-  private _renderVisitEvent(v: PathFindingGraphVertex) {
-    const transitionObject = D3.transition().duration(1000).ease(D3.easeBounce);
-    const docElementReference = this._vertexDocumentIdMap.get(v.id);
-    if (this.dataStructure.targets.find((i) => i.id === v.id)) return;
-    docElementReference
-      ?.transition(transitionObject)
-      .attr("r", this._vertexRadius + 2)
-      .attr("fill", this._targetsColor.get(this.dataStructure.currentTarget.id)!);
-  }
-
-  private _renderTraceToSourceEvent(vertices: Array<PathFindingGraphVertex>) {
-    const transitionObject = D3.transition().duration(1000).ease(D3.easeBounce);
-    vertices.forEach((v) => {
-      const docElementReference = this._vertexDocumentIdMap.get(v.id);
-      docElementReference?.attr("stroke-width", 7).attr("stroke", "yellow");
+  private _registerDocumentEvents() {
+    const rootSVGSelector = $(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT}`);
+    const verticesSelector = $(`.${DOCUMENT_CLASS_CONSTANTS.VIEW.PATH_FINDING.VERTEX}`);
+    rootSVGSelector.on("mousedown", (e) => this._pathFindingEvents.get("container-click")?.forEach((cb) => cb(e)));
+    verticesSelector.on("mousedown", (e) => {
+      const vertex = this.dataStructure.getVertexById(e.target.id);
+      if (!vertex) throw new Error(`Vertex with ID ${e.target.id} not found.`);
+      //@ts-ignore passing event as a reference
+      const eventObject: IPathFindingGraphViewEventsMap["vertex-click"] = e;
+      eventObject.vertex = vertex;
+      this._pathFindingEvents.get("vertex-click")?.forEach((cb) => cb(eventObject));
     });
   }
 
-  private _getColorForTarget(vertex: PathFindingGraphVertex) {
-    const color = TARGET_COLOR_LIST[this._targetsColor.size % TARGET_COLOR_LIST.length];
-    this._targetsColor.set(vertex.id, color);
-    return color;
+  private _registerDataStructureEvents() {
+    this.dataStructure.onPathFinding("visit", (v) => this._renderVisitEvent(v));
+    this.dataStructure.onPathFinding("trace-to-source", (v) =>PathfindingVisualizerDOMHelper.renderTraceToSourceEvent(v));
+    this.dataStructure.onPathFinding("entry-point-change", (v) =>PathfindingVisualizerDOMHelper.renderNewEntryPoint(v));
+    this.dataStructure.onPathFinding("targets-update", (v) => PathfindingVisualizerDOMHelper.renderUpdatedTargets(v));
+    this.dataStructure.onPathFinding("edge-change" , (e) => PathfindingVisualizerDOMHelper.updateEdge(e));
   }
 
-  private _renderVertex(vertex: PathFindingGraphVertex) {
-    const root = D3.select("#infinite-canvas g");
+  private _renderVisitEvent(v: PathFindingGraphVertex) {
+    const isVertexATarget = this.dataStructure.targets.find((i) => i.id === v.id);
+    if (isVertexATarget) return;
+    PathfindingVisualizerDOMHelper.renderVisitEvent(v, this.dataStructure.currentTarget.id);
+  }
 
+  private _getVertexType = (vertex: PathFindingGraphVertex): pathFindingGraphVertexNodeType => {
     const isEntry = vertex === this.dataStructure.entry;
     const isATarget = vertex === this.dataStructure.targets.find((t) => t === vertex);
+    if (isEntry) return "entry";
+    if (isATarget) return "target";
+    return "blank";
+  };
 
-    let targetColor: Nullable<string> = null;
-    if (isATarget) targetColor = this._getColorForTarget(vertex);
-
-    const res = root
-      .append("circle")
-      .attr("id" , vertex.id)
-      .attr("cx", vertex.data.x)
-      .attr("cy", vertex.data.y)
-      .attr("r", this._vertexRadius)
-      .attr("stroke-width", this._vertexStrokeWidth)
-      .attr("stroke", "grey")
-      .attr("fill", isEntry ? "blue" : isATarget ? targetColor : "white");
-
-
-    res.on("mouseover", (e:MouseEvent) =>{
-      const elem = e.target as SVGElement;
-      const vertex = this.dataStructure.getVertexById(elem.id);
-      if(!vertex) console.warn(`could not find vertex with id: ${elem.id}`);
-      this.hoveredVertex = vertex;
-    })
-
-
-    res.on("mouseout", (e:MouseEvent) =>{
-      const elem = e.target as SVGElement;
-      if(this.hoveredVertex && this.hoveredVertex.id === elem.id) this.hoveredVertex = null;
-    })
-        
-    this._vertexDocumentIdMap.set(vertex.id, res);
-  }
-
-  private _renderEdge(edge: PathFindingGraphEdge) {
-    const root = D3.select("#infinite-canvas g");
-
-    const isWall = edge.data.wight === Infinity;
-
-    // root
-    //   .append("line")
-    //   .attr("x1", edge.from.data.x)
-    //   .attr("y1", edge.from.data.y)
-    //   .attr("x2", edge.to.data.x)
-    //   .attr("y2", edge.to.data.y)
-    //   .attr("stroke", grey["300"])
-
-    if (isWall){
-      const DX = edge.from.data.x - edge.to.data.x;
-      const DY = edge.from.data.y - edge.to.data.y;
-      const lineWidth = Math.sqrt(DX **2 + DY**2);
-
-      root
-        .append("line")
-        .attr("x1", edge.from.data.x + lineWidth / 2)
-        .attr("y1", edge.from.data.y + lineWidth /2)
-        .attr("x2", edge.to.data.x - lineWidth / 2)
-        .attr("y2", edge.to.data.y - lineWidth /2)
-        .attr("stroke-width", 4)
-        .attr("stroke", grey["600"]);
-    }
+  private _renderVertex(vertex: PathFindingGraphVertex) {
+    const vertexType = this._getVertexType(vertex);
+    PathfindingVisualizerDOMHelper.renderPathfindingVertex(vertex, vertexType);
   }
 
   private _initialRender() {
-    for (const edge of this.dataStructure.EdgesIter()) {
-      this._renderEdge(edge);
-    }
-
-    for (const vertex of this.dataStructure.iter()) {
-      this._renderVertex(vertex);
-    }
+    for (const edge of this.dataStructure.EdgesIter()) PathfindingVisualizerDOMHelper.renderPathfindingEdge(edge);
+    for (const vertex of this.dataStructure.iter()) this._renderVertex(vertex);
   }
+
+  onPathFinding = <T extends keyof IPathFindingGraphViewEventsMap>(
+    eventType: T,
+    callback: (data: IPathFindingGraphViewEventsMap[T]) => void
+  ) => {
+    const events = this._pathFindingEvents.get(eventType) || [];
+    this._pathFindingEvents.set(eventType, [...events, callback]);
+  };
 }
 
 export default DijkstraGraphView;
