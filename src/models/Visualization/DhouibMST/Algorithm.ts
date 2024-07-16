@@ -2,19 +2,21 @@ import DhouibAdjacencyMatrix from "@models/DataStructure/AdjacencyMatrix/DhouibA
 import { IAlgorithm } from "../../../types/algorithm";
 import DhouibGraph from "@models/DataStructure/Graph/Dhouib";
 import { DhouibAdjacencyMatrixRelation } from "../../../types/dhouib";
-import { Nullable } from "ts-wiz";
+import { NoneToVoidFunction, Nullable } from "ts-wiz";
 import wait from "@utils/wait";
 
 class DhouibMST implements IAlgorithm {
   private graph: DhouibGraph;
   private adjacencyMatrix: DhouibAdjacencyMatrix;
 
-  private _lockedRelations = new Set()
+  private _lockedRelations = new Set();
 
   constructor(graph: DhouibGraph, adjacencyMatrix: DhouibAdjacencyMatrix) {
     this.graph = graph;
     this.adjacencyMatrix = adjacencyMatrix;
   }
+
+  reset() {}
 
   private initialFillMinColumnList() {
     const result = this.adjacencyMatrix.horizontalHeaders.map((header) => {
@@ -34,7 +36,6 @@ class DhouibMST implements IAlgorithm {
 
   private findValueFromMinColumnList(opt: "biggest" | "smallest") {
     let value: Nullable<DhouibAdjacencyMatrixRelation> = null;
-    this.adjacencyMatrix.minColumnList.forEach(i =>  console.log(i));
     for (let i = 0; i < this.adjacencyMatrix.minColumnList.length; i++) {
       const currentCell = this.adjacencyMatrix.minColumnList[i];
       if (!currentCell?.edge?.data) continue;
@@ -61,23 +62,21 @@ class DhouibMST implements IAlgorithm {
       ...relation.peer!.horizontalVertexRef.cells,
     ];
 
-    relation.verticalVertexRef.cells.forEach(cellInSameRow => {
-      const shouldBeBlocked = this.adjacencyMatrix.minColumnList.find(rel => rel?.id === cellInSameRow.id)
+    relation.verticalVertexRef.cells.forEach((cellInSameRow) => {
+      const shouldBeBlocked = this.adjacencyMatrix.minColumnList.find((rel) => rel?.id === cellInSameRow.id);
       if (shouldBeBlocked) {
-        console.log(shouldBeBlocked.edge?.data)
         this._lockedRelations.add(shouldBeBlocked.id);
         this._lockedRelations.add(shouldBeBlocked.peer!.id);
       }
-    } )
+    });
 
-    relation.peer!.verticalVertexRef.cells.forEach(cellInSameRow => {
-      const shouldBeBlocked = this.adjacencyMatrix.minColumnList.find(rel => rel?.id === cellInSameRow.id)
+    relation.peer!.verticalVertexRef.cells.forEach((cellInSameRow) => {
+      const shouldBeBlocked = this.adjacencyMatrix.minColumnList.find((rel) => rel?.id === cellInSameRow.id);
       if (shouldBeBlocked) {
-        console.log(shouldBeBlocked.edge?.data)
         this._lockedRelations.add(shouldBeBlocked.id);
         this._lockedRelations.add(shouldBeBlocked.peer!.id);
       }
-    } )
+    });
 
     for (let i in neighbors) {
       const currentNeighbor = neighbors[i];
@@ -95,7 +94,7 @@ class DhouibMST implements IAlgorithm {
       for (const relation of v.cells) {
         if (relation.edge === null) continue;
         if (this.adjacencyMatrix.MSTPath.find((i) => i.id === relation.id)) continue;
-        if(this._lockedRelations.has(relation.id)) continue;
+        if (this._lockedRelations.has(relation.id)) continue;
         if (minValueSoFar === null) {
           minValueSoFar = relation;
           continue;
@@ -107,8 +106,7 @@ class DhouibMST implements IAlgorithm {
     return minColumnList;
   }
 
-
-  private _handleAddToMCL(rel:DhouibAdjacencyMatrixRelation){
+  private _handleAddToMCL(rel: DhouibAdjacencyMatrixRelation) {
     this.adjacencyMatrix.addToMinColumnList(rel);
   }
 
@@ -135,8 +133,7 @@ class DhouibMST implements IAlgorithm {
     }
   }
 
-
-  fn1(){
+  fn1() {
     this.initialFillMinColumnList();
     const biggestValueFromMinColumnList = this.findValueFromMinColumnList("biggest");
 
@@ -145,10 +142,10 @@ class DhouibMST implements IAlgorithm {
     );
     removeAbleValuesFromMinColumnList.forEach((rel) => rel && this.adjacencyMatrix.removeFromMinColumnList(rel.x));
     this.selectRelation(biggestValueFromMinColumnList);
-    this._step ++;
+    this._step++;
   }
 
-  fn2(){
+  fn2() {
     this.findMinOfEveryColumn().forEach((i) => this._handleAddToMCL(i));
     const nextPick = this.findValueFromMinColumnList("smallest");
     const removeAbleValuesFromMinColumnList = this.adjacencyMatrix.minColumnList.filter(
