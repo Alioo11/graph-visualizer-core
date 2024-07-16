@@ -1,6 +1,10 @@
 import * as D3 from "d3";
 import $ from "jquery";
 import View from ".";
+import generateSnappedRange from "@utils/snappedValue";
+import { grey } from "@mui/material/colors";
+import shadows from "@mui/material/styles/shadows";
+import { DOCUMENT_ID_CONSTANTS } from "../../constants/DOM";
 import {
   INFINITE_CANVAS_DEFAULT_RULER_FONT_SIZE,
   INFINITE_CANVAS_DEFAULT_RULER_NAVIGATION_BUTTONS_VISIBILITY,
@@ -10,12 +14,8 @@ import {
   INFINITE_CANVAS_TRANSITION_BOUNDARY,
   infiniteCanvasScaleMapToRulerGap,
 } from "../../constants/view";
-import generateSnappedRange from "@utils/snappedValue";
-import { grey } from "@mui/material/colors";
-import shadows from "@mui/material/styles/shadows";
 import type { Nullable } from "ts-wiz";
-
-type infiniteCanvasZoomType = D3.D3ZoomEvent<SVGElement, unknown>["transform"];
+import type { IInfiniteCanvasEventsMap, infiniteCanvasZoomType } from "../../types/view/infiniteCanvas";
 
 abstract class InfiniteCanvasView<T> extends View<T> {
   private _rulerWidth: number = INFINITE_CANVAS_DEFAULT_RULER_WIDTH;
@@ -23,6 +23,7 @@ abstract class InfiniteCanvasView<T> extends View<T> {
   private _showRuler: boolean = INFINITE_CANVAS_DEFAULT_RULER_VISIBILITY;
   private _showNav: boolean = INFINITE_CANVAS_DEFAULT_RULER_NAVIGATION_BUTTONS_VISIBILITY;
   private _zoom: Nullable<infiniteCanvasZoomType> = null;
+  private _infiniteCanvasEvents = new Map<keyof IInfiniteCanvasEventsMap, Array<(data: any) => void>>();
   private _zoomBehavior: Nullable<D3.ZoomBehavior<Element, unknown>> = null;
 
   get showNav() {
@@ -41,17 +42,17 @@ abstract class InfiniteCanvasView<T> extends View<T> {
     this._showRuler = newValue;
     if (this._showRuler) this._initRulers();
     else {
-      $("#infinite-canvas-vertical-ruler").remove();
-      $("#infinite-canvas-horizontal-ruler").remove();
+      $(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.VERTICAL_RULER}`).remove();
+      $(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.HORIZONTAL_RULER}`).remove();
     }
   }
 
   private set zoom(state: infiniteCanvasZoomType) {
     this._zoom = state;
     this.updateZoom(this._zoom);
-    this._renderVerticalRuler();
-    this._renderHorizontalRuler();
-    // this._renderVerticalGrid();
+    this._renderVerticalRuler(); // TODO move to events
+    this._renderHorizontalRuler(); // TODO move to events
+    this._infiniteCanvasEvents.get("zoom")?.forEach((cb) => cb(this._zoom));
   }
 
   private get zoom() {
@@ -65,7 +66,7 @@ abstract class InfiniteCanvasView<T> extends View<T> {
 
   private _renderVerticalRuler() {
     if (!this._showRuler) return;
-    const rulerElement = $("#infinite-canvas-vertical-ruler");
+    const rulerElement = $(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.VERTICAL_RULER}`);
     if (rulerElement.length === 0) throw new Error("vertical ruler element does not exist in DOM.");
     const absoluteHeight = rulerElement.height()!;
     const fromVal = (this.zoom.y * -1) / this.zoom.k;
@@ -98,40 +99,9 @@ abstract class InfiniteCanvasView<T> extends View<T> {
     });
   }
 
-  // private _renderVerticalGrid() {
-  //   const infiniteCanvasSVG = $("#infinite-canvas");
-  //   if (infiniteCanvasSVG.length === 0) throw new Error("vertical ruler element does not exist in DOM.");
-  //   const absoluteHeight = infiniteCanvasSVG.height()!;
-  //   const fromVal = (this.zoom.y * -1) / this.zoom.k;
-  //   const toValue = fromVal + absoluteHeight / this.zoom.k;
-  //   const rulerGap = infiniteCanvasScaleMapToRulerGap(this.zoom.k)!;
-  //   const rulerTickValues = generateSnappedRange(fromVal, toValue, rulerGap); 
-
-  //   const absoluteWidth = infiniteCanvasSVG.width()!;
-
-  //   $(".infinite-canvas-vertical-line").remove();
-  //   rulerTickValues.forEach((el) => {
-  //     // const line = $("<line/>")
-  //     //   .attr("x1", 0)
-  //     //   .attr("x2", absoluteWidth)
-  //     //   .attr("y1", this.zoom.y + el * this.zoom.k)
-  //     //   .attr("y2", this.zoom.y + el * this.zoom.k);
-
-  //     const line = $("<line/>")
-  //       .attr("x1", "100")
-  //       .attr("y1", "100")
-  //       .attr("x2", "400")
-  //       .attr("y2", "400")
-  //       .attr("stroke", "blue")
-  //       .attr("class", "infinite-canvas-vertical-line");
-
-  //     infiniteCanvasSVG.append(line);
-  //   });
-  // }
-
   private _renderHorizontalRuler() {
     if (!this._showRuler) return;
-    const rulerElement = $("#infinite-canvas-horizontal-ruler");
+    const rulerElement = $(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.HORIZONTAL_RULER}`);
     if (rulerElement.length === 0) throw new Error("horizontal ruler element does not exist in DOM.");
     const absoluteWidth = rulerElement.width()!;
     const fromVal = (this.zoom.x * -1) / this.zoom.k;
@@ -166,7 +136,7 @@ abstract class InfiniteCanvasView<T> extends View<T> {
 
   private _initVerticalRuler(docRef: JQuery<HTMLDivElement>) {
     if (!this._showRuler) return;
-    const rulerElement = $("<div></div>").attr("id", "infinite-canvas-vertical-ruler").css({
+    const rulerElement = $("<div></div>").attr("id", DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.VERTICAL_RULER).css({
       position: "absolute",
       top: 0,
       left: 0,
@@ -181,7 +151,7 @@ abstract class InfiniteCanvasView<T> extends View<T> {
   }
   private _initHorizontalRuler(docRef: JQuery<HTMLDivElement>) {
     if (!this._showRuler) return;
-    const rulerElement = $("<div></div>").attr("id", "infinite-canvas-horizontal-ruler").css({
+    const rulerElement = $("<div></div>").attr("id", DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.HORIZONTAL_RULER).css({
       position: "absolute",
       top: 0,
       left: 0,
@@ -196,7 +166,7 @@ abstract class InfiniteCanvasView<T> extends View<T> {
   }
   private _renderRulerCap(docRef: JQuery<HTMLDivElement>) {
     if (!this._showRuler) return;
-    const element = $("<div></div>").attr("id", "infinite-canvas-horizontal-ruler").css({
+    const element = $("<div></div>").attr("id", DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.RULER_CAP).css({
       position: "absolute",
       top: 0,
       left: 0,
@@ -223,9 +193,10 @@ abstract class InfiniteCanvasView<T> extends View<T> {
 
   private _initInfiniteCanvas() {
     if (!this.documentRef) throw new Error(`unexpected documentRef value got ${this.documentRef} expected HTMLElement`);
+    this.documentRef.oncontextmenu = (e) => e.preventDefault();
     D3.select(this.documentRef)
       .append("svg")
-      .attr("id", "infinite-canvas")
+      .attr("id", DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT)
       .attr("width", "100%")
       .attr("height", "100%")
       .append("g");
@@ -236,7 +207,7 @@ abstract class InfiniteCanvasView<T> extends View<T> {
         this.zoom = event.transform;
       });
     const applyZoom = (selection: D3.Selection<any, any, any, any>) => selection.call(this._zoomBehavior!);
-    D3.select("#infinite-canvas").call(applyZoom);
+    D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT}`).call(applyZoom);
   }
 
   private _initNavigationButtons() {
@@ -270,10 +241,9 @@ abstract class InfiniteCanvasView<T> extends View<T> {
     docRef.append(navButtonContainer);
   }
 
-
-  protected projectCoord(x:number , y:number){
+  protected projectCoord(x: number, y: number) {
     if (!this._zoom) return [];
-    return [this._zoom.x + x * this._zoom.k , this._zoom.y + y * this._zoom.k]
+    return [this._zoom.x + x * this._zoom.k, this._zoom.y + y * this._zoom.k];
   }
 
   private _zoomBy(value: number) {
@@ -285,6 +255,7 @@ abstract class InfiniteCanvasView<T> extends View<T> {
   public translateTo(x: number, y: number) {
     D3.select("svg")
       .transition()
+      .duration(10000)
       .call((selection: D3.Transition<any, any, any, any>) => selection.call(this._zoomBehavior!.translateTo, x, y));
   }
 
@@ -298,11 +269,18 @@ abstract class InfiniteCanvasView<T> extends View<T> {
 
   public init = (rootHTMLElement: HTMLDivElement) => {
     this.createWrapperElement(rootHTMLElement);
-    this.initializeWrapperElements();
     this._initInfiniteCanvas();
     this._initRulers();
     this._initNavigationButtons();
     this.onReady?.();
+  };
+
+  public onInfiniteCanvas = <T extends keyof IInfiniteCanvasEventsMap>(
+    eventType: T,
+    callback: (data: IInfiniteCanvasEventsMap[T]) => void
+  ) => {
+    const events = this._infiniteCanvasEvents.get(eventType) || [];
+    this._infiniteCanvasEvents.set(eventType, [...events, callback]);
   };
 }
 
