@@ -2,6 +2,7 @@ import wait from "@utils/wait";
 import DijkstraGraph from "@models/DataStructure/Graph/Dijkstra";
 import { IAlgorithm } from "../../../types/algorithm";
 import { DijkstraGraphVertex } from "../../../types/dijkstra";
+import { NoneToVoidFunction } from "ts-wiz";
 
 interface IDijkstraCandidateVertexesPQ {
   cost: number;
@@ -16,6 +17,8 @@ class DijkstraAlgorithm implements IAlgorithm {
 
   private scannedNodes = new Set<string>();
   private foundTarget = false;
+
+  reset = () => {};
 
   iter = () => {
     // this.graph.addVertex("A" , {x:0 , y:0 , state:"blank" , isTarget:true});
@@ -33,8 +36,7 @@ class DijkstraAlgorithm implements IAlgorithm {
     );
 
     const edgeFromSource = this.graph.getEdgeBetween(vertex, source);
-    if (!edgeFromSource)
-      throw new Error("there must be a connection between source and vertex");
+    if (!edgeFromSource) throw new Error("there must be a connection between source and vertex");
 
     undiscoveredVertexes.forEach((vtx) => {
       this.scannedNodes.add(vtx.id);
@@ -55,10 +57,7 @@ class DijkstraAlgorithm implements IAlgorithm {
 
     this.graph.entryVertex.neighborsVertexes.forEach((vertex) => {
       this.vertexSourceMap.set(vertex.id, this.graph.entryVertex!.id);
-      const edgeBetween = this.graph.getEdgeBetween(
-        this.graph.entryVertex!,
-        vertex
-      );
+      const edgeBetween = this.graph.getEdgeBetween(this.graph.entryVertex!, vertex);
       const cost = edgeBetween?.data.wight || 1;
       this.sortedList.push({ vertex, cost });
       vertex.data.cost = cost;
@@ -73,26 +72,16 @@ class DijkstraAlgorithm implements IAlgorithm {
         this.foundTarget = true;
         break;
       } // found target
-      const selectedVertexSourceId = this.vertexSourceMap.get(
-        selectedVertex.vertex.id
-      );
+      const selectedVertexSourceId = this.vertexSourceMap.get(selectedVertex.vertex.id);
       if (!selectedVertexSourceId) throw new Error("err1");
-      const selectedVertexSource = this.graph.getVertexById(
-        selectedVertexSourceId
-      );
+      const selectedVertexSource = this.graph.getVertexById(selectedVertexSourceId);
       if (!selectedVertexSource) throw new Error("err2");
-      const neighborsFromSelectedVertex =
-        selectedVertex.vertex.neighborsVertexes.filter(
-          (neigh) =>
-            neigh.data.state !== "visited" &&
-            !this.vertexSourceMap.has(neigh.id)
-        );
+      const neighborsFromSelectedVertex = selectedVertex.vertex.neighborsVertexes.filter(
+        (neigh) => neigh.data.state !== "visited" && !this.vertexSourceMap.has(neigh.id)
+      );
       neighborsFromSelectedVertex.forEach((vertex) => {
         this.vertexSourceMap.set(vertex.id, selectedVertex.vertex.id);
-        const edgeBetween = this.graph.getEdgeBetween(
-          vertex,
-          selectedVertex.vertex
-        );
+        const edgeBetween = this.graph.getEdgeBetween(vertex, selectedVertex.vertex);
         if (!edgeBetween) throw new Error("err3");
         const cost = edgeBetween.data.wight + selectedVertexSource.data.cost!;
         vertex.data.cost = cost;
