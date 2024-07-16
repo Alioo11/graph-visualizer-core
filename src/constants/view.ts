@@ -11,8 +11,8 @@ export const INFINITE_CANVAS_SCALE_BOUNDARY: [number, number] = [0.2, 150];
  * bottom right boundary: [x2,y2]
  */
 export const INFINITE_CANVAS_TRANSITION_BOUNDARY: [[number, number], [number, number]] = [
-  [-8000, -8000],
-  [8000, 8000],
+  [-4000, -4000],
+  [20000, 20000],
 ];
 
 export const infiniteCanvasScaleMapToRulerGap = (scale: number) => {
