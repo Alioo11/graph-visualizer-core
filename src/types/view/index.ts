@@ -1,5 +1,5 @@
 import { NoneToVoidFunction, Nullable } from "ts-wiz";
-import { IDataStructure } from "./dataStructure";
+import { IDataStructure } from "../dataStructure";
 
 export interface IView<T> {
   documentRef: Nullable<HTMLDivElement>;
@@ -7,4 +7,9 @@ export interface IView<T> {
   dataStructure: IDataStructure<T>;
   toggleVisible: NoneToVoidFunction;
   init: (documentRef: HTMLDivElement) => void;
+  on: <T extends keyof IViewEventMap>(eventType: T, eventCb: (data: IViewEventMap[T]) => void) => void;
+}
+
+export interface IViewEventMap {
+  "ready": HTMLDivElement;
 }
