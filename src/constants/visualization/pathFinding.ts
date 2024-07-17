@@ -1,7 +1,7 @@
 import { blue, blueGrey, grey, pink, red } from "@mui/material/colors";
 import { IDijkstraVisualizationOptions } from "../../types/pathFindingGraph";
 
-export const DEFAULT_VERTEX_RADIUS = 15;
+export const DEFAULT_VERTEX_RADIUS = 25;
 export const DEFAULT_VERTEX_STROKE_WIDTH = 1;
 
 

@@ -13,7 +13,7 @@ class PathfindingGraphFactory
   size: number;
   topology: GraphTopology = "mesh";
   public gap = 60;
-  public radius = 1000;
+  public radius = 4000;
   private _createGridTopologyGraph() {
     const mat: Array<Array<any>> = Array.from(Array(this.size).keys()).map((i) => new Array(this.size));
     const graph = new PathFindingGraph("undirected");
@@ -52,8 +52,8 @@ class PathfindingGraphFactory
 
     for (let i = 0; i < this.size; i++) {
       const vertexRef = graph.addVertex(`${i}`, {
-        x: Math.sin(i * this.portion) * this.radius + (Math.random() * 5000),
-        y: Math.cos(i * this.portion) * this.radius + (Math.random() * 5000),
+        x: Math.sin(i * this.portion) * this.radius + (Math.random() * 10000),
+        y: Math.cos(i * this.portion) * this.radius + (Math.random() * 10000),
       });
       vertices[i] = vertexRef;
     }

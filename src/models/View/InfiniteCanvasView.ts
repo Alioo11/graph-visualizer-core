@@ -255,7 +255,7 @@ abstract class InfiniteCanvasView<T> extends View<T> {
   public translateTo(x: number, y: number) {
     D3.select("svg")
       .transition()
-      .duration(10000)
+      .duration(2000)
       .call((selection: D3.Transition<any, any, any, any>) => selection.call(this._zoomBehavior!.translateTo, x, y));
   }
 

@@ -1,46 +1,54 @@
-import { Nullable } from "ts-wiz";
+import $ from "jquery";
 import stageLayoutMap from "./LayoutStrategy";
-import { IStage, StageLayout } from "../../types/stage";
-import { IView } from "../../types/view";
-import { IVisualization } from "../../types/visualization";
-import $ from 'jquery'
+import ExecutionPhase from "@models/ExecutionPhase";
+import type { Nullable } from "ts-wiz";
+import type { IView } from "../../types/view";
+import type { IStage, StageLayout } from "../../types/stage";
+import type { IVisualization } from "../../types/visualization";
 
 class Stage implements IStage {
   something = stageLayoutMap;
   documentRoot: HTMLDivElement;
   layout: StageLayout = "layout-1";
   fullScreenViewRef: Nullable<IView<unknown>> = null;
-  private _visualization: Nullable<IVisualization> = null;
+  private _status: ExecutionPhase;
 
-
-  private _cleanDocumentRoot = ()=>{
-    while(this.documentRoot.hasAttribute){
-      this.documentRoot.removeAttribute(this.documentRoot.attributes[0].name);
-    }
-    while(this.documentRoot.firstChild){
-      this.documentRoot.removeChild(this.documentRoot.firstChild);
-    }
+  get status() {
+    return this._status.phase;
   }
+
+  get onStatus(){
+    return this._status.on;
+  }
+
+  static instance: Nullable<Stage> = null;
+
+  private _visualization: Nullable<IVisualization> = null;
 
   start = async () => {
     if (this._visualization == null) return;
     this._visualization.start();
-    // await this._visualization.algorithm.iter(); //! TODO implement the thing
   };
 
-  constructor(documentRoot: IStage["documentRoot"]) {
+  private constructor(documentRoot: IStage["documentRoot"]) {
     this.documentRoot = documentRoot;
+    this._status = ExecutionPhase.instance();
   }
 
   init() {
-    if(!this._visualization) return 
+    if (!this._visualization) return;
     $(this.documentRoot).children().remove();
-    const views = this.something.get("layout-1")?.initLayout(this.documentRoot , this._visualization.views.length);
-    if(!views) throw new Error("Something went wrong while this")
-    if(views.length !== this._visualization.views.length) throw new Error("mismatch between length of views and required length");
-    for (let i  = 0 ; i< views.length ; i++){
-      this._visualization.views[i].init(views[i])
-    }
+    const views = this.something.get("layout-1")?.initLayout(this.documentRoot, this._visualization.views.length);
+    if (!views) throw new Error("Something went wrong while this");
+    if (views.length !== this._visualization.views.length)
+      throw new Error("mismatch between length of views and required length");
+    for (let i = 0; i < views.length; i++) this._visualization.views[i].init(views[i]);
+    this._status.update("prepared");
+  }
+
+  static init(documentRoot: IStage["documentRoot"]) {
+    if (this.instance === null) this.instance = new Stage(documentRoot);
+    return this.instance;
   }
 
   get visualization() {
@@ -52,6 +60,5 @@ class Stage implements IStage {
     this.init();
   }
 }
-
 
 export default Stage;

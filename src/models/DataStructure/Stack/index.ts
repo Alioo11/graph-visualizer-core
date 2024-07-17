@@ -1,4 +1,4 @@
-import { Nullable } from "ts-wiz";
+import type { Nullable } from "ts-wiz";
 
 class StackEntry<T> {
   bottom: Nullable<StackEntry<T>> = null;
@@ -15,7 +15,6 @@ class Stack<T> {
 
   pop() {
     if (this._top === null) return null;
-    const topValue = this._top;
     this._top = this._top.bottom;
     this._length -= 1;
     return this._top?.data
