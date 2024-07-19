@@ -3,7 +3,6 @@ import $ from "jquery";
 import DijkstraVisualization from "@models/Visualization/PathFinding";
 import "boxicons";
 import Stage from "@models/Stage";
-import wait from "@utils/wait";
 
 const appElement = document.querySelector("#app")! as HTMLDivElement;
 
@@ -14,25 +13,6 @@ let dds = new DijkstraVisualization();
 stage.visualization = dds;
 
 const body = $("body");
-
-const iterThing = async () => {
-  let goOne = true;
-  while (goOne) {
-    // if (Math.random() > 0.9)
-    await wait(1);
-    goOne = dds.algorithm.iter();
-  }
-};
-
-const iterMaze = async () => {
-  console.time();
-  let goOne = true;
-  while (goOne) {
-    if (Math.random() > 0.99) await wait(1);
-    goOne = dds.recursiveBacktrackingMazeGenerationAlgorithm.iter();
-  }
-  console.timeEnd();
-};
 
 const btn = $("<button></button>")
   .text("start")
@@ -55,15 +35,31 @@ const btn3 = $("<button></button>")
     dds.step();
   });
 
-  const btn4 = $("<button></button>")
+const btn4 = $("<button></button>")
   .text("generate maze")
   .addClass("btn btn-primary")
   .click(() => {
     dds.generateRecursiveBacktrackingMaze();
   });
 
+const btn5 = $("<button></button>")
+  .text("toggle ruler")
+  .addClass("btn btn-primary")
+  .click(() => {
+    dds.mainView.showRuler = !dds.mainView.showRuler;
+  });
+
+
+  const btn6 = $("<button></button>")
+  .text("toggle grid")
+  .addClass("btn btn-primary")
+  .click(() => {
+    dds.mainView.showGrid = !dds.mainView.showGrid;
+  });
+
 body.append(btn);
 body.append(btn2);
 body.append(btn3);
 body.append(btn4);
-
+body.append(btn5);
+body.append(btn6);

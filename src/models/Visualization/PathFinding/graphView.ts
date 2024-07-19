@@ -8,23 +8,20 @@ import {
   PathFindingGraphVertex,
   pathFindingGraphVertexNodeType,
 } from "../../../types/pathFindingGraph";
-import PathfindingVisualizerDOMHelper from "../../../helpers/DOM/pathFindingVisualizer";
 import { DOCUMENT_CLASS_CONSTANTS, DOCUMENT_ID_CONSTANTS } from "../../../constants/DOM";
+import PathfindingVisualizerDOMHelper from "../../../helpers/DOM/pathFindingVisualizer";
 
 class DijkstraGraphView extends InfiniteCanvasView<unknown> {
   dataStructure: PathFindingGraph;
   documentRef: Nullable<HTMLDivElement> = null;
   private _pathFindingEvents = new Map<keyof IPathFindingGraphViewEventsMap, Array<(data: any) => void>>();
   private _focusedVertex: Nullable<PathFindingGraphVertex> = null;
-
-  private _setFocusedVertexAsEntryPoint() {
-    if (!this.focusedVertex) throw new Error("");
-  }
+  private PathfindingDOMHelper: PathfindingVisualizerDOMHelper
 
   private _renderVertexDropdownMenu() {
     $(`#${DOCUMENT_ID_CONSTANTS.VIEW.PATH_FINDING.TOOLTIP_CONTAINER}`).remove();
     if (this.focusedVertex === null) return;
-    const infiniteCanvasRoot = $(`#${DOCUMENT_ID_CONSTANTS.VIEW.ROOT}`);
+    const infiniteCanvasRoot = $(`#${this.documentRootId}`);
     const [x, y] = this.projectCoord(this.focusedVertex.data.x, this.focusedVertex.data.y);
     if (!x || !y) return;
 
@@ -61,7 +58,7 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown> {
 
     const buttons: Array<pathFindingDropdownMenuButtonType> = [...entryP, targetBtn];
 
-    const tooltipElement = PathfindingVisualizerDOMHelper.createDropDownContainer(x, y, buttons);
+    const tooltipElement = this.PathfindingDOMHelper.createDropDownContainer(x, y, buttons);
     infiniteCanvasRoot.append(tooltipElement);
   }
 
@@ -77,6 +74,7 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown> {
   constructor(graph: PathFindingGraph) {
     super();
     this.dataStructure = graph;
+    this.PathfindingDOMHelper = new PathfindingVisualizerDOMHelper(this);
   }
 
   onReady = () => {
@@ -93,7 +91,7 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown> {
   }
 
   private _registerDocumentEvents() {
-    const rootSVGSelector = $(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT}`);
+    const rootSVGSelector = $(`#${this.documentRootId} #${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT}`);
     const verticesSelector = $(`.${DOCUMENT_CLASS_CONSTANTS.VIEW.PATH_FINDING.VERTEX}`);
     rootSVGSelector.on("mousedown", (e) => this._pathFindingEvents.get("container-click")?.forEach((cb) => cb(e)));
     verticesSelector.on("mousedown", (e) => {
@@ -108,16 +106,16 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown> {
 
   private _registerDataStructureEvents() {
     this.dataStructure.onPathFinding("visit", (v) => this._renderVisitEvent(v));
-    this.dataStructure.onPathFinding("trace-to-source", (v) =>PathfindingVisualizerDOMHelper.renderTraceToSourceEvent(v));
-    this.dataStructure.onPathFinding("entry-point-change", (v) =>PathfindingVisualizerDOMHelper.renderNewEntryPoint(v));
-    this.dataStructure.onPathFinding("targets-update", (v) => PathfindingVisualizerDOMHelper.renderUpdatedTargets(v));
-    this.dataStructure.onPathFinding("edge-change" , (e) => PathfindingVisualizerDOMHelper.updateEdge(e));
+    this.dataStructure.onPathFinding("trace-to-source", (v) =>this.PathfindingDOMHelper.renderTraceToSourceEvent(v));
+    this.dataStructure.onPathFinding("entry-point-change", (v) =>this.PathfindingDOMHelper.renderNewEntryPoint(v));
+    this.dataStructure.onPathFinding("targets-update", (v) => this.PathfindingDOMHelper.renderUpdatedTargets(v));
+    this.dataStructure.onPathFinding("edge-change" , (e) => this.PathfindingDOMHelper.updateEdge(e));
   }
 
   private _renderVisitEvent(v: PathFindingGraphVertex) {
     const isVertexATarget = this.dataStructure.targets.find((i) => i.id === v.id);
     if (isVertexATarget) return;
-    PathfindingVisualizerDOMHelper.renderVisitEvent(v, this.dataStructure.currentTarget.id);
+    this.PathfindingDOMHelper.renderVisitEvent(v, this.dataStructure.currentTarget.id);
   }
 
   private _getVertexType = (vertex: PathFindingGraphVertex): pathFindingGraphVertexNodeType => {
@@ -130,11 +128,11 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown> {
 
   private _renderVertex(vertex: PathFindingGraphVertex) {
     const vertexType = this._getVertexType(vertex);
-    PathfindingVisualizerDOMHelper.renderPathfindingVertex(vertex, vertexType);
+    this.PathfindingDOMHelper.renderPathfindingVertex(vertex, vertexType);
   }
 
   private _initialRender() {
-    for (const edge of this.dataStructure.EdgesIter()) PathfindingVisualizerDOMHelper.renderPathfindingEdge(edge);
+    for (const edge of this.dataStructure.EdgesIter()) this.PathfindingDOMHelper.renderPathfindingEdge(edge);
     for (const vertex of this.dataStructure.iter()) this._renderVertex(vertex);
   }
 

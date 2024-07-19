@@ -7,22 +7,28 @@ import {
   PathFindingGraphVertex,
 } from "../../../../types/pathFindingGraph";
 
+
+type meshGraphOptions = {size:number}
+type randomizedGraphOptions = {size:number}
+type gridGraphOptions = {size:number, gap:number}
+
 class PathfindingGraphFactory
   implements IGraphFactory<IPathFindingGraphVertex, IPathFindingGraphEdge, PathFindingGraph>
 {
-  size: number;
+  size: number = 10;
   topology: GraphTopology = "mesh";
-  public gap = 60;
+
   public radius = 4000;
-  private _createGridTopologyGraph() {
-    const mat: Array<Array<any>> = Array.from(Array(this.size).keys()).map((i) => new Array(this.size));
+  createGrid(options:gridGraphOptions) {
+    const {gap , size} = options
+    const mat: Array<Array<any>> = Array.from(Array(size).keys()).map(() => new Array(size));
     const graph = new PathFindingGraph("undirected");
 
-    for (let i = 0; i < this.size; i++) {
-      for (let j = 0; j < this.size; j++) {
+    for (let i = 0; i < size; i++) {
+      for (let j = 0; j < size; j++) {
         const f = graph.addVertex(`${j}-${i}`, {
-          x: this.gap * j,
-          y: this.gap * i,
+          x: gap * j,
+          y: gap * i,
         });
         mat[i][j] = f;
       }
@@ -46,14 +52,54 @@ class PathfindingGraphFactory
     return (2 * Math.PI) / this.size;
   }
 
-  private _createMeshTopologyGraph() {
-    const graph = new PathFindingGraph("undirected");
-    const vertices: Array<PathFindingGraphVertex> = new Array(this.size);
+  randomizedGraph(options:randomizedGraphOptions) {
+    const {size} = options;
 
-    for (let i = 0; i < this.size; i++) {
+    const PICK_PORTION = .1;
+    const graph = new PathFindingGraph("undirected");
+    const vertices: Array<PathFindingGraphVertex> = new Array(size);
+
+
+    for (let i = 0; i < size; i++) {
       const vertexRef = graph.addVertex(`${i}`, {
-        x: Math.sin(i * this.portion) * this.radius + (Math.random() * 10000),
-        y: Math.cos(i * this.portion) * this.radius + (Math.random() * 10000),
+        x: NumberUtils.randomNumberBetween(-size * 10 , size * 10),
+        y: NumberUtils.randomNumberBetween(-size * 10 , size * 10),
+      });
+      vertices[i] = vertexRef;
+    }
+
+    const getDistance = (v1:PathFindingGraphVertex,v2:PathFindingGraphVertex)=>{
+      const DX = v2.data.x - v1.data.x;
+      const DY = v2.data.y - v1.data.y;
+      return Math.sqrt(DX ** 2 + DY **2)
+    }
+
+    for(const v of vertices){
+      const nearestVertices = vertices.sort((a , b) => getDistance(a , v) - getDistance(b,v) )
+      const bestOnes = nearestVertices.slice(0 , nearestVertices.length * PICK_PORTION);
+
+
+      bestOnes.forEach(b => {
+        graph.connect(b, v, { wight: getDistance(v, b), blocked: false });
+      })
+      
+      
+    }
+
+    graph.entry = vertices[0];
+
+    return graph;
+  }
+
+  createMesh(options: meshGraphOptions) {
+    const {size} = options
+    const graph = new PathFindingGraph("undirected");
+    const vertices: Array<PathFindingGraphVertex> = new Array(size);
+
+    for (let i = 0; i < size; i++) {
+      const vertexRef = graph.addVertex(`${i}`, {
+        x: Math.sin(i * ((2 * Math.PI) / size)) * this.radius,
+        y: Math.cos(i * ((2 * Math.PI) / size)) * this.radius,
       });
       vertices[i] = vertexRef;
     }
@@ -62,7 +108,6 @@ class PathfindingGraphFactory
       for (let j = i; j < vertices.length; j++) {
         const fromV = vertices[i];
         const toV = vertices[j];
-        if(NumberUtils.maybe(.5)) continue  
         graph.connect(fromV, toV, { wight: 1, blocked: false });
       }
     }
@@ -73,19 +118,8 @@ class PathfindingGraphFactory
   }
 
   create = () => {
-    switch (this.topology) {
-      case "grid":
-        return this._createGridTopologyGraph();
-      case "mesh":
-        return this._createMeshTopologyGraph();
-      default:
-        return this._createGridTopologyGraph();
-    }
+    return this.createMesh({ size: 10 });
   };
-
-  constructor(size: number) {
-    this.size = size;
-  }
 }
 
 export default PathfindingGraphFactory;

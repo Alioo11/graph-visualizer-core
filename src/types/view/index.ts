@@ -6,6 +6,7 @@ export interface IView<T> {
   visible: boolean;
   dataStructure: IDataStructure<T>;
   toggleVisible: NoneToVoidFunction;
+  documentRootId: string;
   init: (documentRef: HTMLDivElement) => void;
   on: <T extends keyof IViewEventMap>(eventType: T, eventCb: (data: IViewEventMap[T]) => void) => void;
 }

@@ -17,28 +17,37 @@ import {
   TARGET_COLOR_LIST,
 } from "../../constants/visualization/pathFinding";
 import { Nullable } from "ts-wiz";
+import DijkstraGraphView from "@models/Visualization/PathFinding/graphView";
+import { INFINITE_CANVAS_TOOLTIP } from "../../constants/view";
 
 class PathfindingVisualizerDOMHelper {
-  static tooltip_x_shift = 20;
-  static tooltip_y_shift = 0;
-  static vertexRadius = DEFAULT_VERTEX_RADIUS;
-  static vertexStrokeWidth = DEFAULT_VERTEX_STROKE_WIDTH;
-  static wallHeight = DEFAULT_VERTEX_RADIUS;
-  static targetsColor = new Map<PathFindingGraphVertex["id"], string>();
+  tooltip_x_shift = 20;
+  tooltip_y_shift = 0;
+  vertexRadius = DEFAULT_VERTEX_RADIUS;
+  vertexStrokeWidth = DEFAULT_VERTEX_STROKE_WIDTH;
+  wallHeight = DEFAULT_VERTEX_RADIUS;
+  targetsColor = new Map<PathFindingGraphVertex["id"], string>();
 
-  static _vertexDocumentIdMap = new Map<
+  _vertexDocumentIdMap = new Map<
     PathFindingGraphVertex["id"],
     D3.Selection<SVGCircleElement, unknown, HTMLElement, any>
   >();
-  static _edgeDocumentIdMap = new Map<
+  _edgeDocumentIdMap = new Map<
     PathFindingGraphVertex["id"],
     [D3.Selection<SVGLineElement, unknown, HTMLElement, any>, D3.Selection<SVGLineElement, unknown, HTMLElement, any>]
   >();
 
-  static _entryPoint: Nullable<D3.Selection<SVGCircleElement, unknown, HTMLElement, any>> = null;
-  static _targetPoints: Array<D3.Selection<SVGCircleElement, unknown, HTMLElement, any>> = [];
+  _entryPoint: Nullable<D3.Selection<SVGCircleElement, unknown, HTMLElement, any>> = null;
+  _targetPoints: Array<D3.Selection<SVGCircleElement, unknown, HTMLElement, any>> = [];
 
-  public static renderTooltip = (x: number, y: number, vertex: PathFindingGraphVertex) => {
+
+  _view: DijkstraGraphView
+
+  constructor(graphView: DijkstraGraphView){
+    this._view = graphView
+  }
+
+  public renderTooltip = (x: number, y: number, vertex: PathFindingGraphVertex) => {
     const tooltipElement = $("<div></div>")
       .attr("id", "infinite-canvas-tooltip")
       .css({
@@ -56,21 +65,21 @@ class PathfindingVisualizerDOMHelper {
     return tooltipElement;
   };
 
-  private static _tooltipContent = (vertex: PathFindingGraphVertex) => {
+  private _tooltipContent = (vertex: PathFindingGraphVertex) => {
     const tooltipContentContainer = $("<div></div>").css({ display: "flex" });
     const coordinateText = `Coordinate: [${vertex.data.x}, ${vertex.data.y}]`;
     tooltipContentContainer.text(coordinateText);
     return tooltipContentContainer;
   };
 
-  private static _createDropdownButton(btnAttributes: pathFindingDropdownMenuButtonType) {
+  private _createDropdownButton(btnAttributes: pathFindingDropdownMenuButtonType) {
     return $("<button></button>")
       .addClass("btn btn-sm btn-secondary bg-dark")
       .text(btnAttributes.label)
       .click(btnAttributes.callback);
   }
 
-  public static createDropDownContainer(
+  public createDropDownContainer(
     x: coordinate["x"],
     y: coordinate["y"],
     buttons: Array<pathFindingDropdownMenuButtonType>
@@ -81,6 +90,7 @@ class PathfindingVisualizerDOMHelper {
         position: "absolute",
         left: x + this.tooltip_x_shift,
         top: y + this.tooltip_y_shift,
+        zIndex:INFINITE_CANVAS_TOOLTIP
       })
       .addClass("btn-group-vertical");
 
@@ -91,19 +101,19 @@ class PathfindingVisualizerDOMHelper {
     return dropdownContainerElement;
   }
 
-  public static renderVertexBlank(vertexSVG: D3.Selection<SVGCircleElement, unknown, HTMLElement, any>) {
+  public renderVertexBlank(vertexSVG: D3.Selection<SVGCircleElement, unknown, HTMLElement, any>) {
     return vertexSVG.attr("fill", grey["100"]);
   }
 
-  public static renderVertexEntry(vertexSVG: D3.Selection<SVGCircleElement, unknown, HTMLElement, any>) {
+  public renderVertexEntry(vertexSVG: D3.Selection<SVGCircleElement, unknown, HTMLElement, any>) {
     return vertexSVG.attr("fill", grey["100"]);
   }
 
-  public static renderVertexTarget(vertexSVG: D3.Selection<SVGCircleElement, unknown, HTMLElement, any>) {
+  public renderVertexTarget(vertexSVG: D3.Selection<SVGCircleElement, unknown, HTMLElement, any>) {
     return vertexSVG.attr("fill", grey["100"]);
   }
 
-  public static renderPathfindingBlankVertex(vertex: PathFindingGraphVertex) {
+  public renderPathfindingBlankVertex(vertex: PathFindingGraphVertex) {
     const root = D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT} g`);
 
     const vertexSVG = root
@@ -120,7 +130,7 @@ class PathfindingVisualizerDOMHelper {
     return this.renderVertexBlank(vertexSVG);
   }
 
-  static updateVertexAppearance(
+  updateVertexAppearance(
     vertex: D3.Selection<SVGCircleElement, unknown, HTMLElement, any>,
     vertexType: pathFindingGraphVertexNodeType
   ) {
@@ -133,13 +143,13 @@ class PathfindingVisualizerDOMHelper {
     }
   }
 
-  static getColorForTarget(vertex: PathFindingGraphVertex) {
+  getColorForTarget(vertex: PathFindingGraphVertex) {
     const color = TARGET_COLOR_LIST[this.targetsColor.size % TARGET_COLOR_LIST.length];
     this.targetsColor.set(vertex.id, color);
     return color;
   }
 
-  static renderNewEntryPoint(v: PathFindingGraphVertex) {
+  renderNewEntryPoint(v: PathFindingGraphVertex) {
     this._entryPoint?.attr("fill", BLANK_COLOR);
     const vertexDocumentRef = this._vertexDocumentIdMap.get(v.id);
     if (!vertexDocumentRef) throw new Error(`could not find node with ID ${v.id}`);
@@ -147,7 +157,7 @@ class PathfindingVisualizerDOMHelper {
     this._entryPoint = vertexDocumentRef;
   }
 
-  static renderUpdatedTargets(vertices: Array<PathFindingGraphVertex>) {
+  renderUpdatedTargets(vertices: Array<PathFindingGraphVertex>) {
     this._targetPoints.forEach((t) => t.attr("fill", BLANK_COLOR));
     this._targetPoints = [];
     this.targetsColor = new Map<PathFindingGraphVertex["id"], string>();
@@ -160,14 +170,14 @@ class PathfindingVisualizerDOMHelper {
     });
   }
 
-  static renderTraceToSourceEvent(vertices: Array<PathFindingGraphVertex>) {
+  renderTraceToSourceEvent(vertices: Array<PathFindingGraphVertex>) {
     vertices.forEach((v) => {
       const docElementReference = this._vertexDocumentIdMap.get(v.id);
       docElementReference?.attr("stroke-width", 7).attr("stroke", "yellow");
     });
   }
 
-  static renderVisitEvent(v: PathFindingGraphVertex, currentTargetId: PathFindingGraphVertex["id"]) {
+  renderVisitEvent(v: PathFindingGraphVertex, currentTargetId: PathFindingGraphVertex["id"]) {
     const docElementReference = this._vertexDocumentIdMap.get(v.id);
     const t = D3.transition().duration(500).ease(D3.easeCircleIn).ease(D3.easeBounceOut).ease(D3.easeBounceIn);
     if (!docElementReference) throw new Error(`could not find document element with ID: ${v.id}`);
@@ -175,7 +185,7 @@ class PathfindingVisualizerDOMHelper {
     docElementReference.transition(t).attr("fill", color);
   }
 
-  public static renderPathfindingVertex(vertex: PathFindingGraphVertex, vertexType: pathFindingGraphVertexNodeType) {
+  public renderPathfindingVertex(vertex: PathFindingGraphVertex, vertexType: pathFindingGraphVertexNodeType) {
     const root = D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT} g`);
 
     const color =
@@ -199,7 +209,7 @@ class PathfindingVisualizerDOMHelper {
     return vertexSVG;
   }
 
-  private static _calculateVerticalIntersectingLine(edge: PathFindingGraphEdge): [coordinate, coordinate] {
+  private _calculateVerticalIntersectingLine(edge: PathFindingGraphEdge): [coordinate, coordinate] {
     const DX = edge.from.data.x - edge.to.data.x;
     const DY = edge.from.data.y - edge.to.data.y;
 
@@ -216,7 +226,7 @@ class PathfindingVisualizerDOMHelper {
     ];
   }
 
-  public static renderPathfindingEdge(edge: PathFindingGraphEdge) {
+  public renderPathfindingEdge(edge: PathFindingGraphEdge) {
     const rootSVGElement = D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT} g`);
 
     const isWall = edge.data.blocked;
@@ -247,7 +257,7 @@ class PathfindingVisualizerDOMHelper {
     this._edgeDocumentIdMap.set(edge.id, [edgeConnectorLine, edgeWallLine]);
   }
 
-  public static updateEdge(edge: PathFindingGraphEdge) {
+  public updateEdge(edge: PathFindingGraphEdge) {
     const isWall = edge.data.blocked;
     const edgeSVG = this._edgeDocumentIdMap.get(edge.id);
 
@@ -260,7 +270,7 @@ class PathfindingVisualizerDOMHelper {
       .attr("stroke", isWall ? grey["600"] : null);
   }
 
-  public static renderVisitVertex(
+  public renderVisitVertex(
     vertexSVG: D3.Selection<SVGCircleElement, unknown, HTMLElement, any> | undefined,
     currentTargetId: PathFindingGraphVertex["id"]
   ) {

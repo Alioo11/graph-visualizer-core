@@ -1,4 +1,9 @@
+import NumberUtils from "./Number";
+
 class TextUtil {
+  static asciiCharacterRangeFrom = 97;
+  static asciiCharacterRangeTo = 122;
+
   /**
    * @description generates a hash from two give strings "a,b", no matter the order of call the result of calling bidirectionalHash(a,b) or bidirectionalHash(b,a) is the same.
    */
@@ -18,6 +23,16 @@ class TextUtil {
    */
   static directionalHash(strA: string, strB: string) {
     return strA.concat("-" + strB);
+  }
+
+  static randomText(length: number) {
+    let result = "";
+
+    Array.from(new Array(length).keys()).map(() => {
+      const asciiCharCode = NumberUtils.randomNumberBetween(this.asciiCharacterRangeFrom, this.asciiCharacterRangeTo);
+      result = result.concat(String.fromCharCode(asciiCharCode));
+    });
+    return result;
   }
 }
 

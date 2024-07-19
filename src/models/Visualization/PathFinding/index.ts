@@ -14,7 +14,7 @@ class DijkstraVisualization implements IVisualization {
   private _status = ExecutionPhase.instance();
   private _isAlgorithmRunning = false;
   private _visualizationSpeed: VisualizationSpeed = "fast";
-  graphFactory = new PathfindingGraphFactory(10);
+  graphFactory = new PathfindingGraphFactory();
   mainView: DijkstraGraphView;
   algorithm: IAlgorithm;
   recursiveBacktrackingMazeGenerationAlgorithm: IAlgorithm;
@@ -40,7 +40,7 @@ class DijkstraVisualization implements IVisualization {
 
   generateRecursiveBacktrackingMaze = async () => {
     const waiterFn = getWaiterFn(this._visualizationSpeed);
-    if (this._status.phase !== "prepared" && this._status.phase !== "preparing") throw new Error("");
+    if (this._status.phase !== "prepared" && this._status.phase !== "preparing") throw new Error(`can't start algorithm while program state is at ${this._status.phase}`);
     this._status.update("preparing");
     let thereIsMoreSteps = true;
     while (thereIsMoreSteps) {
@@ -63,14 +63,12 @@ class DijkstraVisualization implements IVisualization {
     if (!hasNextStep) this._status.update("visualization-done");
   };
 
-
   constructor() {
-    this.graphFactory.topology = "grid";
-    this._graph = this.graphFactory.create();
+    this._graph = this.graphFactory.createGrid({size:20 , gap:100});
     this.mainView = new DijkstraGraphView(this._graph);
     this.algorithm = new DijkstraAlgorithm(this._graph);
     this.recursiveBacktrackingMazeGenerationAlgorithm = new RecursiveBacktracking(this._graph);
-    this.views = [this.mainView];
+    this.views = [this.mainView ];
   }
 }
 

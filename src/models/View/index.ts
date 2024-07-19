@@ -1,7 +1,8 @@
-import { DOCUMENT_ID_CONSTANTS } from "../../constants/DOM";
+import { v4 } from "uuid";
 import type { IDataStructure } from "../../types/dataStructure";
 import type { IView, IViewEventMap } from "../../types/view";
 import type { NoneToVoidFunction, Nullable } from "ts-wiz";
+import TextUtil from "@utils/Text";
 
 abstract class View<T> implements IView<T> {
   private documentRootRef: Nullable<HTMLDivElement> = null;
@@ -10,10 +11,15 @@ abstract class View<T> implements IView<T> {
   abstract onReady: Nullable<NoneToVoidFunction>;
   private _events = new Map<keyof IViewEventMap, Array<(data: any) => void>>();
   visible: boolean = true;
+  documentRootId: string;
+
+  constructor(){
+    this.documentRootId = TextUtil.randomText(10);
+  }
 
   protected createWrapperElement = (rootElement: HTMLDivElement) => {
     const documentRefElement = document.createElement("div");
-    documentRefElement.setAttribute("id", DOCUMENT_ID_CONSTANTS.VIEW.ROOT);
+    documentRefElement.setAttribute("id", this.documentRootId);
     documentRefElement.setAttribute("class", "view-container");
 
     this.documentRootRef = rootElement;

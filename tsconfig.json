@@ -19,7 +19,7 @@
     "paths": {
       "@models/*": ["./src/models/*"],
       "@scss/*": ["./src/scss/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@utils/*": ["./src/utils/*"],
     }
   },
   "include": ["src/**/*"],
