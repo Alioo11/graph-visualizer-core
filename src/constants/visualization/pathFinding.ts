@@ -1,13 +1,13 @@
-import { blue, blueGrey, grey, pink, red } from "@mui/material/colors";
+import { blue, blueGrey, green, grey, pink, red, yellow } from "@mui/material/colors";
 import { IDijkstraVisualizationOptions } from "../../types/pathFindingGraph";
 
 export const DEFAULT_VERTEX_RADIUS = 25;
 export const DEFAULT_VERTEX_STROKE_WIDTH = 1;
 
 
-export const ENTRY_COLOR = blue["700"];
+export const ENTRY_COLOR = blue["A700"];
 export const BLANK_COLOR = grey["100"];
-export const TARGET_COLOR_LIST = [red["400"], blue["600"], pink["100"], blueGrey["A400"]];
+export const TARGET_COLOR_LIST = [red["300"], blue["400"], green["500"]];
 
 export const DIJKSTRA_VISUALIZATION_DEFAULT_OPTIONS: Required<IDijkstraVisualizationOptions> = {
   width: 40,

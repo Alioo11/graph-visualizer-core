@@ -179,7 +179,7 @@ class PathfindingVisualizerDOMHelper {
 
   renderVisitEvent(v: PathFindingGraphVertex, currentTargetId: PathFindingGraphVertex["id"]) {
     const docElementReference = this._vertexDocumentIdMap.get(v.id);
-    const t = D3.transition().duration(500).ease(D3.easeCircleIn).ease(D3.easeBounceOut).ease(D3.easeBounceIn);
+    const t = D3.transition().duration(800).ease(D3.easeBack)
     if (!docElementReference) throw new Error(`could not find document element with ID: ${v.id}`);
     const color = this.targetsColor.get(currentTargetId)!;
     docElementReference.transition(t).attr("fill", color);

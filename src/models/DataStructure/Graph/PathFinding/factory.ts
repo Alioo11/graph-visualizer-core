@@ -1,16 +1,11 @@
 import NumberUtils from "@utils/Number";
 import PathFindingGraph from ".";
-import { GraphTopology, IGraphFactory } from "../../../../types/graph";
+import { GraphTopology, gridGraphOptions, IGraphFactory, randomizedGraphOptions } from "../../../../types/graph";
 import {
   IPathFindingGraphEdge,
   IPathFindingGraphVertex,
   PathFindingGraphVertex,
 } from "../../../../types/pathFindingGraph";
-
-
-type meshGraphOptions = {size:number}
-type randomizedGraphOptions = {size:number}
-type gridGraphOptions = {size:number, gap:number}
 
 class PathfindingGraphFactory
   implements IGraphFactory<IPathFindingGraphVertex, IPathFindingGraphEdge, PathFindingGraph>
@@ -20,12 +15,20 @@ class PathfindingGraphFactory
 
   public radius = 4000;
   createGrid(options:gridGraphOptions) {
-    const {gap , size} = options
-    const mat: Array<Array<any>> = Array.from(Array(size).keys()).map(() => new Array(size));
+    const { gap, width, height, entry, targets } = options;
+    const mat: Array<Array<any>> = Array.from(Array(width).keys()).map(() => new Array(height));
     const graph = new PathFindingGraph("undirected");
 
-    for (let i = 0; i < size; i++) {
-      for (let j = 0; j < size; j++) {
+
+    const isValidEntry = entry[0] < width && entry[1] < height;
+    const isValidTarget = targets.every(([x,y]) => x < width && y < height);
+
+    if(!isValidEntry) throw new Error("entry point out of grid")
+
+    if(!isValidTarget) throw new Error("one or more target is out of entry grid range")
+
+    for (let i = 0; i < height; i++) {
+      for (let j = 0; j < width; j++) {
         const f = graph.addVertex(`${j}-${i}`, {
           x: gap * j,
           y: gap * i,
@@ -44,7 +47,8 @@ class PathfindingGraphFactory
       }
     }
 
-    graph.entry = mat[0][0];
+    graph.entry = mat[entry[0]][entry[1]];
+    targets.forEach(([x,y]) => graph.addTarget(mat[y][x]))
     return graph;
   }
 
@@ -91,34 +95,8 @@ class PathfindingGraphFactory
     return graph;
   }
 
-  createMesh(options: meshGraphOptions) {
-    const {size} = options
-    const graph = new PathFindingGraph("undirected");
-    const vertices: Array<PathFindingGraphVertex> = new Array(size);
-
-    for (let i = 0; i < size; i++) {
-      const vertexRef = graph.addVertex(`${i}`, {
-        x: Math.sin(i * ((2 * Math.PI) / size)) * this.radius,
-        y: Math.cos(i * ((2 * Math.PI) / size)) * this.radius,
-      });
-      vertices[i] = vertexRef;
-    }
-
-    for (let i = 0; i < vertices.length; i++) {
-      for (let j = i; j < vertices.length; j++) {
-        const fromV = vertices[i];
-        const toV = vertices[j];
-        graph.connect(fromV, toV, { wight: 1, blocked: false });
-      }
-    }
-
-    graph.entry = vertices[0];
-
-    return graph;
-  }
-
   create = () => {
-    return this.createMesh({ size: 10 });
+    return this.randomizedGraph({ size: 10 });
   };
 }
 

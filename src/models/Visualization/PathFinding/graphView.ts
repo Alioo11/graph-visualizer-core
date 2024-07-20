@@ -10,6 +10,7 @@ import {
 } from "../../../types/pathFindingGraph";
 import { DOCUMENT_CLASS_CONSTANTS, DOCUMENT_ID_CONSTANTS } from "../../../constants/DOM";
 import PathfindingVisualizerDOMHelper from "../../../helpers/DOM/pathFindingVisualizer";
+import ExecutionPhase from "@models/ExecutionPhase";
 
 class DijkstraGraphView extends InfiniteCanvasView<unknown> {
   dataStructure: PathFindingGraph;
@@ -78,12 +79,25 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown> {
   }
 
   onReady = () => {
+    this.initialize();
+  };
+
+  reInit(graph: PathFindingGraph){
+    if (!this.documentRef) throw new Error("inconsistent state can't call reInit while document reference is invalid");
+    this.dataStructure = graph;
+    this.PathfindingDOMHelper = new PathfindingVisualizerDOMHelper(this);
+    this.initialize();
+    ExecutionPhase.instance().update("prepared");
+  }
+
+  initialize(){
     if (!this.documentRef) throw new Error("inconsistent state can't call onReady while document reference is invalid");
+    $(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT} g`).children().remove()
     this._initialRender();
     this._registerDataStructureEvents();
     this._registerDocumentEvents();
     this._registerDropdownMenus();
-  };
+  }
 
   private _registerDropdownMenus() {
     this.onPathFinding("vertex-click", (e) => e.button === 2 && (this.focusedVertex = e.vertex));

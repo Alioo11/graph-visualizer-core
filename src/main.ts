@@ -6,9 +6,10 @@ import Stage from "@models/Stage";
 
 const appElement = document.querySelector("#app")! as HTMLDivElement;
 
-const stage = Stage.init(appElement);
+let stage = Stage.init(appElement);
 
 let dds = new DijkstraVisualization();
+// dds.speed = "slow"
 
 stage.visualization = dds;
 
@@ -57,9 +58,22 @@ const btn5 = $("<button></button>")
     dds.mainView.showGrid = !dds.mainView.showGrid;
   });
 
+
+
+  const btn7 = $("<button></button>")
+  .text("create new Grid")
+  .addClass("btn btn-primary")
+  .click(() => {
+    dds.createGraph("randomized", {size:100});
+  });
+
+
+  
 body.append(btn);
 body.append(btn2);
 body.append(btn3);
 body.append(btn4);
 body.append(btn5);
 body.append(btn6);
+
+body.append(btn7);

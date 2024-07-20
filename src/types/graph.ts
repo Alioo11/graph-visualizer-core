@@ -48,3 +48,19 @@ export interface IGraphFactory<VERTEX, EDGE, G extends IGraph<VERTEX, EDGE>> {
   size: number;
   create: () => G;
 }
+
+export type randomizedGraphOptions = {size:number}
+export type gridGraphOptions = {
+  width: number;
+  height: number;
+  gap: number;
+  entry: [number, number];
+  targets: Array<[number, number]>;
+};
+
+
+
+export interface graphFactoryOptionMap {
+  grid: gridGraphOptions;
+  randomized: randomizedGraphOptions;
+}
