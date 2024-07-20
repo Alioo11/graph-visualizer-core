@@ -134,6 +134,7 @@ abstract class InfiniteCanvasView<T> extends View<T> {
   }
 
   private _zoomBy(value: number) {
+    //TODO Fix Selector
     D3.select("svg")
       .transition()
       .call((selection: D3.Transition<any, any, any, any>) => selection.call(this._zoomBehavior!.scaleBy, value));

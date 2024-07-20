@@ -48,6 +48,7 @@ class Stage implements IStage {
 
   static init(documentRoot: IStage["documentRoot"]) {
     if (this.instance === null) this.instance = new Stage(documentRoot);
+    this.instance.init()
     return this.instance;
   }
 
