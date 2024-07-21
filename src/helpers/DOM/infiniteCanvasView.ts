@@ -27,6 +27,8 @@ class InfiniteCanvasViewDOMHelper {
     ) as D3.Selection<SVGRectElement, unknown, HTMLElement, any>;
     const D3LayerSelection = D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.RULER.ROOT} g`);
 
+    if(!D3HorizontalRulerSelection) return;
+
     //@ts-ignore;
     const absoluteHeight = D3HorizontalRulerSelection.node().height.baseVal.value as number;
 
@@ -64,6 +66,8 @@ class InfiniteCanvasViewDOMHelper {
       `#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.RULER.HORIZONTAL}`
     ) as D3.Selection<SVGRectElement, unknown, HTMLElement, any>;
     const D3LayerSelection = D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.RULER.ROOT} g`);
+
+    if (!D3HorizontalRulerSelection) return;
 
     //@ts-ignore;
     const absoluteWidth = D3HorizontalRulerSelection.node().width.baseVal.value as number;
@@ -193,6 +197,8 @@ class InfiniteCanvasViewDOMHelper {
   renderVerticalGrid() {
     const D3GridSelection = D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.GRID.ROOT}`);
 
+    if(!D3GridSelection) return;
+
     //@ts-ignore
     const absoluteHeight = D3GridSelection.node().height.baseVal.value as number;
     //@ts-ignore
@@ -219,6 +225,8 @@ class InfiniteCanvasViewDOMHelper {
 
   renderHorizontalGrid() {
     const D3GridSelection = D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.GRID.ROOT}`);
+
+    if (!D3GridSelection) return;
 
     //@ts-ignore
     const absoluteHeight = D3GridSelection.node().height.baseVal.value as number;
