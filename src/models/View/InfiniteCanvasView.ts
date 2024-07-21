@@ -134,14 +134,13 @@ abstract class InfiniteCanvasView<T> extends View<T> {
   }
 
   private _zoomBy(value: number) {
-    //TODO Fix Selector
-    D3.select("svg")
+    D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT}`)
       .transition()
       .call((selection: D3.Transition<any, any, any, any>) => selection.call(this._zoomBehavior!.scaleBy, value));
   }
 
   public translateTo(x: number, y: number) {
-    D3.select("svg")
+    D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT}`)
       .transition()
       .duration(2000)
       .call((selection: D3.Transition<any, any, any, any>) => selection.call(this._zoomBehavior!.translateTo, x, y));
