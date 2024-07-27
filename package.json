@@ -1,6 +1,6 @@
 {
   "name": "graph-visualizer-core",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "a Visualizer platform specialized for graphs",
   "module": "dist/main.js",
   "main": "dist/main.js",
