@@ -4,7 +4,7 @@
   "description": "a Visualizer platform specialized for graphs",
   "module": "dist/main.js",
   "main": "dist/main.js",
-  "types": "dist/types/index.d.ts",
+  "types": "dist/index.d.ts",
   "jsdelivr": "dist/main.js",
   "unpkg": "dist/d3.min.js",
   "scripts": {
@@ -21,7 +21,6 @@
     "@types/d3": "^7.4.3",
     "@types/jquery": "^3.5.30",
     "@types/uuid": "^9.0.8",
-    "autoprefixer": "^10.4.19",
     "css-loader": "^6.11.0",
     "dts-bundle-generator": "^9.5.1",
     "html-loader": "^3.1.0",
