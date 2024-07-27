@@ -5,13 +5,11 @@
     "outDir": "./dist/",
     "target": "ES2019",
     "rootDir": "./src",
-    "declarationDir": "./dist/types",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
     "alwaysStrict": true,
     "skipLibCheck": true,
-    "declaration": true,
     "sourceMap": true,
     "allowJs": true,
     "types": ["./src/types"],
@@ -20,6 +18,7 @@
       "@models/*": ["./src/models/*"],
       "@scss/*": ["./src/scss/*"],
       "@utils/*": ["./src/utils/*"],
+      "@_types/*": ["./src/types/*"]
     }
   },
   "include": ["src/**/*"],

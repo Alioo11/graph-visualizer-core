@@ -2,8 +2,8 @@ import PathFindingGraph from "@models/DataStructure/Graph/PathFinding";
 import Stack from "@models/DataStructure/Stack";
 import NumberUtils from "@utils/Number";
 import type { Nullable, NoneToVoidFunction } from "ts-wiz";
-import type { IAlgorithm } from "../../../../types/algorithm";
-import type { PathFindingGraphVertex } from "../../../../types/pathFindingGraph";
+import type { IAlgorithm } from "@_types/algorithm";
+import type { PathFindingGraphVertex } from "@_types/pathFindingGraph";
 
 class RecursiveBacktracking implements IAlgorithm {
   private _graph: PathFindingGraph;

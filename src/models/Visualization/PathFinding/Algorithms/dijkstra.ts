@@ -7,6 +7,7 @@ type dijkstraPQueue = {cost:number , vertex:PathFindingGraphVertex , source:Path
 
 class DijkstraAlgorithm implements IAlgorithm {
   private _candidateNodesPQueue = new Heap<dijkstraPQueue>((a, b) => a.cost - b.cost);
+
   private _visitSet = new Set();
 
   private _graph: PathFindingGraph;

@@ -43,6 +43,7 @@ const baseConfig = {
       "@models": path.resolve(__dirname, "./src/models"),
       "@scss": path.resolve(__dirname, "./src/scss"),
       "@utils": path.resolve(__dirname, "./src/utils"),
+      "@_types": path.resolve(__dirname, "./src/types"),
     },
     extensions: [".ts", ".js"],
   },
