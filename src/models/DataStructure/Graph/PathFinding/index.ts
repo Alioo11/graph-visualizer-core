@@ -1,6 +1,6 @@
-import { Nullable } from "ts-wiz";
 import Graph from "..";
-import {
+import type { Nullable } from "ts-wiz";
+import type {
   IPathFindingGraphEdge,
   IPathFindingGraphVertex,
   IPathFindingSourceMap,
@@ -8,7 +8,7 @@ import {
   PathFindingGraphEdge,
   PathFindingGraphVertex,
   PathFindingVertexEvents,
-} from "../../../../types/pathFindingGraph";
+} from "@_types/pathFindingGraph";
 
 class PathFindingGraph extends Graph<IPathFindingGraphVertex, IPathFindingGraphEdge> {
   private _targets: Array<PathFindingGraphVertex> = [];

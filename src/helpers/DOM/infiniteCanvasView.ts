@@ -1,16 +1,16 @@
 import * as D3 from "d3";
 import $ from "jquery";
+import InfiniteCanvasView from "@models/View/InfiniteCanvasView";
 import generateSnappedRange from "@utils/snappedValue";
-import { DOCUMENT_CLASS_CONSTANTS, DOCUMENT_ID_CONSTANTS } from "../../constants/DOM";
+import { DOCUMENT_CLASS_CONSTANTS, DOCUMENT_ID_CONSTANTS } from "@constants/DOM";
 import {
   INFINITE_CANVAS_DEFAULT_RULER_FONT_SIZE,
   INFINITE_CANVAS_DEFAULT_RULER_WIDTH,
   INFINITE_CANVAS_GRID_LAYER_Z_INDEX,
   INFINITE_CANVAS_RULER_LAYER_Z_INDEX,
   infiniteCanvasScaleMapToRulerGap,
-} from "../../constants/view";
+} from "@constants/view";
 import { grey } from "@mui/material/colors";
-import InfiniteCanvasView from "@models/View/InfiniteCanvasView";
 
 class InfiniteCanvasViewDOMHelper {
   private _rulerWidth: number = INFINITE_CANVAS_DEFAULT_RULER_WIDTH;

@@ -18,7 +18,9 @@
       "@models/*": ["./src/models/*"],
       "@scss/*": ["./src/scss/*"],
       "@utils/*": ["./src/utils/*"],
-      "@_types/*": ["./src/types/*"]
+      "@helpers/*": ["./src/helpers/*"],
+      "@_types/*": ["./src/types/*"],
+      "@constants/*": ["./src/constants/*"],
     }
   },
   "include": ["src/**/*"],

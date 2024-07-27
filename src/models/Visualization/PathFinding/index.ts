@@ -4,11 +4,11 @@ import RecursiveBacktracking from "@models/Visualization/PathFinding/Algorithms/
 import PathFindingGraph from "@models/DataStructure/Graph/PathFinding";
 import PathfindingGraphFactory from "@models/DataStructure/Graph/PathFinding/factory";
 import ExecutionPhase from "@models/ExecutionPhase";
-import getWaiterFn from "../../../helpers/getWaiter";
-import type { IAlgorithm } from "../../../types/algorithm";
-import type { IView } from "../../../types/view";
-import type { IVisualization, VisualizationSpeed } from "../../../types/visualization";
-import { graphFactoryOptionMap, gridGraphOptions, randomizedGraphOptions } from "../../../types/graph";
+import getWaiterFn from "@helpers/getWaiter";
+import type { IAlgorithm } from "@_types/algorithm";
+import type { IView } from "@_types/view";
+import type { IVisualization, VisualizationSpeed } from "@_types/visualization";
+import type { graphFactoryOptionMap, gridGraphOptions, randomizedGraphOptions } from "@_types/graph";
 
 class DijkstraVisualization<T extends keyof graphFactoryOptionMap> implements IVisualization {
   private _graph: PathFindingGraph;

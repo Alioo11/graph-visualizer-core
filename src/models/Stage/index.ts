@@ -2,9 +2,9 @@ import $ from "jquery";
 import stageLayoutMap from "./LayoutStrategy";
 import ExecutionPhase from "@models/ExecutionPhase";
 import type { Nullable } from "ts-wiz";
-import type { IView } from "../../types/view";
-import type { IStage, StageLayout } from "../../types/stage";
-import type { IVisualization } from "../../types/visualization";
+import type { IView } from "@_types/view";
+import type { IStage, StageLayout } from "@_types/stage";
+import type { IVisualization } from "@_types/visualization";
 
 class Stage implements IStage {
   something = stageLayoutMap;

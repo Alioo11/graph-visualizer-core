@@ -1,13 +1,13 @@
-import type { IGraph, IGraphEdge, IGraphVertex } from "../../../types/graph";
-import type { Nullable } from "ts-wiz";
 import { v4 as uuidv4 } from "uuid";
-import {
+import type { IGraph, IGraphEdge, IGraphVertex } from "@_types/graph";
+import type { Nullable } from "ts-wiz";
+import type {
   IAdjacencyMatrix,
   IAdjacencyMatrixHeader,
   IAdjacencyMatrixRelation,
   adjacencyMatrixHeaderCellType,
-} from "../../../types/adjacencyMatrix";
-import { IAdjacencyMatrixCellStatus } from "../../../types/dhouib";
+} from "@_types/adjacencyMatrix";
+import type { IAdjacencyMatrixCellStatus } from "@_types/dhouib";
 
 class AdjacencyMatrixHeader<VERTEX, EDGE, HEADER, RELATION>
   implements IAdjacencyMatrixHeader<VERTEX, EDGE, HEADER, RELATION>
@@ -127,13 +127,15 @@ class AdjacencyMatrix<VERTEX, EDGE, HEADER, RELATION> implements IAdjacencyMatri
     }
   }
 
-
-  private initPeers(){
+  private initPeers() {
     const flatRelations = this.relations.flat();
     for (let i = 0; i < flatRelations.length; i++) {
       const currentRelation = flatRelations[i];
       const peerValue = this.relations[currentRelation.x][currentRelation.y];
-      if(!peerValue) throw new Error(`something wen't wrong while getting peer relation at ${{x:currentRelation.x,y:currentRelation.y}}`);
+      if (!peerValue)
+        throw new Error(
+          `something wen't wrong while getting peer relation at ${{ x: currentRelation.x, y: currentRelation.y }}`
+        );
       currentRelation.peer = peerValue;
       peerValue.peer = currentRelation;
     }

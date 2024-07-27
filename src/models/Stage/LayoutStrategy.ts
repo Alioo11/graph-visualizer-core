@@ -1,5 +1,5 @@
 import $ from "jquery";
-import type { IStageLayoutStrategy, StageLayout } from "../../types/stage";
+import type { IStageLayoutStrategy, StageLayout } from "@_types/stage";
 
 class layout1Strategy implements IStageLayoutStrategy {
   initLayout = (documentRef: HTMLDivElement, count: number) => {

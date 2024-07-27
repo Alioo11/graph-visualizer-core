@@ -1,4 +1,4 @@
-import { infiniteCanvasZoomType } from "../types/view/infiniteCanvas";
+import { infiniteCanvasZoomType } from "@_types/view/infiniteCanvas";
 
 export const INFINITE_CANVAS_DEFAULT_RULER_WIDTH = 35;
 export const INFINITE_CANVAS_DEFAULT_RULER_FONT_SIZE = 11;

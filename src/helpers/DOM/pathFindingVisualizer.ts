@@ -1,24 +1,24 @@
 import * as D3 from "d3";
 import { grey } from "@mui/material/colors";
 import $ from "jquery";
-import {
-  pathFindingDropdownMenuButtonType,
-  PathFindingGraphEdge,
-  PathFindingGraphVertex,
-  pathFindingGraphVertexNodeType,
-} from "../../types/pathFindingGraph";
-import { coordinate } from "../../types/coordinate";
-import { DOCUMENT_CLASS_CONSTANTS, DOCUMENT_ID_CONSTANTS } from "../../constants/DOM";
+import DijkstraGraphView from "@models/Visualization/PathFinding/graphView";
+import { DOCUMENT_CLASS_CONSTANTS, DOCUMENT_ID_CONSTANTS } from "@constants/DOM";
 import {
   BLANK_COLOR,
   DEFAULT_VERTEX_RADIUS,
   DEFAULT_VERTEX_STROKE_WIDTH,
   ENTRY_COLOR,
   TARGET_COLOR_LIST,
-} from "../../constants/visualization/pathFinding";
-import { Nullable } from "ts-wiz";
-import DijkstraGraphView from "@models/Visualization/PathFinding/graphView";
-import { INFINITE_CANVAS_TOOLTIP } from "../../constants/view";
+} from "@constants/visualization/pathFinding";
+import { INFINITE_CANVAS_TOOLTIP } from "@constants/view";
+import type { Nullable } from "ts-wiz";
+import type { coordinate } from "@_types/coordinate";
+import type {
+  pathFindingDropdownMenuButtonType,
+  PathFindingGraphEdge,
+  PathFindingGraphVertex,
+  pathFindingGraphVertexNodeType,
+} from "@_types/pathFindingGraph";
 
 class PathfindingVisualizerDOMHelper {
   tooltip_x_shift = 20;
@@ -40,11 +40,10 @@ class PathfindingVisualizerDOMHelper {
   _entryPoint: Nullable<D3.Selection<SVGCircleElement, unknown, HTMLElement, any>> = null;
   _targetPoints: Array<D3.Selection<SVGCircleElement, unknown, HTMLElement, any>> = [];
 
+  _view: DijkstraGraphView;
 
-  _view: DijkstraGraphView
-
-  constructor(graphView: DijkstraGraphView){
-    this._view = graphView
+  constructor(graphView: DijkstraGraphView) {
+    this._view = graphView;
   }
 
   public renderTooltip = (x: number, y: number, vertex: PathFindingGraphVertex) => {
@@ -90,7 +89,7 @@ class PathfindingVisualizerDOMHelper {
         position: "absolute",
         left: x + this.tooltip_x_shift,
         top: y + this.tooltip_y_shift,
-        zIndex:INFINITE_CANVAS_TOOLTIP
+        zIndex: INFINITE_CANVAS_TOOLTIP,
       })
       .addClass("btn-group-vertical");
 
@@ -179,7 +178,7 @@ class PathfindingVisualizerDOMHelper {
 
   renderVisitEvent(v: PathFindingGraphVertex, currentTargetId: PathFindingGraphVertex["id"]) {
     const docElementReference = this._vertexDocumentIdMap.get(v.id);
-    const t = D3.transition().duration(800).ease(D3.easeBack)
+    const t = D3.transition().duration(800).ease(D3.easeBack);
     if (!docElementReference) throw new Error(`could not find document element with ID: ${v.id}`);
     const color = this.targetsColor.get(currentTargetId)!;
     docElementReference.transition(t).attr("fill", color);
@@ -215,7 +214,7 @@ class PathfindingVisualizerDOMHelper {
 
     const CX = (edge.from.data.x + edge.to.data.x) / 2;
     const CY = (edge.from.data.y + edge.to.data.y) / 2;
-    const CR = Math.atan2(DY , DX) * -1 
+    const CR = Math.atan2(DY, DX) * -1;
 
     const DXC = Math.sin(CR) * this.wallHeight;
     const DYC = Math.cos(CR) * this.wallHeight;
@@ -240,7 +239,7 @@ class PathfindingVisualizerDOMHelper {
       .attr("y1", edge.from.data.y)
       .attr("x2", edge.to.data.x)
       .attr("y2", edge.to.data.y)
-      .attr("stroke-width", .4)
+      .attr("stroke-width", 0.4)
       .attr("stroke", grey[900]);
 
     const edgeWallLine = rootSVGElement
@@ -263,11 +262,9 @@ class PathfindingVisualizerDOMHelper {
 
     if (!edgeSVG) throw new Error("");
 
-    edgeSVG[0]
+    edgeSVG[0];
 
-    edgeSVG[1]
-      .attr("stroke-width", isWall ? 4 : null)
-      .attr("stroke", isWall ? grey["600"] : null);
+    edgeSVG[1].attr("stroke-width", isWall ? 4 : null).attr("stroke", isWall ? grey["600"] : null);
   }
 
   public renderVisitVertex(

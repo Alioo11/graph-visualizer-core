@@ -1,12 +1,12 @@
-import type { Nullable } from "ts-wiz";
 import Graph from ".";
-import {
+import type { Nullable } from "ts-wiz";
+import type {
   DijkstraGraphVertex,
   DijkstraVertexEvents,
   IDijkstraGraphEdge,
   IDijkstraGraphVertex,
-} from "../../../types/dijkstra";
-import { GraphType } from "../../../types/graph";
+} from "@_types/dijkstra";
+import type { GraphType } from "@_types/graph";
 
 class DijkstraGraph extends Graph<IDijkstraGraphVertex, IDijkstraGraphEdge> {
   private _dijkstraVertexEventMap = new Map<keyof DijkstraVertexEvents, Array<(data: any) => void>>();

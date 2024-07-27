@@ -1,13 +1,13 @@
-import { IAlgorithm } from "../../../types/algorithm";
-import { IVisualization } from "../../../types/visualization";
-import { IView } from "../../../types/view";
 import DhouibMST from "./Algorithm";
-import NumberUtils from "@utils/Number";
 import GraphView from "./graphView";
 import DhouibAdjacencyMatrix from "@models/DataStructure/AdjacencyMatrix/DhouibAdjacencyMatrix";
 import MatrixView from "./matrixView";
 import DhouibGraph from "@models/DataStructure/Graph/Dhouib";
-import { DhouibGraphVertex } from "../../../types/dhouib";
+import NumberUtils from "@utils/Number";
+import type { DhouibGraphVertex } from "@_types/dhouib";
+import type { IAlgorithm } from "@_types/algorithm";
+import type { IVisualization } from "@_types/visualization";
+import type { IView } from "@_types/view";
 
 const GRAPH_SIZE = 6;
 

@@ -1,8 +1,7 @@
-import { v4 } from "uuid";
-import type { IDataStructure } from "../../types/dataStructure";
-import type { IView, IViewEventMap } from "../../types/view";
-import type { NoneToVoidFunction, Nullable } from "ts-wiz";
 import TextUtil from "@utils/Text";
+import type { IDataStructure } from "@_types/dataStructure";
+import type { IView, IViewEventMap } from "@_types/view";
+import type { NoneToVoidFunction, Nullable } from "ts-wiz";
 
 abstract class View<T> implements IView<T> {
   private documentRootRef: Nullable<HTMLDivElement> = null;

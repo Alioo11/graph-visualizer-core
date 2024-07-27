@@ -2,7 +2,8 @@ import * as D3 from "d3";
 import $ from "jquery";
 import View from ".";
 import shadows from "@mui/material/styles/shadows";
-import { DOCUMENT_ID_CONSTANTS } from "../../constants/DOM";
+import InfiniteCanvasViewDOMHelper from "@helpers/DOM/infiniteCanvasView";
+import { DOCUMENT_ID_CONSTANTS } from "@constants/DOM";
 import {
   DEFAULT_ZOOM,
   INFINITE_CANVAS_CONTENT_LAYER_Z_INDEX,
@@ -12,10 +13,9 @@ import {
   INFINITE_CANVAS_SCALE_BOUNDARY,
   INFINITE_CANVAS_TOOLTIP,
   INFINITE_CANVAS_TRANSITION_BOUNDARY,
-} from "../../constants/view";
+} from "@constants/view";
 import type { Nullable } from "ts-wiz";
-import type { IInfiniteCanvasEventsMap, infiniteCanvasZoomType } from "../../types/view/infiniteCanvas";
-import InfiniteCanvasViewDOMHelper from "../../helpers/DOM/infiniteCanvasView";
+import type { IInfiniteCanvasEventsMap, infiniteCanvasZoomType } from "@_types/view/infiniteCanvas";
 
 abstract class InfiniteCanvasView<T> extends View<T> {
   private _showRuler: boolean = INFINITE_CANVAS_DEFAULT_RULER_VISIBILITY;

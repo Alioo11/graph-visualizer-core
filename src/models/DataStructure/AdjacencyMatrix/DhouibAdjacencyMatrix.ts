@@ -1,12 +1,12 @@
 import AdjacencyMatrix from ".";
-import {
+import type {
   DhouibAdjacencyMatrixRelation,
   IDhouibAdjacencyMatrixEventMap,
   IDhouibAdjacencyMatrixHeader,
   IDhouibAdjacencyMatrixRelation,
   IDhouibGraphEdge,
   IDhouibGraphVertex,
-} from "../../../types/dhouib";
+} from "@_types/dhouib";
 import type { Nullable } from "ts-wiz";
 
 class DhouibAdjacencyMatrix extends AdjacencyMatrix<

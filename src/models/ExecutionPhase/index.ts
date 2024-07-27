@@ -1,5 +1,5 @@
 import type { Nullable } from "ts-wiz";
-import type { IExecutionPhase, IVisualizationEventMap } from "../../types/executionPhase";
+import type { IExecutionPhase, IVisualizationEventMap } from "@_types/executionPhase";
 
 /**
  * keeps track of program execution phase

@@ -1,8 +1,8 @@
-import DijkstraGraph from "../../DataStructure/Graph/Dijkstra";
+import View from "@models/View";
+import DijkstraGraph from "@models/DataStructure/Graph/Dijkstra";
 import DijkstraAlgorithm from "./Algorithm";
-import View from "../../View";
 import DijkstraMainView from "./MainView";
-import { IVisualization } from "../../../types/visualization";
+import type { IVisualization } from "@_types/visualization";
 
 
 class DijkstraVisualization implements IVisualization {

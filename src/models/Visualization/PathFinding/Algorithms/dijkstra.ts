@@ -1,9 +1,9 @@
 import { Heap } from "heap-js";
-import { IAlgorithm } from "../../../../types/algorithm";
 import PathFindingGraph from "@models/DataStructure/Graph/PathFinding";
-import { PathFindingGraphVertex } from "../../../../types/pathFindingGraph";
+import type { IAlgorithm } from "@_types/algorithm";
+import type { PathFindingGraphVertex } from "@_types/pathFindingGraph";
 
-type dijkstraPQueue = {cost:number , vertex:PathFindingGraphVertex , source:PathFindingGraphVertex};
+type dijkstraPQueue = { cost: number; vertex: PathFindingGraphVertex; source: PathFindingGraphVertex };
 
 class DijkstraAlgorithm implements IAlgorithm {
   private _candidateNodesPQueue = new Heap<dijkstraPQueue>((a, b) => a.cost - b.cost);

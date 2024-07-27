@@ -1,8 +1,7 @@
-import wait from "@utils/wait";
 import DijkstraGraph from "@models/DataStructure/Graph/Dijkstra";
-import { IAlgorithm } from "../../../types/algorithm";
-import { DijkstraGraphVertex } from "../../../types/dijkstra";
-import { NoneToVoidFunction } from "ts-wiz";
+import wait from "@utils/wait";
+import type { IAlgorithm } from "@_types/algorithm";
+import type { DijkstraGraphVertex } from "@_types/dijkstra";
 
 interface IDijkstraCandidateVertexesPQ {
   cost: number;

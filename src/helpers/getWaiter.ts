@@ -1,11 +1,11 @@
 import wait from "@utils/wait";
 import NumberUtils from "@utils/Number";
-import type { VisualizationSpeed } from "../types/visualization";
+import type { VisualizationSpeed } from "@_types/visualization";
 
 const getWaiterFn = (speed: VisualizationSpeed) => {
   switch (speed) {
     case "fast":
-      return () => NumberUtils.maybe(.9) && wait(1);
+      return () => NumberUtils.maybe(0.9) && wait(1);
     case "normal":
       return () => wait(1);
     case "slow":

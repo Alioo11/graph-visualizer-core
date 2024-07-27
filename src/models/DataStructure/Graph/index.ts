@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import TextUtil from "../../../utils/Text";
+import TextUtil from "@utils/Text";
 import {
   GraphIteratorTraverseStrategy,
   GraphType,
@@ -7,7 +7,7 @@ import {
   IGraph,
   IGraphEdge,
   IGraphVertex,
-} from "../../../types/graph";
+} from "@_types/graph";
 
 class GraphVertex<VERTEX, EDGE> implements IGraphVertex<VERTEX, EDGE> {
   label: string;

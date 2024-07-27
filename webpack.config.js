@@ -1,7 +1,6 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-
 /** @type {import("webpack".Configuration)} */
 const baseConfig = {
   output: {
@@ -44,6 +43,8 @@ const baseConfig = {
       "@scss": path.resolve(__dirname, "./src/scss"),
       "@utils": path.resolve(__dirname, "./src/utils"),
       "@_types": path.resolve(__dirname, "./src/types"),
+      "@helpers": path.resolve(__dirname, "./src/helpers"),
+      "@constants": path.resolve(__dirname, "./src/constants"),
     },
     extensions: [".ts", ".js"],
   },

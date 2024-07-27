@@ -1,9 +1,8 @@
-import { blue, blueGrey, green, grey, pink, red, yellow } from "@mui/material/colors";
-import { IDijkstraVisualizationOptions } from "../../types/pathFindingGraph";
+import { IDijkstraVisualizationOptions } from "@_types/pathFindingGraph";
+import { blue, green, grey, red } from "@mui/material/colors";
 
 export const DEFAULT_VERTEX_RADIUS = 25;
 export const DEFAULT_VERTEX_STROKE_WIDTH = 1;
-
 
 export const ENTRY_COLOR = blue["A700"];
 export const BLANK_COLOR = grey["100"];
