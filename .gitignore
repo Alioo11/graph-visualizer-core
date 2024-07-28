@@ -3,3 +3,5 @@ build
 dist
 *.xd
 *.DS_Store
+ac/*.dio
+
