@@ -1,7 +1,7 @@
 import { Heap } from "heap-js";
 import PathFindingGraph from "@models/DataStructure/Graph/PathFinding";
 import type { IAlgorithm } from "@_types/algorithm";
-import type { PathFindingGraphVertex } from "@_types/pathFindingGraph";
+import type { PathFindingGraphVertex } from "@_types/context/pathFinding";
 
 type dijkstraPQueue = { cost: number; vertex: PathFindingGraphVertex; source: PathFindingGraphVertex };
 

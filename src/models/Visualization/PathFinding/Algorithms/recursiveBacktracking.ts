@@ -3,7 +3,7 @@ import Stack from "@models/DataStructure/Stack";
 import NumberUtils from "@utils/Number";
 import type { Nullable, NoneToVoidFunction } from "ts-wiz";
 import type { IAlgorithm } from "@_types/algorithm";
-import type { PathFindingGraphVertex } from "@_types/pathFindingGraph";
+import type { PathFindingGraphVertex } from "@_types/context/pathFinding";
 
 class RecursiveBacktracking implements IAlgorithm {
   private _graph: PathFindingGraph;

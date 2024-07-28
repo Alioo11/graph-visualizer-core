@@ -1,7 +1,6 @@
 import * as D3 from "d3";
 import { NoneToVoidFunction, Nullable } from "ts-wiz";
-import DijkstraGraph from "../../DataStructure/Graph/Dijkstra";
-import View from "../../View";
+import DijkstraGraph from "@models/DataStructure/Graph/Dijkstra";
 import InfiniteCanvasView from "@models/View/InfiniteCanvasView";
 
 function sigmoid(x: number): number {

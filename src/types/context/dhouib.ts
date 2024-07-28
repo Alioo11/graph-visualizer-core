@@ -1,5 +1,5 @@
-  import { IGraphEdge, IGraphVertex } from "./graph";
-import { IAdjacencyMatrix, IAdjacencyMatrixHeader, IAdjacencyMatrixRelation } from "./adjacencyMatrix";
+import { IGraphEdge, IGraphVertex } from "@_types/graph";
+import { IAdjacencyMatrix, IAdjacencyMatrixHeader, IAdjacencyMatrixRelation } from "@_types/adjacencyMatrix";
 
 export type IAdjacencyMatrixCellStatus = "blank" | "candidate" | "selected";
 
@@ -49,15 +49,12 @@ export interface IDhouibAdjacencyMatrixEventMap {
   "relation-change-status": DhouibAdjacencyMatrixRelation;
   "relation-edge-change": DhouibAdjacencyMatrixRelation;
 
-  "add-to-min-column-list": DhouibAdjacencyMatrixRelation
-  "remove-from-min-column-list": DhouibAdjacencyMatrixRelation
+  "add-to-min-column-list": DhouibAdjacencyMatrixRelation;
+  "remove-from-min-column-list": DhouibAdjacencyMatrixRelation;
 
-  "add-to-mst-path": DhouibAdjacencyMatrixRelation
-  "add-to-candidate-relations": DhouibAdjacencyMatrixRelation
-
-
+  "add-to-mst-path": DhouibAdjacencyMatrixRelation;
+  "add-to-candidate-relations": DhouibAdjacencyMatrixRelation;
 }
-
 
 export interface DhouibVertexEventMap {
   "state-change": DhouibGraphVertex;
@@ -65,5 +62,5 @@ export interface DhouibVertexEventMap {
 }
 
 export interface IDhouibGraphEdgeEventMap {
-  "state-change" : DhouibGraphEdge;
+  "state-change": DhouibGraphEdge;
 }

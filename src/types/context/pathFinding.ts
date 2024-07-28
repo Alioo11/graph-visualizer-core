@@ -1,4 +1,4 @@
-import { IGraphFactory, IGraphEdge, IGraphVertex } from "./graph";
+import { IGraphEdge, IGraphVertex } from "@_types/graph";
 
 export interface IPathFindingGraphVertex {
   x: number;

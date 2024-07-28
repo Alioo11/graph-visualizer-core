@@ -2,8 +2,8 @@ import DhouibAdjacencyMatrix from "@models/DataStructure/AdjacencyMatrix/DhouibA
 import DhouibGraph from "@models/DataStructure/Graph/Dhouib";
 import wait from "@utils/wait";
 import type { Nullable } from "ts-wiz";
-import type { DhouibAdjacencyMatrixRelation } from "@_types/dhouib";
 import type { IAlgorithm } from "@_types/algorithm";
+import type { DhouibAdjacencyMatrixRelation } from "@_types/context/dhouib";
 
 class DhouibMST implements IAlgorithm {
   private graph: DhouibGraph;

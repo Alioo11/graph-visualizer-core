@@ -8,7 +8,7 @@ import type {
   PathFindingGraphEdge,
   PathFindingGraphVertex,
   PathFindingVertexEvents,
-} from "@_types/pathFindingGraph";
+} from "@_types/context/pathFinding";
 
 class PathFindingGraph extends Graph<IPathFindingGraphVertex, IPathFindingGraphEdge> {
   private _targets: Array<PathFindingGraphVertex> = [];

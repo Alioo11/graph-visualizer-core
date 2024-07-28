@@ -7,7 +7,7 @@ import type {
   IAdjacencyMatrixRelation,
   adjacencyMatrixHeaderCellType,
 } from "@_types/adjacencyMatrix";
-import type { IAdjacencyMatrixCellStatus } from "@_types/dhouib";
+import type { IAdjacencyMatrixCellStatus } from "@_types/context/dhouib";
 
 class AdjacencyMatrixHeader<VERTEX, EDGE, HEADER, RELATION>
   implements IAdjacencyMatrixHeader<VERTEX, EDGE, HEADER, RELATION>

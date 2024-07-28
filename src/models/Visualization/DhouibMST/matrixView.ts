@@ -2,7 +2,7 @@ import $ from "jquery";
 import DhouibAdjacencyMatrix from "@models/DataStructure/AdjacencyMatrix/DhouibAdjacencyMatrix";
 import View from "@models/View";
 import type { NoneToVoidFunction, Nullable } from "ts-wiz";
-import type { DhouibAdjacencyMatrixRelation } from "@_types/dhouib";
+import type { DhouibAdjacencyMatrixRelation } from "@_types/context/dhouib";
 
 const CELL_SIZE = 40;
 

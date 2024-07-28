@@ -10,7 +10,7 @@ import type {
   pathFindingDropdownMenuButtonType,
   PathFindingGraphVertex,
   pathFindingGraphVertexNodeType,
-} from "@_types/pathFindingGraph";
+} from "@_types/context/pathFinding";
 
 class DijkstraGraphView extends InfiniteCanvasView<unknown> {
   dataStructure: PathFindingGraph;
@@ -103,10 +103,9 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown> {
     this.onInfiniteCanvas("zoom", () => this.focusedVertex && (this.focusedVertex = null));
   }
 
-  private _registerDocumentEvents() {
-    const rootSVGSelector = $(`#${this.documentRootId} #${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT}`);
+  private _registerVertexDocumentEvents() {
     const verticesSelector = $(`.${DOCUMENT_CLASS_CONSTANTS.VIEW.PATH_FINDING.VERTEX}`);
-    rootSVGSelector.on("mousedown", (e) => this._pathFindingEvents.get("container-click")?.forEach((cb) => cb(e)));
+
     verticesSelector.on("mousedown", (e) => {
       const vertex = this.dataStructure.getVertexById(e.target.id);
       if (!vertex) throw new Error(`Vertex with ID ${e.target.id} not found.`);
@@ -115,6 +114,26 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown> {
       eventObject.vertex = vertex;
       this._pathFindingEvents.get("vertex-click")?.forEach((cb) => cb(eventObject));
     });
+  }
+
+  private _registerEdgeDocumentEvents() {
+    const edgeSelector = $(`.${DOCUMENT_CLASS_CONSTANTS.VIEW.PATH_FINDING.EDGE}`);
+
+    edgeSelector.on("mousedown", (e) => {
+      const edge = this.dataStructure.getEdgeById(e.target.id);
+      if (!edge) throw new Error(`Edge with ID ${e.target.id} not found.`);
+      //@ts-ignore passing event as a reference
+      const eventObject: IPathFindingGraphViewEventsMap["edge-click"] = e;
+      eventObject.edge = edge;
+      this._pathFindingEvents.get("edge-click")?.forEach((cb) => cb(eventObject));
+    });
+  }
+
+  private _registerDocumentEvents() {
+    const rootSVGSelector = $(`#${this.documentRootId} #${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT}`);
+    rootSVGSelector.on("click", (e) => this._pathFindingEvents.get("container-click")?.forEach((cb) => cb(e)));
+    this._registerVertexDocumentEvents();
+    this._registerEdgeDocumentEvents();
   }
 
   private _registerDataStructureEvents() {

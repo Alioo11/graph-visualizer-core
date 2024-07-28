@@ -2,7 +2,7 @@ import * as D3 from "d3";
 import View from "@models/View";
 import DhouibGraph from "@models/DataStructure/Graph/Dhouib";
 import type { NoneToVoidFunction, Nullable } from "ts-wiz";
-import type { DhouibGraphEdge } from "@_types/dhouib";
+import type { DhouibGraphEdge } from "@_types/context/dhouib";
 
 const VERTEX_RADIUS = 9;
 class GraphView extends View<unknown> {

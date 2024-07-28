@@ -1,5 +1,5 @@
 import { NoneToVoidFunction, Nullable } from "ts-wiz";
-import { IDataStructure } from "../dataStructure";
+import { IDataStructure } from "@_types/dataStructure";
 
 export interface IView<T> {
   documentRef: Nullable<HTMLDivElement>;

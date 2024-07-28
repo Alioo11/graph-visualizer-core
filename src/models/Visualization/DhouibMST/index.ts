@@ -4,7 +4,7 @@ import DhouibAdjacencyMatrix from "@models/DataStructure/AdjacencyMatrix/DhouibA
 import MatrixView from "./matrixView";
 import DhouibGraph from "@models/DataStructure/Graph/Dhouib";
 import NumberUtils from "@utils/Number";
-import type { DhouibGraphVertex } from "@_types/dhouib";
+import type { DhouibGraphVertex } from "@_types/context/dhouib";
 import type { IAlgorithm } from "@_types/algorithm";
 import type { IVisualization } from "@_types/visualization";
 import type { IView } from "@_types/view";

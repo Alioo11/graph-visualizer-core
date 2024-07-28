@@ -8,7 +8,7 @@ import type {
   IDhouibGraphEdge,
   IDhouibGraphEdgeEventMap,
   IDhouibGraphVertex,
-} from "@_types/dhouib";
+} from "@_types/context/dhouib";
 
 class DhouibGraph extends Graph<IDhouibGraphVertex, IDhouibGraphEdge> {
   private _dhouibVertexEventMap = new Map<keyof DhouibVertexEventMap, Array<(data: any) => void>>();

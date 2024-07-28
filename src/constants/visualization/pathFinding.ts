@@ -1,4 +1,4 @@
-import { IDijkstraVisualizationOptions } from "@_types/pathFindingGraph";
+import { IDijkstraVisualizationOptions } from "@_types/context/pathFinding";
 import { blue, green, grey, red } from "@mui/material/colors";
 
 export const DEFAULT_VERTEX_RADIUS = 25;

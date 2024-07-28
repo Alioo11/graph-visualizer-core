@@ -77,7 +77,7 @@ class DijkstraVisualization<T extends keyof graphFactoryOptionMap> implements IV
   }
 
   constructor() {
-    this._graph = this.graphFactory.createGrid({ width: 10, height: 10, entry: [0, 0], targets: [[9, 9]], gap: 55 });
+    this._graph = this.graphFactory.createGrid({ width: 150, height: 150, entry: [0, 0], targets: [[9, 9]], gap: 55 });
     this.mainView = new DijkstraGraphView(this._graph);
     this.algorithm = new DijkstraAlgorithm(this._graph);
     this.recursiveBacktrackingMazeGenerationAlgorithm = new RecursiveBacktracking(this._graph);

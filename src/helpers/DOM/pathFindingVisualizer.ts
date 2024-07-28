@@ -18,7 +18,7 @@ import type {
   PathFindingGraphEdge,
   PathFindingGraphVertex,
   pathFindingGraphVertexNodeType,
-} from "@_types/pathFindingGraph";
+} from "@_types/context/pathFinding";
 
 class PathfindingVisualizerDOMHelper {
   tooltip_x_shift = 20;

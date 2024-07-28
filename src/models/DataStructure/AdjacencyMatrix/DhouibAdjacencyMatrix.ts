@@ -6,7 +6,7 @@ import type {
   IDhouibAdjacencyMatrixRelation,
   IDhouibGraphEdge,
   IDhouibGraphVertex,
-} from "@_types/dhouib";
+} from "@_types/context/dhouib";
 import type { Nullable } from "ts-wiz";
 
 class DhouibAdjacencyMatrix extends AdjacencyMatrix<

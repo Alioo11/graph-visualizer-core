@@ -119,6 +119,11 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
     return this._vertexes.get(id) || null;
   }
 
+
+  getEdgeById(id: string) {
+    return this._edges.get(id) || null;
+  }
+  
   get size() {
     return this._vertexes.size;
   }

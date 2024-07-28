@@ -1,7 +1,7 @@
 import DijkstraGraph from "@models/DataStructure/Graph/Dijkstra";
 import wait from "@utils/wait";
 import type { IAlgorithm } from "@_types/algorithm";
-import type { DijkstraGraphVertex } from "@_types/dijkstra";
+import type { DijkstraGraphVertex } from "@_types/context/dijkstra";
 
 interface IDijkstraCandidateVertexesPQ {
   cost: number;

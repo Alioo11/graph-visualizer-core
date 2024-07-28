@@ -5,7 +5,7 @@ import type {
   DijkstraVertexEvents,
   IDijkstraGraphEdge,
   IDijkstraGraphVertex,
-} from "@_types/dijkstra";
+} from "@_types/context/dijkstra";
 import type { GraphType } from "@_types/graph";
 
 class DijkstraGraph extends Graph<IDijkstraGraphVertex, IDijkstraGraphEdge> {
