@@ -1,5 +1,5 @@
 import { Nullable } from "ts-wiz";
-import { IGraphEdge, IGraphVertex } from "@_types/graph";
+import { IGraphEdge, IGraphVertex } from "@_types/dataStructure/graph";
 
 export type DijkstraGraphVertex = IGraphVertex<IDijkstraGraphVertex, IDijkstraGraphEdge>;
 export type DijkstraGraphEdge = IGraphEdge<IDijkstraGraphVertex, IDijkstraGraphEdge>;

@@ -1,5 +1,5 @@
 import { Nullable } from "ts-wiz";
-import { IDataStructure } from "./dataStructure";
+import { IDataStructure } from ".";
 
 export type GraphIteratorTraverseStrategy = "DFS" | "BFS";
 export type GraphType = "directed" | "undirected";

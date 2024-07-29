@@ -73,7 +73,7 @@ class DijkstraMainView extends InfiniteCanvasView<unknown> {
         .attr("x2", edge.to.data.x + VERTEX_WIDTH / 2)
         .attr("y2", edge.to.data.y + VERTEX_HEIGHT / 2)
         .attr("stroke-width" , .5)
-        .attr("stroke", floatToHexColor(sigmoid(edge.data.wight! / 1)))
+        .attr("stroke", null)
     }
 
     for (const vertex of this.dataStructure.iter()) {
@@ -85,7 +85,7 @@ class DijkstraMainView extends InfiniteCanvasView<unknown> {
         .attr("cx", vertex.data.x + VERTEX_HEIGHT/2)
         .attr("cy", vertex.data.y+  VERTEX_HEIGHT/2)
         .attr("r", VERTEX_HEIGHT/2)
-        .attr("stroke", "gray")
+        .attr("stroke", null)
         .attr("stroke-width" , .2)
         .attr("width", VERTEX_WIDTH)
         .attr("height", VERTEX_HEIGHT)

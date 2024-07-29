@@ -6,7 +6,7 @@ import type {
   IDijkstraGraphEdge,
   IDijkstraGraphVertex,
 } from "@_types/context/dijkstra";
-import type { GraphType } from "@_types/graph";
+import type { GraphType } from "@_types/dataStructure/graph";
 
 class DijkstraGraph extends Graph<IDijkstraGraphVertex, IDijkstraGraphEdge> {
   private _dijkstraVertexEventMap = new Map<keyof DijkstraVertexEvents, Array<(data: any) => void>>();

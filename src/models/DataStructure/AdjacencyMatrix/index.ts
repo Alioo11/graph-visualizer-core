@@ -1,12 +1,12 @@
 import { v4 as uuidv4 } from "uuid";
-import type { IGraph, IGraphEdge, IGraphVertex } from "@_types/graph";
+import type { IGraph, IGraphEdge, IGraphVertex } from "@_types/dataStructure/graph";
 import type { Nullable } from "ts-wiz";
 import type {
   IAdjacencyMatrix,
   IAdjacencyMatrixHeader,
   IAdjacencyMatrixRelation,
   adjacencyMatrixHeaderCellType,
-} from "@_types/adjacencyMatrix";
+} from "@_types/dataStructure/adjacencyMatrix";
 import type { IAdjacencyMatrixCellStatus } from "@_types/context/dhouib";
 
 class AdjacencyMatrixHeader<VERTEX, EDGE, HEADER, RELATION>

@@ -7,7 +7,7 @@ import {
   IGraph,
   IGraphEdge,
   IGraphVertex,
-} from "@_types/graph";
+} from "@_types/dataStructure/graph";
 
 class GraphVertex<VERTEX, EDGE> implements IGraphVertex<VERTEX, EDGE> {
   label: string;

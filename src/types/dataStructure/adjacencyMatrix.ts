@@ -1,5 +1,5 @@
 import type { IGraphEdge, IGraphVertex } from "./graph";
-import type { IDataStructure } from "./dataStructure";
+import type { IDataStructure } from "../dataStructure";
 import type { Nullable } from "ts-wiz";
 
 export type adjacencyMatrixHeaderCellType = "vertical" | "horizontal"

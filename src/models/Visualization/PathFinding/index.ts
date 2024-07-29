@@ -8,7 +8,7 @@ import getWaiterFn from "@helpers/getWaiter";
 import type { IAlgorithm } from "@_types/algorithm";
 import type { IView } from "@_types/view";
 import type { IVisualization, VisualizationSpeed } from "@_types/visualization";
-import type { graphFactoryOptionMap, gridGraphOptions, randomizedGraphOptions } from "@_types/graph";
+import type { graphFactoryOptionMap, gridGraphOptions, randomizedGraphOptions } from "@_types/dataStructure/graph";
 
 class DijkstraVisualization<T extends keyof graphFactoryOptionMap> implements IVisualization {
   private _graph: PathFindingGraph;

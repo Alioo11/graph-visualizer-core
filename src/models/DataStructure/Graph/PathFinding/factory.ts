@@ -1,6 +1,6 @@
 import PathFindingGraph from ".";
 import NumberUtils from "@utils/Number";
-import type { GraphTopology, gridGraphOptions, IGraphFactory, randomizedGraphOptions } from "@_types/graph";
+import type { GraphTopology, gridGraphOptions, IGraphFactory, randomizedGraphOptions } from "@_types/dataStructure/graph";
 import type { IPathFindingGraphEdge, IPathFindingGraphVertex, PathFindingGraphVertex } from "@_types/context/pathFinding";
 
 class PathfindingGraphFactory

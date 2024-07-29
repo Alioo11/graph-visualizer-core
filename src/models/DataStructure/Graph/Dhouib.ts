@@ -1,6 +1,6 @@
 import Graph from ".";
 import type { Nullable } from "ts-wiz";
-import type { GraphType } from "@_types/graph";
+import type { GraphType } from "@_types/dataStructure/graph";
 import type {
   DhouibGraphEdge,
   DhouibGraphVertex,

@@ -24,8 +24,8 @@ class DijkstraVisualization implements IVisualization {
 
   initProgram = () => {
     const WIDTH = 150;
-    const HEIGHT = 30;
-    const GAP = 10;
+    const HEIGHT = 150;
+    const GAP = 5;
 
     const entryPoint = [10, 0];
     const targetPoint = [99, 222  ];

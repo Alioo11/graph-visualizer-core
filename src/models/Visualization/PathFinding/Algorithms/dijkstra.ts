@@ -1,4 +1,4 @@
-import { Heap } from "heap-js";
+import Heap from "@models/DataStructure/Heap";
 import PathFindingGraph from "@models/DataStructure/Graph/PathFinding";
 import type { IAlgorithm } from "@_types/algorithm";
 import type { PathFindingGraphVertex } from "@_types/context/pathFinding";
@@ -46,7 +46,7 @@ class DijkstraAlgorithm implements IAlgorithm {
       const connection = this._graph.getEdgeBetween(neigh, vertex);
       if (!connection) throw new Error();
       if (connection.data.blocked) return;
-      this._candidateNodesPQueue.add({ vertex: neigh, source: vertex, cost: connection.data.wight + costSoFar });
+      this._candidateNodesPQueue.push({ vertex: neigh, source: vertex, cost: connection.data.wight + costSoFar });
       this._visitSet.add(neigh.id);
     });
 
