@@ -1,30 +1,30 @@
 import Graph from "..";
 import type { Nullable } from "ts-wiz";
 import type {
-  IPathFindingGraphEdge,
-  IPathFindingGraphVertex,
-  IPathFindingSourceMap,
-  IPathFindingTargetSourceMap,
-  PathFindingGraphEdge,
-  PathFindingGraphVertex,
-  PathFindingVertexEvents,
-} from "@_types/context/pathFinding";
+  IDijkstraGraphEdge,
+  IDijkstraGraphVertex,
+  IDijkstraSourceMap,
+  IDijkstraTargetSourceMap,
+  DijkstraGraphEdge,
+  DijkstraGraphVertex,
+  DijkstraVertexEvents,
+} from "@_types/context/dijkstra";
 
-class PathFindingGraph extends Graph<IPathFindingGraphVertex, IPathFindingGraphEdge> {
-  private _targets: Array<PathFindingGraphVertex> = [];
+class DijkstraGraph extends Graph<IDijkstraGraphVertex, IDijkstraGraphEdge> {
+  private _targets: Array<DijkstraGraphVertex> = [];
   private _currentTargetIndex: number = 0;
-  private _pathFindingEvents = new Map<keyof PathFindingVertexEvents, Array<(data: any) => void>>();
+  private _dijkstraEvents = new Map<keyof DijkstraVertexEvents, Array<(data: any) => void>>();
 
-  private _targetSourceMap: IPathFindingTargetSourceMap = new Map<
-    PathFindingGraphVertex["id"],
-    IPathFindingSourceMap
+  private _targetSourceMap: IDijkstraTargetSourceMap = new Map<
+    DijkstraGraphVertex["id"],
+    IDijkstraSourceMap
   >();
 
-  private _entry: Nullable<PathFindingGraphVertex> = null;
+  private _entry: Nullable<DijkstraGraphVertex> = null;
 
-  set entry(vertex: PathFindingGraphVertex) {
+  set entry(vertex: DijkstraGraphVertex) {
     this._entry = vertex;
-    this._pathFindingEvents.get("entry-point-change")?.forEach((cb) => cb(this._entry));
+    this._dijkstraEvents.get("entry-point-change")?.forEach((cb) => cb(this._entry));
   }
 
   get entry() {
@@ -42,19 +42,19 @@ class PathFindingGraph extends Graph<IPathFindingGraphVertex, IPathFindingGraphE
     return this._targets.length === this._currentTargetIndex;
   }
 
-  public tracePathToSource(vertex: PathFindingGraphVertex, target?: PathFindingGraphVertex) {
+  public tracePathToSource(vertex: DijkstraGraphVertex, target?: DijkstraGraphVertex) {
     const targetNode = target || this.currentTarget;
     const mp = this._targetSourceMap.get(targetNode.id);
     if (!mp) throw new Error(`could not find source map for ${targetNode.label}`);
     const pathVertexId = [];
-    let currentVertexId: Nullable<PathFindingGraphVertex["id"]> = vertex.id;
+    let currentVertexId: Nullable<DijkstraGraphVertex["id"]> = vertex.id;
     while (currentVertexId) {
       pathVertexId.push(currentVertexId);
       currentVertexId = mp.get(currentVertexId) || null;
     }
     const path = pathVertexId.reverse().map((vertexId) => this.getVertexById(vertexId));
 
-    this._pathFindingEvents.get("trace-to-source")?.forEach((cb) => cb(path));
+    this._dijkstraEvents.get("trace-to-source")?.forEach((cb) => cb(path));
   }
 
   moveToNextTarget() {
@@ -62,32 +62,32 @@ class PathFindingGraph extends Graph<IPathFindingGraphVertex, IPathFindingGraphE
     this._currentTargetIndex += 1;
   }
 
-  visitVertex = (vertex: PathFindingGraphVertex, source: PathFindingGraphVertex) => {
+  visitVertex = (vertex: DijkstraGraphVertex, source: DijkstraGraphVertex) => {
     if (!this._targetSourceMap.get(this.currentTarget.id)) this._targetSourceMap.set(this.currentTarget.id, new Map());
     const tSourceMap = this._targetSourceMap.get(this.currentTarget.id)!;
     tSourceMap.set(vertex.id, source.id);
-    this._pathFindingEvents.get("visit")?.forEach((cb) => cb(vertex));
+    this._dijkstraEvents.get("visit")?.forEach((cb) => cb(vertex));
   };
 
   get targets() {
     return this._targets;
   }
 
-  addTarget(vertex: PathFindingGraphVertex) {
+  addTarget(vertex: DijkstraGraphVertex) {
     this._targets.push(vertex);
-    this._pathFindingEvents.get("targets-update")?.forEach((cb) => cb(this.targets));
+    this._dijkstraEvents.get("targets-update")?.forEach((cb) => cb(this.targets));
   }
 
-  removeTarget(vertexId: PathFindingGraphVertex["id"]) {
+  removeTarget(vertexId: DijkstraGraphVertex["id"]) {
     const vertex = this.targets.find((v) => v.id === vertexId);
     if (!vertex) throw new Error(`Could not find a vertex with given ID: ${vertexId} in target list`);
     this._targets = this.targets.filter((v) => v.id !== vertexId);
-    this._pathFindingEvents.get("targets-update")?.forEach((cb) => cb(this.targets));
+    this._dijkstraEvents.get("targets-update")?.forEach((cb) => cb(this.targets));
   }
 
   updateEdgeData(
-    edgeId: PathFindingGraphEdge["id"],
-    updateCallback: (e: PathFindingGraphEdge["data"]) => PathFindingGraphEdge["data"]
+    edgeId: DijkstraGraphEdge["id"],
+    updateCallback: (e: DijkstraGraphEdge["data"]) => DijkstraGraphEdge["data"]
   ) {
     const edge = this._edges.get(edgeId);
     if (!edge) throw new Error(`could not find a edge with ID: ${edgeId}`);
@@ -95,16 +95,16 @@ class PathFindingGraph extends Graph<IPathFindingGraphVertex, IPathFindingGraphE
 
     edge.data = newData;
 
-    this._pathFindingEvents.get("edge-change")?.forEach((cb) => cb(edge));
+    this._dijkstraEvents.get("edge-change")?.forEach((cb) => cb(edge));
   }
 
-  onPathFinding = <T extends keyof PathFindingVertexEvents>(
+  onDijkstra = <T extends keyof DijkstraVertexEvents>(
     eventType: T,
-    callback: (data: PathFindingVertexEvents[T]) => void
+    callback: (data: DijkstraVertexEvents[T]) => void
   ) => {
-    const events = this._pathFindingEvents.get(eventType) || [];
-    this._pathFindingEvents.set(eventType, [...events, callback]);
+    const events = this._dijkstraEvents.get(eventType) || [];
+    this._dijkstraEvents.set(eventType, [...events, callback]);
   };
 }
 
-export default PathFindingGraph;
+export default DijkstraGraph;

@@ -1,19 +1,19 @@
 import Heap from "@models/DataStructure/Heap";
-import PathFindingGraph from "@models/DataStructure/Graph/PathFinding";
+import DijkstraGraph from "@models/DataStructure/Graph/Dijkstra";
 import type { IAlgorithm } from "@_types/algorithm";
-import type { PathFindingGraphVertex } from "@_types/context/pathFinding";
+import type { DijkstraGraphVertex } from "@_types/context/dijkstra";
 
-type dijkstraPQueue = { cost: number; vertex: PathFindingGraphVertex; source: PathFindingGraphVertex };
+type dijkstraPQueue = { cost: number; vertex: DijkstraGraphVertex; source: DijkstraGraphVertex };
 
 class DijkstraAlgorithm implements IAlgorithm {
   private _candidateNodesPQueue = new Heap<dijkstraPQueue>((a, b) => a.cost - b.cost);
 
   private _visitSet = new Set();
 
-  private _graph: PathFindingGraph;
+  private _graph: DijkstraGraph;
   private _step = 0;
 
-  constructor(graph: PathFindingGraph) {
+  constructor(graph: DijkstraGraph) {
     this._graph = graph;
   }
 
@@ -53,7 +53,7 @@ class DijkstraAlgorithm implements IAlgorithm {
     return true;
   }
 
-  private _initializeHeap(startingVertex: PathFindingGraphVertex) {
+  private _initializeHeap(startingVertex: DijkstraGraphVertex) {
     this._candidateNodesPQueue = new Heap<dijkstraPQueue>((a, b) => a.cost - b.cost);
     this._visitSet = new Set();
 

@@ -1,15 +1,15 @@
-import PathFindingGraph from "@models/DataStructure/Graph/PathFinding";
+import DijkstraGraph from "@models/DataStructure/Graph/Dijkstra";
 import Stack from "@models/DataStructure/Stack";
 import NumberUtils from "@utils/Number";
 import type { Nullable, NoneToVoidFunction } from "ts-wiz";
 import type { IAlgorithm } from "@_types/algorithm";
-import type { PathFindingGraphVertex } from "@_types/context/pathFinding";
+import type { DijkstraGraphVertex } from "@_types/context/dijkstra";
 
 class RecursiveBacktracking implements IAlgorithm {
-  private _graph: PathFindingGraph;
-  private _pathTrace = new Stack<PathFindingGraphVertex>();
+  private _graph: DijkstraGraph;
+  private _pathTrace = new Stack<DijkstraGraphVertex>();
   private _visitedVertices = new Set();
-  private _currentVertex: Nullable<PathFindingGraphVertex> = null;
+  private _currentVertex: Nullable<DijkstraGraphVertex> = null;
   private _step = 0;
 
   private goOn() {
@@ -31,7 +31,7 @@ class RecursiveBacktracking implements IAlgorithm {
   reset() {
     this._step = 0;
     this._visitedVertices = new Set();
-    this._pathTrace = new Stack<PathFindingGraphVertex>();
+    this._pathTrace = new Stack<DijkstraGraphVertex>();
     this._currentVertex = this._graph.entry;
   }
 
@@ -65,7 +65,7 @@ class RecursiveBacktracking implements IAlgorithm {
     }
   };
 
-  constructor(graph: PathFindingGraph) {
+  constructor(graph: DijkstraGraph) {
     this._graph = graph;
   }
 }

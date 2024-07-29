@@ -1,7 +1,7 @@
 import * as D3 from "d3";
 import { grey } from "@mui/material/colors";
 import $ from "jquery";
-import DijkstraGraphView from "@models/Visualization/PathFinding/graphView";
+import DijkstraGraphView from "@models/Visualization/Dijkstra/graphView";
 import { DOCUMENT_CLASS_CONSTANTS, DOCUMENT_ID_CONSTANTS } from "@constants/DOM";
 import {
   BLANK_COLOR,
@@ -9,31 +9,31 @@ import {
   DEFAULT_VERTEX_STROKE_WIDTH,
   ENTRY_COLOR,
   TARGET_COLOR_LIST,
-} from "@constants/visualization/pathFinding";
+} from "@constants/visualization/dijkstra";
 import { INFINITE_CANVAS_TOOLTIP } from "@constants/view";
 import type { Nullable } from "ts-wiz";
 import type { coordinate } from "@_types/coordinate";
 import type {
-  pathFindingDropdownMenuButtonType,
-  PathFindingGraphEdge,
-  PathFindingGraphVertex,
-  pathFindingGraphVertexNodeType,
-} from "@_types/context/pathFinding";
+  DijkstraDropdownMenuButtonType,
+  DijkstraGraphEdge,
+  DijkstraGraphVertex,
+  DijkstraGraphVertexNodeType,
+} from "@_types/context/dijkstra";
 
-class PathfindingVisualizerDOMHelper {
+class DijkstraVisualizerDOMHelper {
   tooltip_x_shift = 20;
   tooltip_y_shift = 0;
   vertexRadius = DEFAULT_VERTEX_RADIUS;
   vertexStrokeWidth = DEFAULT_VERTEX_STROKE_WIDTH;
   wallHeight = DEFAULT_VERTEX_RADIUS;
-  targetsColor = new Map<PathFindingGraphVertex["id"], string>();
+  targetsColor = new Map<DijkstraGraphVertex["id"], string>();
 
   _vertexDocumentIdMap = new Map<
-    PathFindingGraphVertex["id"],
+    DijkstraGraphVertex["id"],
     D3.Selection<SVGCircleElement, unknown, HTMLElement, any>
   >();
   _edgeDocumentIdMap = new Map<
-    PathFindingGraphVertex["id"],
+    DijkstraGraphVertex["id"],
     [D3.Selection<SVGLineElement, unknown, HTMLElement, any>, D3.Selection<SVGLineElement, unknown, HTMLElement, any>]
   >();
 
@@ -46,7 +46,7 @@ class PathfindingVisualizerDOMHelper {
     this._view = graphView;
   }
 
-  public renderTooltip = (x: number, y: number, vertex: PathFindingGraphVertex) => {
+  public renderTooltip = (x: number, y: number, vertex: DijkstraGraphVertex) => {
     const tooltipElement = $("<div></div>")
       .attr("id", "infinite-canvas-tooltip")
       .css({
@@ -64,14 +64,14 @@ class PathfindingVisualizerDOMHelper {
     return tooltipElement;
   };
 
-  private _tooltipContent = (vertex: PathFindingGraphVertex) => {
+  private _tooltipContent = (vertex: DijkstraGraphVertex) => {
     const tooltipContentContainer = $("<div></div>").css({ display: "flex" });
     const coordinateText = `Coordinate: [${vertex.data.x}, ${vertex.data.y}]`;
     tooltipContentContainer.text(coordinateText);
     return tooltipContentContainer;
   };
 
-  private _createDropdownButton(btnAttributes: pathFindingDropdownMenuButtonType) {
+  private _createDropdownButton(btnAttributes: DijkstraDropdownMenuButtonType) {
     return $("<button></button>")
       .addClass("btn btn-sm btn-secondary bg-dark")
       .text(btnAttributes.label)
@@ -81,7 +81,7 @@ class PathfindingVisualizerDOMHelper {
   public createDropDownContainer(
     x: coordinate["x"],
     y: coordinate["y"],
-    buttons: Array<pathFindingDropdownMenuButtonType>
+    buttons: Array<DijkstraDropdownMenuButtonType>
   ) {
     const dropdownContainerElement = $("<div></div>")
       .attr("id", DOCUMENT_ID_CONSTANTS.VIEW.PATH_FINDING.TOOLTIP_CONTAINER)
@@ -112,7 +112,7 @@ class PathfindingVisualizerDOMHelper {
     return vertexSVG.attr("fill", grey["100"]);
   }
 
-  public renderPathfindingBlankVertex(vertex: PathFindingGraphVertex) {
+  public renderDijkstraBlankVertex(vertex: DijkstraGraphVertex) {
     const root = D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT} g`);
 
     const vertexSVG = root
@@ -131,7 +131,7 @@ class PathfindingVisualizerDOMHelper {
 
   updateVertexAppearance(
     vertex: D3.Selection<SVGCircleElement, unknown, HTMLElement, any>,
-    vertexType: pathFindingGraphVertexNodeType
+    vertexType: DijkstraGraphVertexNodeType
   ) {
     // const color = vertexType === "blank" ? BLANK_COLOR : vertexType === "entry" ? ENTRY_COLOR : this.getColorForTarget(vertex);
 
@@ -142,13 +142,13 @@ class PathfindingVisualizerDOMHelper {
     }
   }
 
-  getColorForTarget(vertex: PathFindingGraphVertex) {
+  getColorForTarget(vertex: DijkstraGraphVertex) {
     const color = TARGET_COLOR_LIST[this.targetsColor.size % TARGET_COLOR_LIST.length];
     this.targetsColor.set(vertex.id, color);
     return color;
   }
 
-  renderNewEntryPoint(v: PathFindingGraphVertex) {
+  renderNewEntryPoint(v: DijkstraGraphVertex) {
     this._entryPoint?.attr("fill", BLANK_COLOR);
     const vertexDocumentRef = this._vertexDocumentIdMap.get(v.id);
     if (!vertexDocumentRef) throw new Error(`could not find node with ID ${v.id}`);
@@ -156,10 +156,10 @@ class PathfindingVisualizerDOMHelper {
     this._entryPoint = vertexDocumentRef;
   }
 
-  renderUpdatedTargets(vertices: Array<PathFindingGraphVertex>) {
+  renderUpdatedTargets(vertices: Array<DijkstraGraphVertex>) {
     this._targetPoints.forEach((t) => t.attr("fill", BLANK_COLOR));
     this._targetPoints = [];
-    this.targetsColor = new Map<PathFindingGraphVertex["id"], string>();
+    this.targetsColor = new Map<DijkstraGraphVertex["id"], string>();
 
     vertices.forEach((v) => {
       const documentNode = this._vertexDocumentIdMap.get(v.id);
@@ -169,14 +169,14 @@ class PathfindingVisualizerDOMHelper {
     });
   }
 
-  renderTraceToSourceEvent(vertices: Array<PathFindingGraphVertex>) {
+  renderTraceToSourceEvent(vertices: Array<DijkstraGraphVertex>) {
     vertices.forEach((v) => {
       const docElementReference = this._vertexDocumentIdMap.get(v.id);
       docElementReference?.attr("stroke-width", 7).attr("stroke", "yellow");
     });
   }
 
-  renderVisitEvent(v: PathFindingGraphVertex, currentTargetId: PathFindingGraphVertex["id"]) {
+  renderVisitEvent(v: DijkstraGraphVertex, currentTargetId: DijkstraGraphVertex["id"]) {
     const docElementReference = this._vertexDocumentIdMap.get(v.id);
     const t = D3.transition().duration(800).ease(D3.easeBack);
     if (!docElementReference) throw new Error(`could not find document element with ID: ${v.id}`);
@@ -184,7 +184,7 @@ class PathfindingVisualizerDOMHelper {
     docElementReference.transition(t).attr("fill", color);
   }
 
-  public renderPathfindingVertex(vertex: PathFindingGraphVertex, vertexType: pathFindingGraphVertexNodeType) {
+  public renderDijkstraVertex(vertex: DijkstraGraphVertex, vertexType: DijkstraGraphVertexNodeType) {
     const root = D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT} g`);
 
     const color =
@@ -208,7 +208,7 @@ class PathfindingVisualizerDOMHelper {
     return vertexSVG;
   }
 
-  private _calculateVerticalIntersectingLine(edge: PathFindingGraphEdge): [coordinate, coordinate] {
+  private _calculateVerticalIntersectingLine(edge: DijkstraGraphEdge): [coordinate, coordinate] {
     const DX = edge.from.data.x - edge.to.data.x;
     const DY = edge.from.data.y - edge.to.data.y;
 
@@ -225,7 +225,7 @@ class PathfindingVisualizerDOMHelper {
     ];
   }
 
-  public renderPathfindingEdge(edge: PathFindingGraphEdge) {
+  public renderDijkstraEdge(edge: DijkstraGraphEdge) {
     const rootSVGElement = D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT} g`);
 
     const isWall = edge.data.blocked;
@@ -256,7 +256,7 @@ class PathfindingVisualizerDOMHelper {
     this._edgeDocumentIdMap.set(edge.id, [edgeConnectorLine, edgeWallLine]);
   }
 
-  public updateEdge(edge: PathFindingGraphEdge) {
+  public updateEdge(edge: DijkstraGraphEdge) {
     const isWall = edge.data.blocked;
     const edgeSVG = this._edgeDocumentIdMap.get(edge.id);
 
@@ -269,11 +269,11 @@ class PathfindingVisualizerDOMHelper {
 
   public renderVisitVertex(
     vertexSVG: D3.Selection<SVGCircleElement, unknown, HTMLElement, any> | undefined,
-    currentTargetId: PathFindingGraphVertex["id"]
+    currentTargetId: DijkstraGraphVertex["id"]
   ) {
     const transitionObject = D3.transition().duration(1000).ease(D3.easeBounce);
     vertexSVG?.transition(transitionObject).attr("fill", this.targetsColor.get(currentTargetId)!);
   }
 }
 
-export default PathfindingVisualizerDOMHelper;
+export default DijkstraVisualizerDOMHelper;

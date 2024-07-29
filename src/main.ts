@@ -1,5 +1,5 @@
 import $ from "jquery";
-import DijkstraVisualization from "@models/Visualization/PathFinding";
+import DijkstraVisualization from "@models/Visualization/Dijkstra";
 import Stage from "@models/Stage";
 import type { NoneToVoidFunction } from "ts-wiz";
 import "./scss/main.scss";

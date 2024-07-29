@@ -1,10 +1,10 @@
-import PathFindingGraph from ".";
+import DijkstraGraph from ".";
 import NumberUtils from "@utils/Number";
 import type { GraphTopology, gridGraphOptions, IGraphFactory, randomizedGraphOptions } from "@_types/dataStructure/graph";
-import type { IPathFindingGraphEdge, IPathFindingGraphVertex, PathFindingGraphVertex } from "@_types/context/pathFinding";
+import type { IDijkstraGraphEdge, IDijkstraGraphVertex, DijkstraGraphVertex } from "@_types/context/dijkstra";
 
-class PathfindingGraphFactory
-  implements IGraphFactory<IPathFindingGraphVertex, IPathFindingGraphEdge, PathFindingGraph>
+class DijkstraGraphFactory
+  implements IGraphFactory<IDijkstraGraphVertex, IDijkstraGraphEdge, DijkstraGraph>
 {
   size: number = 10;
   topology: GraphTopology = "mesh";
@@ -13,7 +13,7 @@ class PathfindingGraphFactory
   createGrid(options: gridGraphOptions) {
     const { gap, width, height, entry, targets } = options;
     const mat: Array<Array<any>> = Array.from(Array(width).keys()).map(() => new Array(height));
-    const graph = new PathFindingGraph("undirected");
+    const graph = new DijkstraGraph("undirected");
 
     const isValidEntry = entry[0] < width && entry[1] < height;
     const isValidTarget = targets.every(([x, y]) => x < width && y < height);
@@ -55,8 +55,8 @@ class PathfindingGraphFactory
     const { size } = options;
 
     const PICK_PORTION = 0.01;
-    const graph = new PathFindingGraph("undirected");
-    const vertices: Array<PathFindingGraphVertex> = new Array(size);
+    const graph = new DijkstraGraph("undirected");
+    const vertices: Array<DijkstraGraphVertex> = new Array(size);
 
     for (let i = 0; i < size; i++) {
       const vertexRef = graph.addVertex(`${i}`, {
@@ -66,7 +66,7 @@ class PathfindingGraphFactory
       vertices[i] = vertexRef;
     }
 
-    const getDistance = (v1: PathFindingGraphVertex, v2: PathFindingGraphVertex) => {
+    const getDistance = (v1: DijkstraGraphVertex, v2: DijkstraGraphVertex) => {
       const DX = v2.data.x - v1.data.x;
       const DY = v2.data.y - v1.data.y;
       return Math.sqrt(DX ** 2 + DY ** 2);
@@ -91,4 +91,4 @@ class PathfindingGraphFactory
   };
 }
 
-export default PathfindingGraphFactory;
+export default DijkstraGraphFactory;

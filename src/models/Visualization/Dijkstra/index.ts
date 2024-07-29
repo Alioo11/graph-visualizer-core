@@ -1,8 +1,8 @@
 import DijkstraAlgorithm from "./Algorithms/dijkstra";
 import DijkstraGraphView from "./graphView";
-import RecursiveBacktracking from "@models/Visualization/PathFinding/Algorithms/recursiveBacktracking";
-import PathFindingGraph from "@models/DataStructure/Graph/PathFinding";
-import PathfindingGraphFactory from "@models/DataStructure/Graph/PathFinding/factory";
+import RecursiveBacktracking from "@models/Visualization/Dijkstra/Algorithms/recursiveBacktracking";
+import DijkstraGraph from "@models/DataStructure/Graph/Dijkstra";
+import DijkstraGraphFactory from "@models/DataStructure/Graph/Dijkstra/factory";
 import ExecutionPhase from "@models/ExecutionPhase";
 import getWaiterFn from "@helpers/getWaiter";
 import type { IAlgorithm } from "@_types/algorithm";
@@ -11,11 +11,11 @@ import type { IVisualization, VisualizationSpeed } from "@_types/visualization";
 import type { graphFactoryOptionMap, gridGraphOptions, randomizedGraphOptions } from "@_types/dataStructure/graph";
 
 class DijkstraVisualization<T extends keyof graphFactoryOptionMap> implements IVisualization {
-  private _graph: PathFindingGraph;
+  private _graph: DijkstraGraph;
   private _status = ExecutionPhase.instance();
   private _isAlgorithmRunning = false;
   speed: VisualizationSpeed = "fast";
-  graphFactory = new PathfindingGraphFactory();
+  graphFactory = new DijkstraGraphFactory();
   mainView: DijkstraGraphView;
   algorithm: IAlgorithm;
   recursiveBacktrackingMazeGenerationAlgorithm: IAlgorithm;
