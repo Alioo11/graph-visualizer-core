@@ -153,7 +153,6 @@ abstract class InfiniteCanvasView<T> extends View<T> {
   public zoomOut() {
     this._zoomBy(0.5);
   }
-
   public init = (rootHTMLElement: HTMLDivElement) => {
     this.createWrapperElement(rootHTMLElement);
     if (!this.documentRef) throw new Error("infinite canvas document ref is not initialized");
@@ -163,6 +162,7 @@ abstract class InfiniteCanvasView<T> extends View<T> {
     this.DOMHelper.initGrid();
     this._initNavigationButtons();
     this.onReady?.();
+    this._events.get("ready")?.forEach((cb) => cb(this.documentRef));
   };
 
   public onInfiniteCanvas = <T extends keyof IInfiniteCanvasEventsMap>(
