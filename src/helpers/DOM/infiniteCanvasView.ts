@@ -258,12 +258,7 @@ class InfiniteCanvasViewDOMHelper {
   }
 
   initGrid() {
-    const D3LayerSelection = this.createLayer(
-      DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.GRID.ROOT,
-      INFINITE_CANVAS_GRID_LAYER_Z_INDEX,
-      true
-    );
-
+    this.createLayer(DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.GRID.ROOT, INFINITE_CANVAS_GRID_LAYER_Z_INDEX, true);
     this.renderGrid();
   }
 

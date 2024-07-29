@@ -2,7 +2,7 @@ import { IDijkstraVisualizationOptions } from "@_types/context/pathFinding";
 import { blue, green, grey, red } from "@mui/material/colors";
 
 export const DEFAULT_VERTEX_RADIUS = 25;
-export const DEFAULT_VERTEX_STROKE_WIDTH = 1;
+export const DEFAULT_VERTEX_STROKE_WIDTH = 5;
 
 export const ENTRY_COLOR = blue["A700"];
 export const BLANK_COLOR = grey["100"];

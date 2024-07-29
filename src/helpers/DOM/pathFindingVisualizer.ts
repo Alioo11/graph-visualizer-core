@@ -239,8 +239,8 @@ class PathfindingVisualizerDOMHelper {
       .attr("y1", edge.from.data.y)
       .attr("x2", edge.to.data.x)
       .attr("y2", edge.to.data.y)
-      .attr("stroke-width", 0.4)
-      .attr("stroke", grey[900]);
+      .attr("stroke-width", 4)
+      .attr("stroke", grey[200]);
 
     const edgeWallLine = rootSVGElement
       .append("line")

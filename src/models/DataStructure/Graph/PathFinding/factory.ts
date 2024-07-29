@@ -54,7 +54,7 @@ class PathfindingGraphFactory
   randomizedGraph(options: randomizedGraphOptions) {
     const { size } = options;
 
-    const PICK_PORTION = 0.1;
+    const PICK_PORTION = 0.01;
     const graph = new PathFindingGraph("undirected");
     const vertices: Array<PathFindingGraphVertex> = new Array(size);
 

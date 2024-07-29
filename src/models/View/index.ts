@@ -8,7 +8,7 @@ abstract class View<T> implements IView<T> {
   abstract documentRef: Nullable<HTMLDivElement>;
   abstract dataStructure: IDataStructure<T>;
   abstract onReady: Nullable<NoneToVoidFunction>;
-  private _events = new Map<keyof IViewEventMap, Array<(data: any) => void>>();
+  protected _events = new Map<keyof IViewEventMap, Array<(data: any) => void>>();
   visible: boolean = true;
   documentRootId: string;
 
