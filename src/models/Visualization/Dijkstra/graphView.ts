@@ -10,10 +10,13 @@ import type {
   DijkstraDropdownMenuButtonType,
   DijkstraGraphVertex,
   DijkstraGraphVertexNodeType,
+  dijkstraPQueue,
 } from "@_types/context/dijkstra";
+import Heap from "@models/DataStructure/Heap";
 
 class DijkstraGraphView extends InfiniteCanvasView<unknown> {
   dataStructure: DijkstraGraph;
+  heap: Heap<dijkstraPQueue>;
   documentRef: Nullable<HTMLDivElement> = null;
   private _dijkstraEvents = new Map<keyof IDijkstraGraphViewEventsMap, Array<(data: any) => void>>();
   private _focusedVertex: Nullable<DijkstraGraphVertex> = null;
@@ -71,9 +74,10 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown> {
     return this._focusedVertex;
   }
 
-  constructor(graph: DijkstraGraph) {
+  constructor(graph: DijkstraGraph, heap: Heap<dijkstraPQueue>) {
     super();
     this.dataStructure = graph;
+    this.heap = heap;
     this.DijkstraDOMHelper = new DijkstraVisualizerDOMHelper(this);
   }
 
@@ -142,6 +146,7 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown> {
     this.dataStructure.onDijkstra("entry-point-change", (v) => this.DijkstraDOMHelper.renderNewEntryPoint(v));
     this.dataStructure.onDijkstra("targets-update", (v) => this.DijkstraDOMHelper.renderUpdatedTargets(v));
     this.dataStructure.onDijkstra("edge-change", (e) => this.DijkstraDOMHelper.updateEdge(e));
+    this.heap.on("push", (e)=> this.DijkstraDOMHelper.pushToHeap(e[0].vertex));
   }
 
   private _renderVisitEvent(v: DijkstraGraphVertex) {

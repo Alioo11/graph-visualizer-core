@@ -1,9 +1,14 @@
 import EventManager from "@models/EventManager";
-import { Heap as HeapJs } from "heap-js";
+import { Comparator, Heap as HeapJs } from "heap-js";
 import type { HeapEventMap } from "@_types/dataStructure/heap";
 
 class Heap<T> extends HeapJs<T> {
-  private _events = new EventManager<HeapEventMap<T>>();
+  private _events: EventManager<HeapEventMap<T>>;
+
+  constructor(compare?: Comparator<T> | undefined) {
+    super(compare);
+    this._events = new EventManager<HeapEventMap<T>>();
+  }
 
   push(...elements: T[]): boolean {
     const res = super.push(...elements);

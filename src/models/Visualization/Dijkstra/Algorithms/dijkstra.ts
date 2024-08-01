@@ -1,20 +1,20 @@
 import Heap from "@models/DataStructure/Heap";
 import DijkstraGraph from "@models/DataStructure/Graph/Dijkstra";
 import type { IAlgorithm } from "@_types/algorithm";
-import type { DijkstraGraphVertex } from "@_types/context/dijkstra";
+import type { DijkstraGraphVertex, dijkstraPQueue } from "@_types/context/dijkstra";
 
-type dijkstraPQueue = { cost: number; vertex: DijkstraGraphVertex; source: DijkstraGraphVertex };
 
 class DijkstraAlgorithm implements IAlgorithm {
-  private _candidateNodesPQueue = new Heap<dijkstraPQueue>((a, b) => a.cost - b.cost);
+  private _candidateNodesPQueue : Heap<dijkstraPQueue>;
 
   private _visitSet = new Set();
 
   private _graph: DijkstraGraph;
   private _step = 0;
 
-  constructor(graph: DijkstraGraph) {
+  constructor(graph: DijkstraGraph , heap:Heap<dijkstraPQueue>) {
     this._graph = graph;
+    this._candidateNodesPQueue = heap;
   }
 
   get isFinished() {
@@ -54,7 +54,7 @@ class DijkstraAlgorithm implements IAlgorithm {
   }
 
   private _initializeHeap(startingVertex: DijkstraGraphVertex) {
-    this._candidateNodesPQueue = new Heap<dijkstraPQueue>((a, b) => a.cost - b.cost);
+    this._candidateNodesPQueue.removeAll();
     this._visitSet = new Set();
 
     this._visitSet.add(startingVertex.id);

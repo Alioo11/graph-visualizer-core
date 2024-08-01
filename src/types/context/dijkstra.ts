@@ -51,3 +51,5 @@ export interface DijkstraDropdownMenuButtonType {
   callback: () => void;
   props?: any;
 }
+
+export type dijkstraPQueue = { cost: number; vertex: DijkstraGraphVertex; source: DijkstraGraphVertex };

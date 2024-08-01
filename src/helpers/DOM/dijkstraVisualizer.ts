@@ -1,5 +1,5 @@
 import * as D3 from "d3";
-import { grey } from "@mui/material/colors";
+import { blue, green, grey } from "@mui/material/colors";
 import $ from "jquery";
 import DijkstraGraphView from "@models/Visualization/Dijkstra/graphView";
 import { DOCUMENT_CLASS_CONSTANTS, DOCUMENT_ID_CONSTANTS } from "@constants/DOM";
@@ -254,6 +254,12 @@ class DijkstraVisualizerDOMHelper {
       .attr("stroke", isWall ? grey["600"] : null);
 
     this._edgeDocumentIdMap.set(edge.id, [edgeConnectorLine, edgeWallLine]);
+  }
+
+  public pushToHeap(v: DijkstraGraphVertex) {
+    const vertexSelection = this._vertexDocumentIdMap.get(v.id);
+    vertexSelection?.attr("fill", green["300"]);
+    const rootSelection = D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT} g`);
   }
 
   public updateEdge(edge: DijkstraGraphEdge) {
