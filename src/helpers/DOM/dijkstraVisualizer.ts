@@ -1,5 +1,5 @@
 import * as D3 from "d3";
-import { blue, green, grey } from "@mui/material/colors";
+import { green, grey } from "@mui/material/colors";
 import $ from "jquery";
 import DijkstraGraphView from "@models/Visualization/Dijkstra/graphView";
 import { DOCUMENT_CLASS_CONSTANTS, DOCUMENT_ID_CONSTANTS } from "@constants/DOM";
@@ -64,6 +64,18 @@ class DijkstraVisualizerDOMHelper {
     return tooltipElement;
   };
 
+  mapVertexToD3Selection(vertex: DijkstraGraphVertex) {
+    const vertexD3Selection = this._vertexDocumentIdMap.get(vertex.id);
+    if (!vertexD3Selection) throw new Error(`could not find vertex with ID ${vertex.id}`);
+    return vertexD3Selection;
+  }
+
+  mapEdgeToD3Selection(edge: DijkstraGraphEdge) {
+    const edgeD3Selection = this._edgeDocumentIdMap.get(edge.id);
+    if (!edgeD3Selection) throw new Error(`could not find vertex with ID ${edge.id}`);
+    return edgeD3Selection;
+  }
+
   private _tooltipContent = (vertex: DijkstraGraphVertex) => {
     const tooltipContentContainer = $("<div></div>").css({ display: "flex" });
     const coordinateText = `Coordinate: [${vertex.data.x}, ${vertex.data.y}]`;
@@ -73,7 +85,7 @@ class DijkstraVisualizerDOMHelper {
 
   private _createDropdownButton(btnAttributes: DijkstraDropdownMenuButtonType) {
     return $("<button></button>")
-      .addClass("btn btn-sm btn-secondary bg-dark")
+      .addClass("btn btn-sm custom-btn")
       .text(btnAttributes.label)
       .click(btnAttributes.callback);
   }
@@ -150,8 +162,7 @@ class DijkstraVisualizerDOMHelper {
 
   renderNewEntryPoint(v: DijkstraGraphVertex) {
     this._entryPoint?.attr("fill", BLANK_COLOR);
-    const vertexDocumentRef = this._vertexDocumentIdMap.get(v.id);
-    if (!vertexDocumentRef) throw new Error(`could not find node with ID ${v.id}`);
+    const vertexDocumentRef = this.mapVertexToD3Selection(v);
     vertexDocumentRef.transition().attr("fill", ENTRY_COLOR);
     this._entryPoint = vertexDocumentRef;
   }
@@ -162,10 +173,9 @@ class DijkstraVisualizerDOMHelper {
     this.targetsColor = new Map<DijkstraGraphVertex["id"], string>();
 
     vertices.forEach((v) => {
-      const documentNode = this._vertexDocumentIdMap.get(v.id);
-      if (!documentNode) throw new Error(`could not find document node with ID ${v.id}`);
+      const documentNode = this.mapVertexToD3Selection(v);
       this._targetPoints.push(documentNode);
-      documentNode.attr("fill", this.getColorForTarget(v));
+      documentNode.transition().attr("fill", this.getColorForTarget(v));
     });
   }
 
@@ -177,11 +187,10 @@ class DijkstraVisualizerDOMHelper {
   }
 
   renderVisitEvent(v: DijkstraGraphVertex, currentTargetId: DijkstraGraphVertex["id"]) {
-    const docElementReference = this._vertexDocumentIdMap.get(v.id);
-    const t = D3.transition().duration(800).ease(D3.easeBack);
-    if (!docElementReference) throw new Error(`could not find document element with ID: ${v.id}`);
+    const vertexD3Selection = this.mapVertexToD3Selection(v);
+    const transition = D3.transition().duration(800).ease(D3.easeBack);
     const color = this.targetsColor.get(currentTargetId)!;
-    docElementReference.transition(t).attr("fill", color);
+    vertexD3Selection.transition(transition).attr("fill", color);
   }
 
   public renderDijkstraVertex(vertex: DijkstraGraphVertex, vertexType: DijkstraGraphVertexNodeType) {
@@ -216,8 +225,8 @@ class DijkstraVisualizerDOMHelper {
     const CY = (edge.from.data.y + edge.to.data.y) / 2;
     const CR = Math.atan2(DY, DX) * -1;
 
-    const DXC = Math.sin(CR) * this.wallHeight;
-    const DYC = Math.cos(CR) * this.wallHeight;
+    const DXC = Math.sin(CR) * (this.wallHeight * 2);
+    const DYC = Math.cos(CR) * (this.wallHeight * 2);
 
     return [
       { x: CX - DXC, y: CY - DYC },
@@ -263,14 +272,14 @@ class DijkstraVisualizerDOMHelper {
   }
 
   public updateEdge(edge: DijkstraGraphEdge) {
-    const isWall = edge.data.blocked;
-    const edgeSVG = this._edgeDocumentIdMap.get(edge.id);
+    const [_,wallSelection] = this.mapEdgeToD3Selection(edge);
 
-    if (!edgeSVG) throw new Error("");
+    if(edge.data.blocked){
 
-    edgeSVG[0];
-
-    edgeSVG[1].attr("stroke-width", isWall ? 4 : null).attr("stroke", isWall ? grey["600"] : null);
+      wallSelection.attr("stroke-width", 4).attr("stroke", grey["900"]);
+    }else {
+      wallSelection.attr("stroke-width", null).attr("stroke", null);
+    }
   }
 
   public renderVisitVertex(
