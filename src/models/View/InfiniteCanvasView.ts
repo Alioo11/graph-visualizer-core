@@ -15,27 +15,26 @@ import {
   INFINITE_CANVAS_TRANSITION_BOUNDARY,
 } from "@constants/view";
 import type { Nullable } from "ts-wiz";
-import type { IInfiniteCanvasEventsMap, infiniteCanvasZoomType } from "@_types/view/infiniteCanvas";
+import type { infiniteCanvasEventMap, infiniteCanvasZoomType } from "@_types/view/infiniteCanvas";
 
-abstract class InfiniteCanvasView<T> extends View<T> {
+abstract class InfiniteCanvasView<T, E extends infiniteCanvasEventMap> extends View<T, E> {
   private _showRuler: boolean = INFINITE_CANVAS_DEFAULT_RULER_VISIBILITY;
   private _showNav: boolean = INFINITE_CANVAS_DEFAULT_RULER_NAVIGATION_BUTTONS_VISIBILITY;
   private _showGrid: boolean = INFINITE_CANVAS_DEFAULT_GRID_VISIBILITY;
-  private _infiniteCanvasEvents = new Map<keyof IInfiniteCanvasEventsMap, Array<(data: any) => void>>();
   private _zoomBehavior: Nullable<D3.ZoomBehavior<Element, unknown>> = null;
-  private DOMHelper:InfiniteCanvasViewDOMHelper;
+  private DOMHelper: InfiniteCanvasViewDOMHelper<T, E>;
   _zoom = DEFAULT_ZOOM;
 
-  constructor(){
+  constructor() {
     super();
     this.DOMHelper = new InfiniteCanvasViewDOMHelper(this);
   }
 
-  get showGrid(){
+  get showGrid() {
     return this._showGrid;
   }
 
-  set showGrid(show:boolean){
+  set showGrid(show: boolean) {
     this._showGrid = show;
     if (this._showGrid) this.DOMHelper.renderGrid();
     else this.DOMHelper.removeGrid();
@@ -64,10 +63,9 @@ abstract class InfiniteCanvasView<T> extends View<T> {
   private set zoom(state: infiniteCanvasZoomType) {
     this._zoom = state;
     this.updateZoom(this._zoom);
-    if(this.showGrid) this.DOMHelper.renderGrid();
-    if (this.showRuler)  this.DOMHelper.renderRulers();
-
-    this._infiniteCanvasEvents.get("zoom")?.forEach((cb) => cb(this._zoom));
+    if (this.showGrid) this.DOMHelper.renderGrid();
+    if (this.showRuler) this.DOMHelper.renderRulers();
+    this._events.call("zoom", this.zoom);
   }
 
   private get zoom() {
@@ -85,7 +83,7 @@ abstract class InfiniteCanvasView<T> extends View<T> {
       INFINITE_CANVAS_CONTENT_LAYER_Z_INDEX
     );
     layer.append("g");
-    layer.on("contextmenu", (e)=>e.preventDefault());
+    layer.on("contextmenu", (e) => e.preventDefault());
     this._zoomBehavior = D3.zoom()
       .scaleExtent(INFINITE_CANVAS_SCALE_BOUNDARY)
       .translateExtent(INFINITE_CANVAS_TRANSITION_BOUNDARY)
@@ -107,7 +105,7 @@ abstract class InfiniteCanvasView<T> extends View<T> {
       position: "absolute",
       bottom: 10,
       left: 50,
-      zIndex:INFINITE_CANVAS_TOOLTIP,
+      zIndex: INFINITE_CANVAS_TOOLTIP,
       backgroundColor: "white",
     });
 
@@ -162,15 +160,7 @@ abstract class InfiniteCanvasView<T> extends View<T> {
     this.DOMHelper.initGrid();
     this._initNavigationButtons();
     this.onReady?.();
-    this._events.get("ready")?.forEach((cb) => cb(this.documentRef));
-  };
-
-  public onInfiniteCanvas = <T extends keyof IInfiniteCanvasEventsMap>(
-    eventType: T,
-    callback: (data: IInfiniteCanvasEventsMap[T]) => void
-  ) => {
-    const events = this._infiniteCanvasEvents.get(eventType) || [];
-    this._infiniteCanvasEvents.set(eventType, [...events, callback]);
+    this._events.call("ready", this.documentRef);
   };
 }
 

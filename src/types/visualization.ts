@@ -1,10 +1,10 @@
 import { NoneToVoidFunction, ValueOf } from "ts-wiz";
 import { IAlgorithm } from "./algorithm";
-import { IView } from "./view";
+import { IView, viewEventMap } from "./view";
 
 export interface IVisualization {
   algorithm: IAlgorithm;
-  views: Array<IView<unknown>>;
+  views: Array<IView<unknown , viewEventMap>>;
   start: NoneToVoidFunction;
 }
 

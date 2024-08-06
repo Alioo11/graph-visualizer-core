@@ -14,11 +14,10 @@ import type {
 } from "@_types/context/dijkstra";
 import Heap from "@models/DataStructure/Heap";
 
-class DijkstraGraphView extends InfiniteCanvasView<unknown> {
+class DijkstraGraphView extends InfiniteCanvasView<unknown , IDijkstraGraphViewEventsMap> {
   dataStructure: DijkstraGraph;
   heap: Heap<dijkstraPQueue>;
   documentRef: Nullable<HTMLDivElement> = null;
-  private _dijkstraEvents = new Map<keyof IDijkstraGraphViewEventsMap, Array<(data: any) => void>>();
   private _focusedVertex: Nullable<DijkstraGraphVertex> = null;
   private DijkstraDOMHelper: DijkstraVisualizerDOMHelper;
 
@@ -103,8 +102,8 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown> {
   }
 
   private _registerDropdownMenus() {
-    this.onDijkstra("vertex-click", (e) => e.button === 2 && (this.focusedVertex = e.vertex));
-    this.onInfiniteCanvas("zoom", () => this.focusedVertex && (this.focusedVertex = null));
+    this.on("vertex-click" , (e)=> e.button === 2 && (this.focusedVertex = e.vertex))
+    this.on("zoom", () => this.focusedVertex && (this.focusedVertex = null));
   }
 
   private _registerVertexDocumentEvents() {
@@ -116,7 +115,7 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown> {
       //@ts-ignore passing event as a reference
       const eventObject: IDijkstraGraphViewEventsMap["vertex-click"] = e;
       eventObject.vertex = vertex;
-      this._dijkstraEvents.get("vertex-click")?.forEach((cb) => cb(eventObject));
+      this._events.call("vertex-click" , eventObject)
     });
   }
 
@@ -129,13 +128,13 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown> {
       //@ts-ignore passing event as a reference
       const eventObject: IDijkstraGraphViewEventsMap["edge-click"] = e;
       eventObject.edge = edge;
-      this._dijkstraEvents.get("edge-click")?.forEach((cb) => cb(eventObject));
+      this._events.call("edge-click" , eventObject)
     });
   }
 
   private _registerDocumentEvents() {
     const rootSVGSelector = $(`#${this.documentRootId} #${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT}`);
-    rootSVGSelector.on("click", (e) => this._dijkstraEvents.get("container-click")?.forEach((cb) => cb(e)));
+    rootSVGSelector.on("click", (e) => this._events.call("container-click" , e));
     this._registerVertexDocumentEvents();
     this._registerEdgeDocumentEvents();
   }
@@ -172,14 +171,6 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown> {
     for (const edge of this.dataStructure.EdgesIter()) this.DijkstraDOMHelper.renderDijkstraEdge(edge);
     for (const vertex of this.dataStructure.iter()) this._renderVertex(vertex);
   }
-
-  onDijkstra = <T extends keyof IDijkstraGraphViewEventsMap>(
-    eventType: T,
-    callback: (data: IDijkstraGraphViewEventsMap[T]) => void
-  ) => {
-    const events = this._dijkstraEvents.get(eventType) || [];
-    this._dijkstraEvents.set(eventType, [...events, callback]);
-  };
 }
 
 export default DijkstraGraphView;

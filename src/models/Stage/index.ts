@@ -2,7 +2,7 @@ import $ from "jquery";
 import stageLayoutMap from "./LayoutStrategy";
 import ExecutionPhase from "@models/ExecutionPhase";
 import type { Nullable } from "ts-wiz";
-import type { IView } from "@_types/view";
+import type { IView, viewEventMap } from "@_types/view";
 import type { IStage, StageLayout } from "@_types/stage";
 import type { IVisualization } from "@_types/visualization";
 
@@ -10,7 +10,7 @@ class Stage implements IStage {
   something = stageLayoutMap;
   documentRoot: HTMLDivElement;
   layout: StageLayout = "layout-1";
-  fullScreenViewRef: Nullable<IView<unknown>> = null;
+  fullScreenViewRef: Nullable<IView<unknown , viewEventMap>> = null;
   private _status: ExecutionPhase;
 
   get status() {

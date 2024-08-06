@@ -10,6 +10,17 @@ body {
     width: "100%";
 }
 
+
+.custom-btn {
+    background-color: var(--bs-dark);
+    color:var(--bs-light);
+}
+
+.custom-btn:hover {
+    background-color: var(--bs-blue);
+    color:var(--bs-light);
+}
+
 #sidebar-wrapper {
     min-height: 100vh;
     margin-left: -20rem;

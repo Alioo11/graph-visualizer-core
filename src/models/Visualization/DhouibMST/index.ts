@@ -7,7 +7,7 @@ import NumberUtils from "@utils/Number";
 import type { DhouibGraphVertex } from "@_types/context/dhouib";
 import type { IAlgorithm } from "@_types/algorithm";
 import type { IVisualization } from "@_types/visualization";
-import type { IView } from "@_types/view";
+import type { IView, viewEventMap } from "@_types/view";
 
 const GRAPH_SIZE = 6;
 
@@ -23,7 +23,7 @@ class DhouibMSTVisualization implements IVisualization {
   private _graph = new DhouibGraph("undirected");
   private _adjacencyMatrix: DhouibAdjacencyMatrix;
 
-  views: IView<unknown>[];
+  views: IView<unknown , viewEventMap>[];
 
   start = async () => {};
 

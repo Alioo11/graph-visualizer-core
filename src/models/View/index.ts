@@ -1,14 +1,16 @@
 import TextUtil from "@utils/Text";
 import type { IDataStructure } from "@_types/dataStructure";
-import type { IView, IViewEventMap } from "@_types/view";
+import type { IView, viewEventMap } from "@_types/view";
 import type { NoneToVoidFunction, Nullable } from "ts-wiz";
+import EventManager from "@models/EventManager";
 
-abstract class View<T> implements IView<T> {
+abstract class View<T,E extends viewEventMap> implements IView<T,E> {
   private documentRootRef: Nullable<HTMLDivElement> = null;
   abstract documentRef: Nullable<HTMLDivElement>;
   abstract dataStructure: IDataStructure<T>;
   abstract onReady: Nullable<NoneToVoidFunction>;
-  protected _events = new Map<keyof IViewEventMap, Array<(data: any) => void>>();
+  protected _events: EventManager<E> =  new EventManager<E>();
+
   visible: boolean = true;
   documentRootId: string;
 
@@ -29,19 +31,19 @@ abstract class View<T> implements IView<T> {
   };
 
   init = (rootHTMLElement: HTMLDivElement) => {
+    if(!this.documentRef) throw new Error(`inconsistent state: expected document ref to be <HTMLDivElement> but got ${this.documentRef}`);
     this.createWrapperElement(rootHTMLElement);
     this.onReady?.();
-    this._events.get("ready")?.forEach((cb) => cb(this.documentRef));
+    this._events.call("ready", this.documentRef);
   };
 
   toggleVisible = () => {
     this.visible = !this.visible;
   };
 
-  on = <T extends keyof IViewEventMap>(eventType: T, callback: (data: IViewEventMap[T]) => void) => {
-    const events = this._events.get(eventType) || [];
-    this._events.set(eventType, [...events, callback]);
-  };
+  on:EventManager<E>["on"] = (eventType , cb)=>{
+    this._events.on(eventType , cb);
+  }
 }
 
 export default View;

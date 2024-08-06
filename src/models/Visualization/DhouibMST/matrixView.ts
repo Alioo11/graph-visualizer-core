@@ -3,10 +3,11 @@ import DhouibAdjacencyMatrix from "@models/DataStructure/AdjacencyMatrix/DhouibA
 import View from "@models/View";
 import type { NoneToVoidFunction, Nullable } from "ts-wiz";
 import type { DhouibAdjacencyMatrixRelation } from "@_types/context/dhouib";
+import { viewEventMap } from "@_types/view";
 
 const CELL_SIZE = 40;
 
-class MatrixView extends View<unknown> {
+class MatrixView extends View<unknown , viewEventMap> {
   documentRef: Nullable<HTMLDivElement> = null;
   dataStructure: DhouibAdjacencyMatrix;
   private _headerDocumentMap = new Map<string, JQuery<HTMLElement>>();

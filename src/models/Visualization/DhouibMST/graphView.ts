@@ -3,9 +3,10 @@ import View from "@models/View";
 import DhouibGraph from "@models/DataStructure/Graph/Dhouib";
 import type { NoneToVoidFunction, Nullable } from "ts-wiz";
 import type { DhouibGraphEdge } from "@_types/context/dhouib";
+import { infiniteCanvasEventMap } from "@_types/view/infiniteCanvas";
 
 const VERTEX_RADIUS = 9;
-class GraphView extends View<unknown> {
+class GraphView extends View<unknown , infiniteCanvasEventMap> {
   private idToVertexMap = new Map<
     string,
     D3.Selection<SVGRectElement, unknown, null, undefined>

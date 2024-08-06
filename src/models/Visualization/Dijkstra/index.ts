@@ -7,7 +7,7 @@ import Heap from "@models/DataStructure/Heap";
 import ExecutionPhase from "@models/ExecutionPhase";
 import getWaiterFn from "@helpers/getWaiter";
 import type { IAlgorithm } from "@_types/algorithm";
-import type { IView } from "@_types/view";
+import type { IView, viewEventMap } from "@_types/view";
 import type { IVisualization, VisualizationSpeed } from "@_types/visualization";
 import type { graphFactoryOptionMap, gridGraphOptions, randomizedGraphOptions } from "@_types/dataStructure/graph";
 import type { dijkstraPQueue } from "@_types/context/dijkstra";
@@ -22,7 +22,7 @@ class DijkstraVisualization<T extends keyof graphFactoryOptionMap> implements IV
   mainView: DijkstraGraphView;
   algorithm: IAlgorithm;
   recursiveBacktrackingMazeGenerationAlgorithm: IAlgorithm;
-  views: IView<unknown>[] = [];
+  views: IView<unknown , viewEventMap>[] = [];
 
   private get _isValidToRunAlgorithm() {
     return this._status.phase === "prepared" || this._status.phase === "visualization-in-progress";
@@ -81,7 +81,7 @@ class DijkstraVisualization<T extends keyof graphFactoryOptionMap> implements IV
   }
 
   constructor() {
-    this._graph = this.graphFactory.createGrid({ width: 30, height: 30, entry: [0, 0], targets: [[9, 9]], gap: 55 });
+    this._graph = this.graphFactory.createGrid({ width: 60, height: 60, entry: [0, 0], targets: [[9, 9]], gap: 100 });
     this._heap = new Heap((a, b) => a.cost - b.cost);
     this.mainView = new DijkstraGraphView(this._graph , this._heap);
     this.algorithm = new DijkstraAlgorithm(this._graph, this._heap);

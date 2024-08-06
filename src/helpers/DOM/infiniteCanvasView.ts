@@ -11,13 +11,14 @@ import {
   infiniteCanvasScaleMapToRulerGap,
 } from "@constants/view";
 import { grey } from "@mui/material/colors";
+import { infiniteCanvasEventMap } from "@_types/view/infiniteCanvas";
 
-class InfiniteCanvasViewDOMHelper {
+class InfiniteCanvasViewDOMHelper<T, E extends infiniteCanvasEventMap> {
   private _rulerWidth: number = INFINITE_CANVAS_DEFAULT_RULER_WIDTH;
   private _rulerFontSize: number = INFINITE_CANVAS_DEFAULT_RULER_FONT_SIZE;
-  private _view: InfiniteCanvasView<unknown>;
+  private _view: InfiniteCanvasView<T, E>;
 
-  constructor(infiniteCanvasView: InfiniteCanvasView<unknown>) {
+  constructor(infiniteCanvasView: InfiniteCanvasView<T, E>) {
     this._view = infiniteCanvasView;
   }
 
@@ -27,7 +28,7 @@ class InfiniteCanvasViewDOMHelper {
     ) as D3.Selection<SVGRectElement, unknown, HTMLElement, any>;
     const D3LayerSelection = D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.RULER.ROOT} g`);
 
-    if(!D3HorizontalRulerSelection) return;
+    if (!D3HorizontalRulerSelection) return;
 
     //@ts-ignore;
     const absoluteHeight = D3HorizontalRulerSelection.node().height.baseVal.value as number;
@@ -49,7 +50,6 @@ class InfiniteCanvasViewDOMHelper {
         .attr("fill", grey["900"])
         .text(tick);
 
-        
       D3LayerSelection.append("line")
         .attr("class", DOCUMENT_CLASS_CONSTANTS.VIEW.INFINITE_CANVAS.RULER_VERTICAL_TICK)
         .attr("x1", this._rulerWidth - 10)
@@ -131,6 +131,14 @@ class InfiniteCanvasViewDOMHelper {
       .attr("height", "100%")
       .attr("fill", grey["100"])
       .attr("boxShadow", "0px 2px 3px rgba(0,0,0,.1)");
+
+    D3LayerSelection.append("line")
+      .attr("x1", this._rulerWidth)
+      .attr("y1", 0)
+      .attr("x2", this._rulerWidth)
+      .attr("y2", 690);
+    //@ts-ignore
+    // console.log(someHeight.node().getBoundingClientRect());
   }
 
   initHorizontalRuler() {
@@ -197,7 +205,7 @@ class InfiniteCanvasViewDOMHelper {
   renderVerticalGrid() {
     const D3GridSelection = D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.GRID.ROOT}`);
 
-    if(!D3GridSelection) return;
+    if (!D3GridSelection) return;
 
     //@ts-ignore
     const absoluteHeight = D3GridSelection.node().height.baseVal.value as number;
@@ -222,7 +230,6 @@ class InfiniteCanvasViewDOMHelper {
     });
   }
 
-
   renderHorizontalGrid() {
     const D3GridSelection = D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.GRID.ROOT}`);
 
@@ -241,7 +248,7 @@ class InfiniteCanvasViewDOMHelper {
     $(`.${DOCUMENT_CLASS_CONSTANTS.VIEW.INFINITE_CANVAS.HORIZONTAL_GRID}`).remove();
 
     rulerTickValues.forEach((tick) => {
-      const [xOffset] = this._view.projectCoord(tick , 0);
+      const [xOffset] = this._view.projectCoord(tick, 0);
       D3GridSelection.append("line")
         .attr("class", DOCUMENT_CLASS_CONSTANTS.VIEW.INFINITE_CANVAS.HORIZONTAL_GRID)
         .attr("x1", xOffset)

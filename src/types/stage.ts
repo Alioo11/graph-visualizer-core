@@ -1,5 +1,5 @@
 import { Nullable } from "ts-wiz";
-import { IView } from "./view";
+import { IView, viewEventMap } from "./view";
 import { IVisualization } from "./visualization";
 
 export type StageLayout = "layout-1" | "layout-2";
@@ -10,7 +10,7 @@ export type StageLayout = "layout-1" | "layout-2";
 export interface IStage {
   documentRoot: HTMLDivElement;
   layout: StageLayout;
-  fullScreenViewRef: Nullable<IView<unknown>>;
+  fullScreenViewRef: Nullable<IView<unknown , viewEventMap>>;
   visualization: Nullable<IVisualization>;
   start: () => Promise<void>;
 }
