@@ -7,7 +7,9 @@ import {
   INFINITE_CANVAS_DEFAULT_RULER_FONT_SIZE,
   INFINITE_CANVAS_DEFAULT_RULER_WIDTH,
   INFINITE_CANVAS_GRID_LAYER_Z_INDEX,
+  INFINITE_CANVAS_PRIMARY_AXIS_STROKE,
   INFINITE_CANVAS_RULER_LAYER_Z_INDEX,
+  INFINITE_CANVAS_SECONDARY_AXIS_STROKE,
   infiniteCanvasScaleMapToRulerGap,
 } from "@constants/view";
 import { grey } from "@mui/material/colors";
@@ -220,13 +222,14 @@ class InfiniteCanvasViewDOMHelper<T, E extends infiniteCanvasEventMap> {
     $(`.${DOCUMENT_CLASS_CONSTANTS.VIEW.INFINITE_CANVAS.VERTICAL_GRID}`).remove();
     rulerTickValues.forEach((tick) => {
       const [_, yOffset] = this._view.projectCoord(0, tick);
+
       D3GridSelection.append("line")
         .attr("class", DOCUMENT_CLASS_CONSTANTS.VIEW.INFINITE_CANVAS.VERTICAL_GRID)
         .attr("x1", 0)
         .attr("y1", yOffset)
         .attr("x2", absoluteWidth)
         .attr("y2", yOffset)
-        .attr("stroke", grey["200"]);
+        .attr("stroke", tick === 0 ? INFINITE_CANVAS_PRIMARY_AXIS_STROKE : INFINITE_CANVAS_SECONDARY_AXIS_STROKE);
     });
   }
 
@@ -255,7 +258,7 @@ class InfiniteCanvasViewDOMHelper<T, E extends infiniteCanvasEventMap> {
         .attr("y1", 0)
         .attr("x2", xOffset)
         .attr("y2", absoluteHeight)
-        .attr("stroke", grey["200"]);
+        .attr("stroke", tick === 0 ? INFINITE_CANVAS_PRIMARY_AXIS_STROKE : INFINITE_CANVAS_SECONDARY_AXIS_STROKE);
     });
   }
 
