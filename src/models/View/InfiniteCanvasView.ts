@@ -65,7 +65,7 @@ abstract class InfiniteCanvasView<T, E extends infiniteCanvasEventMap> extends V
     this.updateZoom(this._zoom);
     if (this.showGrid) this.DOMHelper.renderGrid();
     if (this.showRuler) this.DOMHelper.renderRulers();
-    this._events.call("zoom", this.zoom);
+    this._events.emit("zoom", this.zoom);
   }
 
   private get zoom() {
@@ -137,10 +137,10 @@ abstract class InfiniteCanvasView<T, E extends infiniteCanvasEventMap> extends V
       .call((selection: D3.Transition<any, any, any, any>) => selection.call(this._zoomBehavior!.scaleBy, value));
   }
 
-  public translateTo(x: number, y: number) {
+  public translateTo(x: number, y: number , duration:number = 2000) {
     D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT}`)
       .transition()
-      .duration(2000)
+      .duration(duration)
       .call((selection: D3.Transition<any, any, any, any>) => selection.call(this._zoomBehavior!.translateTo, x, y));
   }
 
@@ -160,7 +160,7 @@ abstract class InfiniteCanvasView<T, E extends infiniteCanvasEventMap> extends V
     this.DOMHelper.initGrid();
     this._initNavigationButtons();
     this.onReady?.();
-    this._events.call("ready", this.documentRef);
+    this._events.emit("ready", this.documentRef);
   };
 }
 

@@ -18,11 +18,13 @@ class RecursiveBacktracking implements IAlgorithm {
       this._currentVertex = this._pathTrace.pop()!;
       return;
     }
-    const nextNode = unvisitedNeighbors[NumberUtils.randomNumberBetween(0, unvisitedNeighbors.length - 1)];
+    const randNum = NumberUtils.randomNumberBetween(0, unvisitedNeighbors.length - 1)
+    const nextNode = unvisitedNeighbors[randNum];
     const removeAbleEdge = this._graph.getEdgeBetween(nextNode, this._currentVertex!);
-
-    this._graph.updateEdgeData(removeAbleEdge!.id, (e) => ({ ...e, blocked: false }));
-
+    nextNode.neighborsEdges.forEach(e =>{
+      const isRemoveAble = removeAbleEdge!.id === e.id;
+      this._graph.updateEdgeData(e.id , e => ({...e , blocked: !isRemoveAble}) )
+    })
     this._currentVertex = nextNode;
     this._pathTrace.push(nextNode);
     this._visitedVertices.add(nextNode.id);
@@ -39,10 +41,6 @@ class RecursiveBacktracking implements IAlgorithm {
     this._currentVertex = this._graph.entry;
     this._pathTrace.push(this._graph.entry);
     this._visitedVertices.add(this._graph.entry.id);
-
-    for (const e of this._graph.EdgesIter()) {
-      this._graph.updateEdgeData(e.id, (e) => ({ ...e, blocked: true }));
-    }
   }
 
   iter = () => {

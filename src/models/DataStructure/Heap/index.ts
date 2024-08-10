@@ -12,13 +12,13 @@ class Heap<T> extends HeapJs<T> {
 
   push(...elements: T[]): boolean {
     const res = super.push(...elements);
-    this._events.call("push", elements);
+    this._events.emit("push", elements);
     return res;
   }
 
   pop(): T | undefined {
     const poppedElement = super.pop();
-    this._events.call("pop", poppedElement);
+    this._events.emit("pop", poppedElement);
     return poppedElement;
   }
 

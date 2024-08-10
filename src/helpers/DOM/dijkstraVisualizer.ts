@@ -265,19 +265,19 @@ class DijkstraVisualizerDOMHelper {
     this._edgeDocumentIdMap.set(edge.id, [edgeConnectorLine, edgeWallLine]);
   }
 
-  public pushToHeap(v: DijkstraGraphVertex) {
-    const vertexSelection = this._vertexDocumentIdMap.get(v.id);
-    vertexSelection?.attr("fill", green["300"]);
-    const rootSelection = D3.select(`#${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT} g`);
+  public pushToHeap(vertex: DijkstraGraphVertex) {
+    if (this._view.dataStructure.entry === vertex) return;
+    if (this._view.dataStructure.targets.includes(vertex)) return;
+    const vertexSelection = this.mapVertexToD3Selection(vertex);
+    vertexSelection.attr("fill", green["300"])
   }
 
   public updateEdge(edge: DijkstraGraphEdge) {
-    const [_,wallSelection] = this.mapEdgeToD3Selection(edge);
+    const [_, wallSelection] = this.mapEdgeToD3Selection(edge);
 
-    if(edge.data.blocked){
-
+    if (edge.data.blocked) {
       wallSelection.attr("stroke-width", 4).attr("stroke", grey["900"]);
-    }else {
+    } else {
       wallSelection.attr("stroke-width", null).attr("stroke", null);
     }
   }

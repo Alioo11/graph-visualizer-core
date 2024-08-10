@@ -34,7 +34,7 @@ abstract class View<T,E extends viewEventMap> implements IView<T,E> {
     if(!this.documentRef) throw new Error(`inconsistent state: expected document ref to be <HTMLDivElement> but got ${this.documentRef}`);
     this.createWrapperElement(rootHTMLElement);
     this.onReady?.();
-    this._events.call("ready", this.documentRef);
+    this._events.emit("ready", this.documentRef);
   };
 
   toggleVisible = () => {

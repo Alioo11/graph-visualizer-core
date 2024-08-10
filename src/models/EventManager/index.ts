@@ -9,7 +9,7 @@ class EventManager<T> implements IEventManager<T> {
     const events = this._events.get(eventType) || [];
     this._events.set(eventType, [...events, cb as (data: unknown) => void]);
   };
-  call: IEventManager<T>["call"] = (eventType, data) => {
+  emit: IEventManager<T>["emit"] = (eventType, data) => {
     const events = this._events.get(eventType) || [];
     events.forEach((cb) => cb(data));
   };

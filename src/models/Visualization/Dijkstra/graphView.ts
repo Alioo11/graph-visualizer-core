@@ -1,4 +1,5 @@
 import $ from "jquery";
+import D3 from 'd3';
 import InfiniteCanvasView from "@models/View/InfiniteCanvasView";
 import DijkstraGraph from "@models/DataStructure/Graph/Dijkstra";
 import ExecutionPhase from "@models/ExecutionPhase";
@@ -14,7 +15,7 @@ import type {
 } from "@_types/context/dijkstra";
 import Heap from "@models/DataStructure/Heap";
 
-class DijkstraGraphView extends InfiniteCanvasView<unknown , IDijkstraGraphViewEventsMap> {
+class DijkstraGraphView extends InfiniteCanvasView<unknown, IDijkstraGraphViewEventsMap> {
   dataStructure: DijkstraGraph;
   heap: Heap<dijkstraPQueue>;
   documentRef: Nullable<HTMLDivElement> = null;
@@ -102,41 +103,38 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown , IDijkstraGraphViewE
   }
 
   private _registerDropdownMenus() {
-    this.on("vertex-click" , (e)=> e.button === 2 && (this.focusedVertex = e.vertex))
+    this.on("vertex-click", (e) => e.button === 2 && (this.focusedVertex = e.vertex));
     this.on("zoom", () => this.focusedVertex && (this.focusedVertex = null));
   }
 
-  private _registerVertexDocumentEvents() {
-    const verticesSelector = $(`.${DOCUMENT_CLASS_CONSTANTS.VIEW.PATH_FINDING.VERTEX}`);
-
-    verticesSelector.on("mousedown", (e) => {
-      const vertex = this.dataStructure.getVertexById(e.target.id);
-      if (!vertex) throw new Error(`Vertex with ID ${e.target.id} not found.`);
-      //@ts-ignore passing event as a reference
-      const eventObject: IDijkstraGraphViewEventsMap["vertex-click"] = e;
-      eventObject.vertex = vertex;
-      this._events.call("vertex-click" , eventObject)
-    });
+  private _triggerVertexEvent = (event:JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>) => {
+    const vertex = this.dataStructure.getVertexById(event.target.id);
+    if (!vertex) throw new Error(`Vertex with ID ${event.target.id} not found.`);
+    //@ts-ignore passing event as a reference
+    const eventObject: IDijkstraGraphViewEventsMap["vertex-click"] = event;
+    eventObject.vertex = vertex;
+    this._events.emit("vertex-click", eventObject);
   }
 
-  private _registerEdgeDocumentEvents() {
-    const edgeSelector = $(`.${DOCUMENT_CLASS_CONSTANTS.VIEW.PATH_FINDING.EDGE}`);
-
-    edgeSelector.on("mousedown", (e) => {
-      const edge = this.dataStructure.getEdgeById(e.target.id);
-      if (!edge) throw new Error(`Edge with ID ${e.target.id} not found.`);
-      //@ts-ignore passing event as a reference
-      const eventObject: IDijkstraGraphViewEventsMap["edge-click"] = e;
-      eventObject.edge = edge;
-      this._events.call("edge-click" , eventObject)
-    });
+  private _triggerEdgeEvent = (event:JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>) => {
+    const edge = this.dataStructure.getEdgeById(event.target.id);
+    if (!edge) throw new Error(`Edge with ID ${event.target.id} not found.`);
+    //@ts-ignore passing event as a reference
+    const eventObject: IDijkstraGraphViewEventsMap["edge-click"] = event;
+    eventObject.edge = edge;
+    this._events.emit("edge-click", eventObject);
   }
 
   private _registerDocumentEvents() {
-    const rootSVGSelector = $(`#${this.documentRootId} #${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT}`);
-    rootSVGSelector.on("click", (e) => this._events.call("container-click" , e));
-    this._registerVertexDocumentEvents();
-    this._registerEdgeDocumentEvents();
+    const rootSVGSelector = $(`#${this.documentRootId} #${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT}`)
+    //@ts-ignore
+    rootSVGSelector.on("mousedown", (e: JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>) => {
+      const isClickOnAVertex = e.target.classList.contains(DOCUMENT_CLASS_CONSTANTS.VIEW.PATH_FINDING.VERTEX);
+      const isClickOnAEdge = e.target.classList.contains(DOCUMENT_CLASS_CONSTANTS.VIEW.PATH_FINDING.EDGE);
+      if(isClickOnAVertex) return this._triggerVertexEvent(e);
+      if(isClickOnAEdge) return this._triggerEdgeEvent(e);
+      this._events.emit("container-click" , e);
+    });
   }
 
   private _registerDataStructureEvents() {
@@ -145,7 +143,7 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown , IDijkstraGraphViewE
     this.dataStructure.onDijkstra("entry-point-change", (v) => this.DijkstraDOMHelper.renderNewEntryPoint(v));
     this.dataStructure.onDijkstra("targets-update", (v) => this.DijkstraDOMHelper.renderUpdatedTargets(v));
     this.dataStructure.onDijkstra("edge-change", (e) => this.DijkstraDOMHelper.updateEdge(e));
-    this.heap.on("push", (e)=> this.DijkstraDOMHelper.pushToHeap(e[0].vertex));
+    this.heap.on("push", (e) => this.DijkstraDOMHelper.pushToHeap(e[0].vertex));
   }
 
   private _renderVisitEvent(v: DijkstraGraphVertex) {

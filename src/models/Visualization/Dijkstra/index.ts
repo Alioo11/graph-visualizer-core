@@ -13,7 +13,7 @@ import type { graphFactoryOptionMap, gridGraphOptions, randomizedGraphOptions } 
 import type { dijkstraPQueue } from "@_types/context/dijkstra";
 
 class DijkstraVisualization<T extends keyof graphFactoryOptionMap> implements IVisualization {
-  private _graph: DijkstraGraph;
+  graph: DijkstraGraph;
   private _heap: Heap<dijkstraPQueue>;
   private _status = ExecutionPhase.instance();
   private _isAlgorithmRunning = false;
@@ -71,21 +71,21 @@ class DijkstraVisualization<T extends keyof graphFactoryOptionMap> implements IV
 
   createGraph(graphType: T, options: graphFactoryOptionMap[T]) {
     this._heap = new Heap((a, b) => a.cost - b.cost);
-    this._graph =
+    this.graph =
       graphType === "grid"
         ? this.graphFactory.createGrid(options as gridGraphOptions)
         : this.graphFactory.randomizedGraph(options as randomizedGraphOptions);
-    this.mainView.reInit(this._graph);
-    this.algorithm = new DijkstraAlgorithm(this._graph, this._heap);
-    this.recursiveBacktrackingMazeGenerationAlgorithm = new RecursiveBacktracking(this._graph);
+    this.mainView.reInit(this.graph);
+    this.algorithm = new DijkstraAlgorithm(this.graph, this._heap);
+    this.recursiveBacktrackingMazeGenerationAlgorithm = new RecursiveBacktracking(this.graph);
   }
 
   constructor() {
-    this._graph = this.graphFactory.createGrid({ width: 60, height: 60, entry: [0, 0], targets: [[9, 9]], gap: 100 });
+    this.graph = this.graphFactory.createGrid({ width: 100, height: 100, entry: [0, 0], targets: [[9, 9]], gap: 100 });
     this._heap = new Heap((a, b) => a.cost - b.cost);
-    this.mainView = new DijkstraGraphView(this._graph , this._heap);
-    this.algorithm = new DijkstraAlgorithm(this._graph, this._heap);
-    this.recursiveBacktrackingMazeGenerationAlgorithm = new RecursiveBacktracking(this._graph);
+    this.mainView = new DijkstraGraphView(this.graph , this._heap);
+    this.algorithm = new DijkstraAlgorithm(this.graph, this._heap);
+    this.recursiveBacktrackingMazeGenerationAlgorithm = new RecursiveBacktracking(this.graph);
     this.views = [this.mainView];
   }
 }

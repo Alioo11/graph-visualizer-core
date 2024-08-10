@@ -54,14 +54,14 @@ class DijkstraGraphFactory
   randomizedGraph(options: randomizedGraphOptions) {
     const { size } = options;
 
-    const PICK_PORTION = 0.01;
+    const PICK_PORTION = 0.03;
     const graph = new DijkstraGraph("undirected");
     const vertices: Array<DijkstraGraphVertex> = new Array(size);
 
     for (let i = 0; i < size; i++) {
       const vertexRef = graph.addVertex(`${i}`, {
-        x: NumberUtils.randomNumberBetween(-size * 10, size * 10),
-        y: NumberUtils.randomNumberBetween(-size * 10, size * 10),
+        x: NumberUtils.randomNumberBetween(-size * 3, size * 3),
+        y: NumberUtils.randomNumberBetween(-size * 3, size * 3),
       });
       vertices[i] = vertexRef;
     }
