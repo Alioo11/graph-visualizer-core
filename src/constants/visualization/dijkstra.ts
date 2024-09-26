@@ -6,6 +6,8 @@ export const DEFAULT_VERTEX_STROKE_WIDTH = 5;
 
 export const ENTRY_COLOR = blue["A700"];
 export const BLANK_COLOR = grey["100"];
+export const PATH_COLOR = blue['500']
+
 export const TARGET_COLOR_LIST = [red["300"], blue["400"], green["500"]];
 
 export const DIJKSTRA_VISUALIZATION_DEFAULT_OPTIONS: Required<IDijkstraVisualizationOptions> = {

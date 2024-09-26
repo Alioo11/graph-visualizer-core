@@ -9,6 +9,7 @@ import {
   DEFAULT_VERTEX_STROKE_WIDTH,
   ENTRY_COLOR,
   TARGET_COLOR_LIST,
+  PATH_COLOR,
 } from "@constants/visualization/dijkstra";
 import { INFINITE_CANVAS_TOOLTIP } from "@constants/view";
 import type { Nullable } from "ts-wiz";
@@ -19,6 +20,7 @@ import type {
   DijkstraGraphVertex,
   DijkstraGraphVertexNodeType,
 } from "@_types/context/dijkstra";
+import wait from "@utils/wait";
 
 class DijkstraVisualizerDOMHelper {
   tooltip_x_shift = 20;
@@ -179,11 +181,23 @@ class DijkstraVisualizerDOMHelper {
     });
   }
 
-  renderTraceToSourceEvent(vertices: Array<DijkstraGraphVertex>) {
-    vertices.forEach((v) => {
-      const docElementReference = this._vertexDocumentIdMap.get(v.id);
-      docElementReference?.attr("stroke-width", 7).attr("stroke", "yellow");
-    });
+  async renderTraceToSourceEvent(vertices: Array<DijkstraGraphVertex>) {
+    for (let i = 0; i < vertices.length; i++) {
+      await wait(10)
+      const currentVertex = vertices[i];
+      const prevVertex = vertices[i - 1];
+      
+      const docElementReference = this._vertexDocumentIdMap.get(currentVertex.id);
+      docElementReference?.attr("stroke-width", 7).attr("stroke", PATH_COLOR);
+
+      if (!prevVertex) continue;
+      const bet = this._view.dataStructure.getEdgeBetween(currentVertex, prevVertex);
+      if(bet){
+        const f = this._edgeDocumentIdMap.get(bet.id)
+        console.log(f)
+        f?.[0].attr("stroke-width", 30).attr("stroke", PATH_COLOR);
+      }
+    }
   }
 
   renderVisitEvent(v: DijkstraGraphVertex, currentTargetId: DijkstraGraphVertex["id"]) {
