@@ -215,9 +215,9 @@ class InfiniteCanvasViewDOMHelper<T, E extends infiniteCanvasEventMap> {
     const absoluteWidth = D3GridSelection.node().width.baseVal.value as number;
 
     const fromVal = (this._view._zoom.y * -1) / this._view._zoom.k;
-    const toValue = fromVal + absoluteHeight / this._view._zoom.k;
+    const toValue = fromVal + (absoluteHeight) / this._view._zoom.k;
     const rulerGap = infiniteCanvasScaleMapToRulerGap(this._view._zoom.k)!;
-    const rulerTickValues = generateSnappedRange(fromVal, toValue, rulerGap);
+    const rulerTickValues = generateSnappedRange(fromVal, toValue , rulerGap);
 
     $(`.${DOCUMENT_CLASS_CONSTANTS.VIEW.INFINITE_CANVAS.VERTICAL_GRID}`).remove();
     rulerTickValues.forEach((tick) => {
@@ -246,7 +246,7 @@ class InfiniteCanvasViewDOMHelper<T, E extends infiniteCanvasEventMap> {
     const fromVal = (this._view._zoom.x * -1) / this._view._zoom.k;
     const toValue = fromVal + absoluteWidth / this._view._zoom.k;
     const rulerGap = infiniteCanvasScaleMapToRulerGap(this._view._zoom.k)!;
-    const rulerTickValues = generateSnappedRange(fromVal, toValue, rulerGap);
+    const rulerTickValues = generateSnappedRange(fromVal, toValue , rulerGap);
 
     $(`.${DOCUMENT_CLASS_CONSTANTS.VIEW.INFINITE_CANVAS.HORIZONTAL_GRID}`).remove();
 

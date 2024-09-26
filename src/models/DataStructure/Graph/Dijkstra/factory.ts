@@ -12,6 +12,11 @@ class DijkstraGraphFactory
   public radius = 4000;
   createGrid(options: gridGraphOptions) {
     const { gap, width, height, entry, targets } = options;
+
+    const startingPointX = ((gap * width) / 2) * -1;
+    const startingPointY = ((gap * height) / 2) * -1;
+
+
     const mat: Array<Array<any>> = Array.from(Array(width).keys()).map(() => new Array(height));
     const graph = new DijkstraGraph("undirected");
 
@@ -25,8 +30,8 @@ class DijkstraGraphFactory
     for (let i = 0; i < height; i++) {
       for (let j = 0; j < width; j++) {
         const f = graph.addVertex(`${j}-${i}`, {
-          x: gap * j,
-          y: gap * i,
+          x: gap * j + startingPointX,
+          y: gap * i + startingPointY,
         });
         mat[i][j] = f;
       }
@@ -54,7 +59,7 @@ class DijkstraGraphFactory
   randomizedGraph(options: randomizedGraphOptions) {
     const { size } = options;
 
-    const PICK_PORTION = 0.03;
+    const PICK_PORTION = 0.02;
     const graph = new DijkstraGraph("undirected");
     const vertices: Array<DijkstraGraphVertex> = new Array(size);
 

@@ -103,37 +103,51 @@ class DijkstraGraphView extends InfiniteCanvasView<unknown, IDijkstraGraphViewEv
   }
 
   private _registerDropdownMenus() {
-    this.on("vertex-click", (e) => e.button === 2 && (this.focusedVertex = e.vertex));
+    this.on("vertex-mousedown", (e) => e.button === 2 && (this.focusedVertex = e.vertex));
     this.on("zoom", () => this.focusedVertex && (this.focusedVertex = null));
   }
 
-  private _triggerVertexEvent = (event:JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>) => {
+  private _triggerVertexEvent = (
+    event: JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>,
+    eventType: keyof IDijkstraGraphViewEventsMap
+  ) => {
     const vertex = this.dataStructure.getVertexById(event.target.id);
     if (!vertex) throw new Error(`Vertex with ID ${event.target.id} not found.`);
     //@ts-ignore passing event as a reference
-    const eventObject: IDijkstraGraphViewEventsMap["vertex-click"] = event;
+    const eventObject: IDijkstraGraphViewEventsMap["vertex-mousedown"] = event;
     eventObject.vertex = vertex;
-    this._events.emit("vertex-click", eventObject);
-  }
+    this._events.emit(eventType, eventObject);
+  };
 
-  private _triggerEdgeEvent = (event:JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>) => {
+  private _triggerEdgeEvent = (
+    event: JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>,
+    eventType: keyof IDijkstraGraphViewEventsMap
+  ) => {
     const edge = this.dataStructure.getEdgeById(event.target.id);
     if (!edge) throw new Error(`Edge with ID ${event.target.id} not found.`);
     //@ts-ignore passing event as a reference
-    const eventObject: IDijkstraGraphViewEventsMap["edge-click"] = event;
+    const eventObject: IDijkstraGraphViewEventsMap["edge-mousedown"] = event;
     eventObject.edge = edge;
-    this._events.emit("edge-click", eventObject);
-  }
+    this._events.emit(eventType, eventObject);
+  };
 
   private _registerDocumentEvents() {
-    const rootSVGSelector = $(`#${this.documentRootId} #${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT}`)
+    const rootSVGSelector = $(`#${this.documentRootId} #${DOCUMENT_ID_CONSTANTS.VIEW.INFINITE_CANVAS.ROOT}`);
     //@ts-ignore
     rootSVGSelector.on("mousedown", (e: JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>) => {
       const isClickOnAVertex = e.target.classList.contains(DOCUMENT_CLASS_CONSTANTS.VIEW.PATH_FINDING.VERTEX);
       const isClickOnAEdge = e.target.classList.contains(DOCUMENT_CLASS_CONSTANTS.VIEW.PATH_FINDING.EDGE);
-      if(isClickOnAVertex) return this._triggerVertexEvent(e);
-      if(isClickOnAEdge) return this._triggerEdgeEvent(e);
-      this._events.emit("container-click" , e);
+      if (isClickOnAVertex) return this._triggerVertexEvent(e , 'vertex-mousedown');
+      if (isClickOnAEdge) return this._triggerEdgeEvent(e, "edge-mousedown");
+      this._events.emit("container-click", e);
+    });
+
+    rootSVGSelector.on("click", (e: JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>) => {
+      const isClickOnAVertex = e.target.classList.contains(DOCUMENT_CLASS_CONSTANTS.VIEW.PATH_FINDING.VERTEX);
+      const isClickOnAEdge = e.target.classList.contains(DOCUMENT_CLASS_CONSTANTS.VIEW.PATH_FINDING.EDGE);
+      if (isClickOnAVertex) return this._triggerVertexEvent(e , 'vertex-click');
+      if (isClickOnAEdge) return this._triggerEdgeEvent(e, "edge-click");
+      this._events.emit("container-click", e);
     });
   }
 

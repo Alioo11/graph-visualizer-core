@@ -14,7 +14,7 @@ import type { dijkstraPQueue } from "@_types/context/dijkstra";
 
 class DijkstraVisualization<T extends keyof graphFactoryOptionMap> implements IVisualization {
   graph: DijkstraGraph;
-  private _heap: Heap<dijkstraPQueue>;
+  private _priorityQueue: Heap<dijkstraPQueue>;
   private _status = ExecutionPhase.instance();
   private _isAlgorithmRunning = false;
   speed: VisualizationSpeed = "fast";
@@ -70,21 +70,21 @@ class DijkstraVisualization<T extends keyof graphFactoryOptionMap> implements IV
   };
 
   createGraph(graphType: T, options: graphFactoryOptionMap[T]) {
-    this._heap = new Heap((a, b) => a.cost - b.cost);
+    this._priorityQueue = new Heap((a, b) => a.cost - b.cost);
     this.graph =
       graphType === "grid"
         ? this.graphFactory.createGrid(options as gridGraphOptions)
         : this.graphFactory.randomizedGraph(options as randomizedGraphOptions);
     this.mainView.reInit(this.graph);
-    this.algorithm = new DijkstraAlgorithm(this.graph, this._heap);
+    this.algorithm = new DijkstraAlgorithm(this.graph, this._priorityQueue);
     this.recursiveBacktrackingMazeGenerationAlgorithm = new RecursiveBacktracking(this.graph);
   }
 
   constructor() {
-    this.graph = this.graphFactory.createGrid({ width: 100, height: 100, entry: [0, 0], targets: [[9, 9]], gap: 100 });
-    this._heap = new Heap((a, b) => a.cost - b.cost);
-    this.mainView = new DijkstraGraphView(this.graph , this._heap);
-    this.algorithm = new DijkstraAlgorithm(this.graph, this._heap);
+    this.graph = this.graphFactory.createGrid({ width: 20, height: 20, entry: [10, 8], targets: [[5, 5]], gap: 100 }); // technically not a factory but will keep the cool name ;-)
+    this._priorityQueue = new Heap((a, b) => a.cost - b.cost);
+    this.mainView = new DijkstraGraphView(this.graph , this._priorityQueue);
+    this.algorithm = new DijkstraAlgorithm(this.graph, this._priorityQueue);
     this.recursiveBacktrackingMazeGenerationAlgorithm = new RecursiveBacktracking(this.graph);
     this.views = [this.mainView];
   }

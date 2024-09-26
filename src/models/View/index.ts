@@ -4,17 +4,22 @@ import type { IView, viewEventMap } from "@_types/view";
 import type { NoneToVoidFunction, Nullable } from "ts-wiz";
 import EventManager from "@models/EventManager";
 
-abstract class View<T,E extends viewEventMap> implements IView<T,E> {
+abstract class View<T, E extends viewEventMap> implements IView<T, E> {
   private documentRootRef: Nullable<HTMLDivElement> = null;
   abstract documentRef: Nullable<HTMLDivElement>;
   abstract dataStructure: IDataStructure<T>;
+  /**
+   * @todo
+   * refactor and replace with event manager
+   *
+   */
   abstract onReady: Nullable<NoneToVoidFunction>;
-  protected _events: EventManager<E> =  new EventManager<E>();
+  protected _events: EventManager<E> = new EventManager<E>();
 
   visible: boolean = true;
   documentRootId: string;
 
-  constructor(){
+  constructor() {
     this.documentRootId = TextUtil.randomText(10);
   }
 
@@ -31,7 +36,8 @@ abstract class View<T,E extends viewEventMap> implements IView<T,E> {
   };
 
   init = (rootHTMLElement: HTMLDivElement) => {
-    if(!this.documentRef) throw new Error(`inconsistent state: expected document ref to be <HTMLDivElement> but got ${this.documentRef}`);
+    if (!this.documentRef)
+      throw new Error(`inconsistent state: expected document ref to be <HTMLDivElement> but got ${this.documentRef}`);
     this.createWrapperElement(rootHTMLElement);
     this.onReady?.();
     this._events.emit("ready", this.documentRef);
@@ -41,9 +47,9 @@ abstract class View<T,E extends viewEventMap> implements IView<T,E> {
     this.visible = !this.visible;
   };
 
-  on:EventManager<E>["on"] = (eventType , cb)=>{
-    this._events.on(eventType , cb);
-  }
+  on: EventManager<E>["on"] = (eventType, cb) => {
+    this._events.on(eventType, cb);
+  };
 }
 
 export default View;

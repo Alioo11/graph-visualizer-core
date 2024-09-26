@@ -1,5 +1,5 @@
-import { IGraphEdge, IGraphVertex } from "@_types/dataStructure/graph";
-import { infiniteCanvasEventMap } from "@_types/view/infiniteCanvas";
+import type { IGraphEdge, IGraphVertex } from "@_types/dataStructure/graph";
+import type { infiniteCanvasEventMap } from "@_types/view/infiniteCanvas";
 
 export interface IDijkstraGraphVertex {
   x: number;
@@ -29,8 +29,14 @@ export type IDijkstraSourceMap = Map<DijkstraGraphVertex["id"], DijkstraGraphVer
 export type IDijkstraTargetSourceMap = Map<DijkstraGraphVertex["id"], IDijkstraSourceMap>;
 
 export interface IDijkstraGraphViewEventsMap extends infiniteCanvasEventMap {
+  "edge-mousedown": JQuery.MouseDownEvent<HTMLElement, undefined, HTMLElement, HTMLElement> & {
+    edge: DijkstraGraphEdge;
+  };
   "edge-click": JQuery.MouseDownEvent<HTMLElement, undefined, HTMLElement, HTMLElement> & {
     edge: DijkstraGraphEdge;
+  };
+  "vertex-mousedown": JQuery.MouseDownEvent<HTMLElement, undefined, HTMLElement, HTMLElement> & {
+    vertex: DijkstraGraphVertex;
   };
   "vertex-click": JQuery.MouseDownEvent<HTMLElement, undefined, HTMLElement, HTMLElement> & {
     vertex: DijkstraGraphVertex;
