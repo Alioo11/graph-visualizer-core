@@ -40,3 +40,26 @@ export const infiniteCanvasScaleMapToRulerGap = (scale: number) => {
   else if (scale <= .1) return 600;
   throw new Error(`unsupported scale value: ${scale}`);
 };
+
+
+export const tensorFieldScaleMapToFieldsCount = (scale: number) => {
+  if (scale > 120) return 0.2;
+  else if (scale <= 120 && scale > 30) return .5;
+  else if (scale <= 30 && scale > 5) return 4;
+  else if (scale <= 5 && scale > 2) return 25;
+  else if (scale <= 2 && scale > .5) return 50;
+  else if (scale <= .5 && scale > .1) return 200;
+  else if (scale <= .1) return 300;
+  throw new Error(`unsupported scale value: ${scale}`);
+};
+
+export const tensorFieldScaleMapToFieldsLength = (scale: number) => {
+  if (scale > 120) return [0.1, .02];
+  else if (scale <= 120 && scale > 30) return [.2, 0.08];
+  else if (scale <= 30 && scale > 5) return [1.2, .6];
+  else if (scale <= 5 && scale > 2) return [8, 4];
+  else if (scale <= 2 && scale > 0.5) return [15, 10];
+  else if (scale <= 0.5 && scale > 0.1) return [60, 20];
+  else if (scale <= 0.1) return [100, 20];
+  throw new Error(`unsupported scale value: ${scale}`);
+};

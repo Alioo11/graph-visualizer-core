@@ -1,5 +1,4 @@
 import $ from "jquery";
-import D3 from 'd3';
 import InfiniteCanvasView from "@models/View/InfiniteCanvasView";
 import DijkstraGraph from "@models/DataStructure/Graph/Dijkstra";
 import ExecutionPhase from "@models/ExecutionPhase";

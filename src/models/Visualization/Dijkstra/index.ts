@@ -81,7 +81,8 @@ class DijkstraVisualization<T extends keyof graphFactoryOptionMap> implements IV
   }
 
   constructor() {
-    this.graph = this.graphFactory.createGrid({ width: 20, height: 20, entry: [10, 8], targets: [[5, 5]], gap: 100 }); // technically not a factory but will keep the cool name ;-)
+    this.graph = this.graphFactory.createGrid({ width: 50, height: 50, entry: [10, 8], targets: [[5, 5]], gap: 100 }); // technically not a factory but will keep the cool name ;-)
+    // this.graph = this.graphFactory.lindenmayerSystem()
     this._priorityQueue = new Heap((a, b) => a.cost - b.cost);
     this.mainView = new DijkstraGraphView(this.graph , this._priorityQueue);
     this.algorithm = new DijkstraAlgorithm(this.graph, this._priorityQueue);
