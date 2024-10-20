@@ -3,14 +3,18 @@ class NumberUtils {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
-  static randomNumberInArray<T>(array:Array<T>){
+  static randomNumberInArray<T>(array: Array<T>) {
     const length = array.length;
-    return array[this.randomNumberBetween(0,length - 1)];
+    return array[this.randomNumberBetween(0, length - 1)];
   }
 
   static maybe(radio: number = 0.5) {
     if (radio < 0 || radio > 1) throw new Error("radio must be a value between 0 and 1");
     return Math.random() > radio;
+  }
+
+  static createRandomNumberList(length: number, min: number, max: number) {
+    return Array.from(new Array(length).keys()).map(() => this.randomNumberBetween(min, max));
   }
 }
 

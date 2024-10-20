@@ -21,6 +21,10 @@ class CoordinateHelper {
 
     return Math.sqrt(DX ** 2 + DY ** 2);
   }
+
+  static getNextPointByLengthAndAngle(coordinate: coordinate, length:number, angle: number): coordinate {
+    return { x: coordinate.x + Math.cos(angle) * length, y: coordinate.y + Math.sin(angle) * length };
+  }
 }
 
 export default CoordinateHelper;

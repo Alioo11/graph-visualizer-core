@@ -8,7 +8,7 @@ import CityVisualizerDOMHelper from "@helpers/DOM/cityVisualizerView";
 
 class CityView extends InfiniteCanvasView<unknown, infiniteCanvasEventMap> {
   documentRef: Nullable<HTMLDivElement> = null;
-  dataStructure: IDataStructure<unknown> = new CityGraph("undirected");
+  dataStructure: CityGraph = new CityGraph("undirected");
   field: TensorField;
   CityDOMHelper: CityVisualizerDOMHelper;
 
@@ -37,9 +37,9 @@ class CityView extends InfiniteCanvasView<unknown, infiniteCanvasEventMap> {
     this.initiateEvents();
   }
 
-
   initiateEvents() {
     this.on("zoom", (e) => this.CityDOMHelper.renderTensorField(e));
+    this.dataStructure.on("connect", (e) => this.CityDOMHelper.renderEdge(e));
   }
 }
 

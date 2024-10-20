@@ -27,7 +27,8 @@ const addBtn = (name: string, cb: NoneToVoidFunction) => {
 
 addBtn("start", () => (vis.mainView.showGrid = false));
 addBtn("toggle ruler", () => (vis.mainView.showRuler = false));
-addBtn("toggle ruler", () => (vis.mainView.showTenserField =  !vis.mainView.showTenserField ));
+addBtn("toggle tensor field", () => (vis.mainView.showTenserField =  !vis.mainView.showTenserField ));
+addBtn("run", () => vis.run());
 
 // addBtn("toggle grid", () => (vis.mainView.showGrid = !vis.mainView.showGrid));
 // addBtn("toggle grid", doSomething);

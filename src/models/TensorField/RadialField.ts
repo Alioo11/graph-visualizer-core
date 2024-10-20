@@ -1,10 +1,10 @@
 import type { coordinate } from "@_types/coordinate";
 import type { IRadialField } from "@_types/tensorField";
-import CoordinateHelper from "@utils/Coordinate";
+import CoordinateHelper from "@helpers/Coordinate";
 
 class RadialField implements IRadialField {
   center: coordinate;
-  radius: number = 10;
+  radius: number = 200;
 
   constructor(x: number, y: number) {
     this.center = { x, y };
@@ -16,9 +16,7 @@ class RadialField implements IRadialField {
 
     if (distance > this.radius) return { angle: 0, intensity: 0 };
 
-    const intensityValue = distance / this.radius;
-
-    return { angle: Math.abs(angle % (Math.PI / 2)), intensity: 1 - intensityValue };
+    return { angle: angle + Math.PI /2, intensity: 1 };
   };
 }
 

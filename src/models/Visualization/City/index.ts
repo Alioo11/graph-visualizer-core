@@ -1,10 +1,12 @@
 /** views */
-import ProceduralCityGenerationAlgorithm from "./Algorithm/PCG";
 import CityView from "./view";
 /** models */
 import TensorField from "@models/TensorField";
 import RadialField from "@models/TensorField/RadialField";
 import CityGraph from "@models/DataStructure/Graph/City";
+import LindenmayerSystemStreetGenerator from "./Algorithm/Lindenmayer/LindenmayerSystemStreetGenerator";
+import wait from "@utils/wait";
+import NumberUtils from "@utils/Number";
 /** types */
 import type { NoneToVoidFunction } from "ts-wiz";
 import type { IAlgorithm } from "@_types/algorithm";
@@ -16,35 +18,38 @@ class CityVisualization implements IVisualization {
   start: NoneToVoidFunction = () => {};
   views: IView<unknown, viewEventMap>[] = [];
   mainView: CityView;
-  algorithm: IAlgorithm = new ProceduralCityGenerationAlgorithm();
+  algorithm: IAlgorithm;
   field: TensorField;
+  graph: CityGraph;
 
   constructor() {
-    const someOtherRadialField = new RadialField(10, 0);
-    someOtherRadialField.radius = 90;
-
-    const someOtherRadialField2 = new RadialField(-10, 0);
-    someOtherRadialField2.radius = 90;
-
-    const someOtherRadialField3 = new RadialField(0, 10);
-    someOtherRadialField3.radius = 90;
-
-    const someOtherRadialField4 = new RadialField(0, -10);
-    someOtherRadialField4.radius = 90;
-
     const someField = new TensorField();
-    // someField.addRadial(someOtherRadialField);
-    someField.addRadial(someOtherRadialField);
-    someField.addRadial(someOtherRadialField2);
-    someField.addRadial(someOtherRadialField3);
-    someField.addRadial(someOtherRadialField4);
+
+    Array.from(new Array(2).keys()).forEach(()=>{
+      const field = new RadialField(NumberUtils.randomNumberBetween(-1000,1000), NumberUtils.randomNumberBetween(-1000,1000));
+      field.radius = NumberUtils.randomNumberBetween(100, 5000);
+      someField.addRadial(field)
+    })
 
     this.field = someField;
+
     const graph = new CityGraph("undirected");
+    this.graph = graph;
     const mainView = new CityView(graph, someField);
+    const generator = new LindenmayerSystemStreetGenerator(graph, someField);
+    this.algorithm = generator;
     this.views = [mainView];
     this.mainView = mainView;
   }
+
+  run = async () => {
+    for (let i = 0; i < 100; i++) {
+      await wait(5);
+      this.algorithm.iter();
+    }
+    console.log(Array.from(this.graph.iter()).length)
+    console.log(Array.from(this.graph.EdgesIter()).length)
+  };
 }
 
 export default CityVisualization;
