@@ -12,7 +12,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "allowJs": true,
-    "types": ["./src/types"],
+    "types": ["./src/types", "jest"],
     "strict": true,
     "paths": {
       "@models/*": ["./src/models/*"],
@@ -20,7 +20,7 @@
       "@utils/*": ["./src/utils/*"],
       "@helpers/*": ["./src/helpers/*"],
       "@_types/*": ["./src/types/*"],
-      "@constants/*": ["./src/constants/*"],
+      "@constants/*": ["./src/constants/*"]
     }
   },
   "include": ["src/**/*"],
