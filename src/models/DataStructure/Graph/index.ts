@@ -21,10 +21,9 @@ class GraphVertex<VERTEX, EDGE> implements IGraphVertex<VERTEX, EDGE> {
     this.id = uuidv4();
   }
   get neighborsVertexes() {
-    const neighborVertexes: Array<IGraphVertex<VERTEX, EDGE>> =
-      this.neighborsEdges.map((edge) => {
-        return edge.from.id === this.id ? edge.to : edge.from;
-      });
+    const neighborVertexes: Array<IGraphVertex<VERTEX, EDGE>> = this.neighborsEdges.map((edge) => {
+      return edge.from.id === this.id ? edge.to : edge.from;
+    });
     return neighborVertexes;
   }
 }
@@ -35,12 +34,7 @@ class GraphEdge<VERTEX, EDGE> implements IGraphEdge<VERTEX, EDGE> {
   data: EDGE;
   id: string;
 
-  constructor(
-    from: IGraphVertex<VERTEX, EDGE>,
-    to: IGraphVertex<VERTEX, EDGE>,
-    data: EDGE,
-    id:string
-  ) {
+  constructor(from: IGraphVertex<VERTEX, EDGE>, to: IGraphVertex<VERTEX, EDGE>, data: EDGE, id: string) {
     this.from = from;
     this.to = to;
     this.data = data;
@@ -55,10 +49,7 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
   protected _vertexes = new Map<string, GraphVertex<VERTEX, EDGE>>();
   protected _edges = new Map<string, IGraphEdge<VERTEX, EDGE>>();
 
-  private _events = new Map<
-    keyof IAlgorithmGraphEventsMap<VERTEX, EDGE>,
-    Array<(data: any) => void>
-  >();
+  private _events = new Map<keyof IAlgorithmGraphEventsMap<VERTEX, EDGE>, Array<(data: any) => void>>();
 
   constructor(type: GraphType) {
     this._type = type;
@@ -69,8 +60,7 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
   }
 
   private getConnectionHash = (strA: string, strB: string) => {
-    if (this._type === "undirected")
-      return TextUtil.bidirectionalHash(strA, strB);
+    if (this._type === "undirected") return TextUtil.bidirectionalHash(strA, strB);
     return TextUtil.directionalHash(strA, strB);
   };
 
@@ -81,21 +71,15 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
     return vertexInstance;
   };
 
-  connect = (
-    from: IGraphVertex<VERTEX, EDGE>,
-    to: IGraphVertex<VERTEX, EDGE>,
-    data: EDGE
-  ) => {
+  connect = (from: IGraphVertex<VERTEX, EDGE>, to: IGraphVertex<VERTEX, EDGE>, data: EDGE) => {
     const connectionHash = this.getConnectionHash(from.id, to.id);
     const connection = this._edges.get(connectionHash);
     if (connection) {
-      console.warn(
-        `there already is a connection between ${from.label} and ${to.label}`
-      );
+      console.warn(`there already is a connection between ${from.label} and ${to.label}`);
       return connection;
     }
 
-    const edgeInstance = new GraphEdge<VERTEX, EDGE>(from, to, data , connectionHash);
+    const edgeInstance = new GraphEdge<VERTEX, EDGE>(from, to, data, connectionHash);
 
     from.neighborsEdges.push(edgeInstance);
     if (this.type === "undirected") to.neighborsEdges.push(edgeInstance);
@@ -106,10 +90,34 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
     return edgeInstance;
   };
 
-  getEdgeBetween = (
-    from: IGraphVertex<VERTEX, EDGE>,
-    to: IGraphVertex<VERTEX, EDGE>
-  ) => {
+  disConnect = (edgeId: IGraphEdge<VERTEX, EDGE>["id"]) => {
+    const edge = this._edges.get(edgeId);
+
+    if (!edge) {
+      console.warn(`there is no edge with the given ID:${edgeId}`);
+      return;
+    }
+    this._events.get("dis-connect")?.forEach((cb) => cb(edge));
+    this._edges.delete(edgeId);
+  };
+
+  removeVertex = (vertexId: IGraphVertex<VERTEX, EDGE>["id"]) => {
+    const vertex = this._vertexes.get(vertexId);
+
+    if (!vertex) {
+      console.warn(`there is not vertex with the given ID:${vertexId}`);
+      return;
+    }
+
+    const connectedEdgesToVertex = vertex.neighborsEdges;
+
+    vertex.neighborsEdges.forEach((edge) => this.disConnect(edge.id));
+
+    this._events.get("remove-vertex")?.forEach((cb) => cb(vertex));
+    this._vertexes.delete(vertexId);
+  };
+
+  getEdgeBetween = (from: IGraphVertex<VERTEX, EDGE>, to: IGraphVertex<VERTEX, EDGE>) => {
     const connectionHash = this.getConnectionHash(from.id, to.id);
     const connection = this._edges.get(connectionHash);
     return connection || null;
@@ -119,11 +127,10 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
     return this._vertexes.get(id) || null;
   }
 
-
   getEdgeById(id: string) {
     return this._edges.get(id) || null;
   }
-  
+
   get size() {
     return this._vertexes.size;
   }
@@ -142,7 +149,6 @@ class Graph<VERTEX, EDGE> implements IGraph<VERTEX, EDGE> {
     }
   }
 
-  
   *EdgesIter() {
     for (const item of this._edges.values()) {
       yield item;

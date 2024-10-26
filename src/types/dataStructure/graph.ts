@@ -21,14 +21,18 @@ export interface IGraphEdge<VERTEX, EDGE> {
 
 export interface IAlgorithmGraphEventsMap<VERTEX, EDGE> {
   "add-vertex": IGraphVertex<VERTEX, EDGE>;
+  "remove-vertex": IGraphVertex<VERTEX, EDGE>;
   connect: IGraphEdge<VERTEX, EDGE>;
+  "dis-connect": IGraphEdge<VERTEX, EDGE>;
 }
 
 export interface IGraph<VERTEX, EDGE> extends IDataStructure<IGraphVertex<VERTEX, EDGE>> {
   traverseStrategy: GraphIteratorTraverseStrategy;
   type: GraphType;
   addVertex: (label: string, data: VERTEX) => IGraphVertex<VERTEX, EDGE>;
+  removeVertex: (vertexId: IGraphVertex<VERTEX, EDGE>["id"]) => void;
   connect: (from: IGraphVertex<VERTEX, EDGE>, to: IGraphVertex<VERTEX, EDGE>, data: EDGE) => IGraphEdge<VERTEX, EDGE>;
+  disConnect: (edgeId: IGraphEdge<VERTEX, EDGE>["id"]) => void;
   getEdgeBetween: (
     from: IGraphVertex<VERTEX, EDGE>,
     to: IGraphVertex<VERTEX, EDGE>
