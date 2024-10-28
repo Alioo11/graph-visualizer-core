@@ -24,16 +24,13 @@ class CityVisualization implements IVisualization {
 
   constructor() {
     const someField = new TensorField();
-
-    Array.from(new Array(2).keys()).forEach(()=>{
-      const field = new RadialField(NumberUtils.randomNumberBetween(-1000,1000), NumberUtils.randomNumberBetween(-1000,1000));
-      field.radius = NumberUtils.randomNumberBetween(100, 5000);
+      const field = new RadialField(10, 10);
+      field.radius = 1000
       someField.addRadial(field)
-    })
 
     this.field = someField;
 
-    const graph = new CityGraph("undirected");
+    const graph = new CityGraph('directed');
     this.graph = graph;
     const mainView = new CityView(graph, someField);
     const generator = new LindenmayerSystemStreetGenerator(graph, someField);

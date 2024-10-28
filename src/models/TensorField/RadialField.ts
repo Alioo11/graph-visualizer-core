@@ -15,8 +15,8 @@ class RadialField implements IRadialField {
     const distance = CoordinateHelper.getDistanceBetweenTwoPoints(this.center, coordinate);
 
     if (distance > this.radius) return { angle: 0, intensity: 0 };
-
-    return { angle: angle + Math.PI /2, intensity: 1 };
+    
+    return { angle: angle + Math.PI / 2, intensity: distance / this.radius };
   };
 }
 

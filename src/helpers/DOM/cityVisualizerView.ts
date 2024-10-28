@@ -10,6 +10,10 @@ import { IGraphEdge } from "@_types/dataStructure/graph";
 import { ICityRoadGraphEdge, ICityRoadGraphVertex } from "@_types/context/city";
 import { grey, yellow } from "@mui/material/colors";
 
+function radiansToArcLength(radian: number): number {
+  return radian * (180 / Math.PI);
+}
+
 class CityVisualizerDOMHelper {
   cityView: CityView;
 
@@ -66,48 +70,23 @@ class CityVisualizerDOMHelper {
     const VerticalToValue = VerticalFromVal + height / event.k;
     const VerticalRulerTickValues = generateSnappedRange(VerticalFromVal, VerticalToValue, rulerGap);
 
+    /** remove the rendered fields from the  */
     $(`.${DOCUMENT_CLASS_CONSTANTS.VIEW.TENSOR_FIELD.VECTOR_LINE}`).remove();
 
     for (let i = 0; i < HorizontalRulerTickValues.length; i++) {
       for (let j = 0; j < VerticalRulerTickValues.length; j++) {
         const coordinate = { x: HorizontalRulerTickValues[i], y: VerticalRulerTickValues[j] };
-        const angle = this.cityView.field.get(coordinate);
+        const angle = this.cityView.field.get(coordinate) - Math.PI / 2;
 
-        const verticalAngle = angle + Math.PI / 2;
-
-        const DXV = length * Math.cos(angle);
-        const DYV = length * Math.sin(angle);
-
-        const X1V = coordinate.x - DXV;
-        const X2V = coordinate.x + DXV;
-        const Y1V = coordinate.y - DYV;
-        const Y2V = coordinate.y + DYV;
-
-        const DXX = length * Math.cos(verticalAngle);
-        const DYX = length * Math.sin(verticalAngle);
-
-        const X1X = coordinate.x - DXX;
-        const X2X = coordinate.x + DXX;
-        const Y1X = coordinate.y - DYX;
-        const Y2X = coordinate.y + DYX;
-
-        this.D3InfiniteCanvasGSelection.append("line")
+        this.D3InfiniteCanvasGSelection.append("svg:image")
           .attr("class", DOCUMENT_CLASS_CONSTANTS.VIEW.TENSOR_FIELD.VECTOR_LINE)
-          .attr("x1", X1V)
-          .attr("x2", X2V)
-          .attr("y1", Y1V)
-          .attr("y2", Y2V)
-          .attr("stroke", ColorHelper.angleToColor(angle))
-          .attr("stroke-width", strokeWidth);
+          .attr("href", "assets/arrow.svg")
+          .attr("width", 20 / this.cityView._zoom.k)
+          .attr("height", 20 / this.cityView._zoom.k)
+          .attr("x", coordinate.x)
+          .attr("y", coordinate.y)
+          .attr("transform", `rotate(${radiansToArcLength(angle)} ${coordinate.x} ${coordinate.y})`);
 
-        this.D3InfiniteCanvasGSelection.append("line")
-          .attr("class", DOCUMENT_CLASS_CONSTANTS.VIEW.TENSOR_FIELD.VECTOR_LINE)
-          .attr("x1", X1X)
-          .attr("x2", X2X)
-          .attr("y1", Y1X)
-          .attr("y2", Y2X)
-          .attr("stroke", ColorHelper.angleToColor(angle))
-          .attr("stroke-width", strokeWidth);
       }
     }
   }
